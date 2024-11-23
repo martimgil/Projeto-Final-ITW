@@ -1,0 +1,17 @@
+@font-face {
+    font-family: 'Paris2024-Variable';
+    src: url('Paris2024-Variable-Regular.woff2') format('woff2'),
+        url('Paris2024-Variable-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+.title{
+    font-family: 'Paris2024-Variable', sans-serif;
+    font-size: 5.5rem;
+
+    color: black;
+    margin: 0;
+    padding: 0;
+    font-display: swap;
+}
