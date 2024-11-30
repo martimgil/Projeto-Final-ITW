@@ -167,7 +167,7 @@ var vm = function () {
     $("#searchbar").autocomplete({
         source: function( request, response ) {
             $.ajax({
-                url: "http://192.168.160.58/NBA/API/Players/Search?q=" + request.term,
+                url: "http://192.168.160.58/Paris2024/API/Players/Search?q=" + request.term,
                 dataType: "json",
                 success: function( data ) {
                     var playerNames = data.map(function(record) {
