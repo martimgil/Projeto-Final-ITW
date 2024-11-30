@@ -41,7 +41,6 @@ var vm = function () {
             list.push(i + step);
         return list;
     };
-
     //--- Page Events
     self.activate = function (id) {
         console.log('CALL: getAthletes...');
@@ -80,7 +79,7 @@ var vm = function () {
 
     function sleep(milliseconds) {
         const start = Date.now();
-        while (Date.now() - start < milliseconds);
+        while (Date.now() - start < milliseconds) ;
     }
 
     function showLoading() {
@@ -89,6 +88,7 @@ var vm = function () {
             keyboard: false
         });
     }
+
     function hideLoading() {
         $('#myModal').on('shown.bs.modal', function (e) {
             $("#myModal").modal('hide');
@@ -119,55 +119,44 @@ var vm = function () {
     else {
         self.activate(pg);
     }
-
-    self.search = function() {
-        console.log("searching")
-        if ($("#searchbar").val() === "") {
-            showLoading();
-            var pg = getUrlParameter('page');
-            console.log(pg);
-            if (pg == undefined)
-                self.activate(1);
-            else {
-                self.activate(pg);
-            }
+    self.search = function (){
+        if($('#searchbar').val() === "") {
+            self.activate(1);
         } else {
-            var changeUrl = 'http://192.168.160.58/Paris2024/API/Athletes/Search?q=' + $("#searchbar").val();
-            self.playerslist = [];
-            ajaxHelper(changeUrl, 'GET').done(function(data) {
-                console.log(data.length)
-                if (data.length == 0) {
-                    return alert('No results found')
+            var changeUrl = 'http://192.168.160.58/Paris2024/API/athletes/search?q=' + $('#searchbar').val();
+            self.atheleteslist = [];
+            ajaxHelper(changeUrl, 'GET').done(function (data) {
+                if(data.length === 0){
+                    return alert('Não foram encontrados atletas com o nome pesquisado');
                 }
-                var term = $("#searchbar").val().toLowerCase();
-                var filteredData = data.filter(function(record) {
+                var term=$("#searchbar").val().toLowerCase();
+                var filteredData = data.filter(function(record){
                     return record.Name.toLowerCase().includes(term);
-                }).sort(function(a, b) {
-                    if (a.Name.toLowerCase().startsWith(term)) {
+                }).sort(function(a,b){
+                    if(a.Name.toLowerCase().startsWith(term)){
                         return -1;
                     }
-                    if (b.Name.toLowerCase().startsWith(term)) {
+                    if(b.Name.toLowerCase().startsWith(term)){
                         return 1;
                     }
                     return 0;
                 })
                 self.totalPages(1)
-                console.log(filteredData);
                 showLoading();
                 self.records(filteredData);
                 self.totalRecords(filteredData.length);
                 hideLoading();
-                for (var i in filteredData) {
-                    self.playerslist.push(filteredData[i]);
+                for(var i in filteredData){
+                    self.atheleteslist.push(filteredData[i]);
                 }
-            });
+                });
+            };
         };
-    };
-    self.onEnter = function(d,e) {
-        e.keyCode === 13 && self.search();
-        return true;
-    };
 
+            self.onEnter = function (d, e) {
+                e.keyCode === 13&&self.search()
+                    self.search();
+            };
     $.ui.autocomplete.filter = function (array, term) {
         var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex(term), "i");
         return $.grep(array, function (value) {
@@ -178,7 +167,7 @@ var vm = function () {
     $("#searchbar").autocomplete({
         source: function( request, response ) {
             $.ajax({
-                url: "http://192.168.160.58/Paris2024/API/Athletes/Search?q=" + request.term,
+                url: "http://192.168.160.58/NBA/API/Players/Search?q=" + request.term,
                 dataType: "json",
                 success: function( data ) {
                     var playerNames = data.map(function(record) {
@@ -198,8 +187,6 @@ var vm = function () {
             results: function() {}
         }
     });
-
-    console.log("VM initialized!");
 };
 
 $(document).ready(function () {
@@ -209,4 +196,4 @@ $(document).ready(function () {
 
 $(document).ajaxComplete(function (event, xhr, options) {
     $("#myModal").modal('hide');
-});
+})
