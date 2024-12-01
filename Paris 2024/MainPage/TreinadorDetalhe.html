@@ -39,6 +39,12 @@
     <hr data-aos="fade-up">
     <div class="row">
         <div class="col-md-8" data-aos="fade-up">
+            <!-- ko if: Name -->
+            <div class="row border-bottom" data-aos="fade-up">
+                <div class="col-4" data-aos="fade-up">Nome</div>
+                <div class="col-8" data-bind="text: Name" data-aos="fade-up"></div>
+            </div>
+            <!-- /ko -->
             <!-- ko if: Sex -->
             <div class="row border-bottom" data-aos="fade-up">
                 <div class="col-4" data-aos="fade-up">Sexo</div>
