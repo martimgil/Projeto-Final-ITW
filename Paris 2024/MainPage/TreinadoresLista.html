@@ -40,6 +40,11 @@
   </div>
   <br>
   <br>
+  <div style="position: relative;">
+    <input type="text" placeholder="Pesquise por um treinador" id="searchbar" data-bind="event: {keypress: onEnter}">
+    <button style="margin-left: 1px;" class="fa fa-search btn btn-outline-danger" id="CoachesSearchBar" type="submit" data-bind="click: search"></button>
+    <a class="btn btn-danger" style="float: right;" href="" role="button">Visualiza aqui os teus favoritos! </a>
+  </div>
 <!-- ko if: coaches().length > 0 -->
 <div class="row small" data-aos="fade-up">
   <p class=" col-4 mr-auto pt-2" data-aos="fade-up">
