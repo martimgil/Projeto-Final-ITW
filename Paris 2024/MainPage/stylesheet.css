@@ -19,43 +19,43 @@
     padding: 0;
     font-display: swap;
 }
-.gold-medal{
+.table thead th {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table tbody td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+/* stylesheet.css */
+.medal {
     display: inline-block;
-    width: 30px;
-    height: 30px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
+    text-align: center;
+    line-height: 50px;
+    font-weight: bold;
+    color: white;
+    margin: 5px;
+}
+
+.gold-medal {
     background-color: gold;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    line-height: 30px;  /* foi usado para alinhar o texto com o centro */
-
 }
-.silver-medal{
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+
+.silver-medal {
     background-color: silver;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    line-height: 30px;  /* foi usado para alinhar o texto com o centro */
-
-}
-.bronze-medal{
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color:#CD7F32 ;
-    color: white;
-    font-weight: bold;
-    text-align: center;
-    line-height: 30px;  /* foi usado para alinhar o texto com o centro */
-
 }
 
+.bronze-medal {
+    background-color: #cd7f32;
+}
 .nav-item a{
     font-size: 1rem;
     color: White !important;

@@ -3,14 +3,14 @@ var vm = function () {
     console.log('ViewModel initiated...');
     //---Variáveis locais
     var self = this;
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/athletes');
-    self.displayName = 'Lista de Atletas';
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Coaches');
+    self.displayName = 'Lista de Treinadores';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
-    self.athletes = ko.observableArray([]);
+    self.coaches = ko.observableArray([]);
     self.currentPage = ko.observable(1);
     self.pagesize = ko.observable(20);
-    self.totalRecords = ko.observable(50);
+    self.totalRecords = ko.observable(0);
     self.hasPrevious = ko.observable(false);
     self.hasNext = ko.observable(false);
     self.previousPage = ko.computed(function () {
@@ -41,22 +41,28 @@ var vm = function () {
             list.push(i + step);
         return list;
     };
+
     //--- Page Events
     self.activate = function (id) {
-        console.log('CALL: getAthletes...');
+        console.log('CALL: getCoaches...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
-        console.log("composedUri=", composedUri);
         ajaxHelper(composedUri, 'GET').done(function (data) {
-            console.log("Data", data);
+            console.log(data);
             hideLoading();
-            self.athletes(data.Athletes);
+            self.coaches(data.Coaches);
+            console.log("coaches=", self.coaches());
             self.currentPage(data.CurrentPage);
+            console.log("currentPage=", self.currentPage());
             self.hasNext(data.HasNext);
+            console.log("hasNext=", self.hasNext());
             self.hasPrevious(data.HasPrevious);
+            console.log("hasPrevious=", self.hasPrevious());
             self.pagesize(data.PageSize);
+            console.log("pagesize=", self.pagesize());
             self.totalPages(data.TotalPages);
-            self.totalRecords(data.TotalAthletes);
-            //self.SetFavourites();
+            console.log("totalPages=", self.totalPages());
+            self.totalRecords(data.TotalCoaches);
+            console.log("totalRecords=", self.totalRecords());
         });
     };
 
@@ -69,6 +75,10 @@ var vm = function () {
             dataType: 'json',
             contentType: 'application/json',
             data: data ? JSON.stringify(data) : null,
+            success: function (data) {
+                console.log("AJAX Call[" + uri + "] Success...");
+                hideLoading();
+            },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("AJAX Call[" + uri + "] Fail...");
                 hideLoading();
@@ -79,7 +89,7 @@ var vm = function () {
 
     function sleep(milliseconds) {
         const start = Date.now();
-        while (Date.now() - start < milliseconds) ;
+        while (Date.now() - start < milliseconds);
     }
 
     function showLoading() {
@@ -88,11 +98,10 @@ var vm = function () {
             keyboard: false
         });
     }
-
     function hideLoading() {
         $('#myModal').on('shown.bs.modal', function (e) {
             $("#myModal").modal('hide');
-        });
+        })
     }
 
     function getUrlParameter(sParam) {
@@ -108,7 +117,7 @@ var vm = function () {
                 return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
             }
         }
-    }
+    };
 
     //--- start ....
     showLoading();
@@ -119,72 +128,7 @@ var vm = function () {
     else {
         self.activate(pg);
     }
-    self.search = function (){
-        console.log("searching")
-        if ($("#searchbar").val() === "") {
-            showLoading();
-            var pg = getUrlParameter('page');
-            console.log(pg);
-            if (pg == undefined)
-                self.activate(1);
-            else {
-                self.activate(pg);
-            }
-        } else {
-            var changeUrl = 'http://192.168.160.58/Paris2024/api/Search/Athletes?q=' + $("#searchbar").val();
-            self.Athleteslist = [];
-            ajaxHelper(changeUrl, 'GET').done(function(data) {
-                console.log(data.length)
-                if (data.length == 0) {
-                    return alert('No results found')
-                }
-                self.totalPages(1)
-                console.log(data);
-                showLoading();
-                self.records(data);
-                self.totalRecords(data.length);
-                hideLoading();
-                for (var i in data) {
-                    self.Athleteslist.push(data[i]);
-                }
-            });
-        };
-    };
-
-            self.onEnter = function (d, e) {
-                e.keyCode === 13&&self.search()
-                    self.search();
-            };
-    $.ui.autocomplete.filter = function (array, term) {
-        var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex(term), "i");
-        return $.grep(array, function (value) {
-            return matcher.test(value.label || value.value || value);
-        });
-    };
-
-    $("#searchbar").autocomplete({
-        source: function( request, response ) {
-            $.ajax({
-                url: "http://192.168.160.58/Paris2024/API/Players/Search?q=" + request.term,
-                dataType: "json",
-                success: function( data ) {
-                    var playerNames = data.map(function(record) {
-                        return record.Name;
-                    });
-                    var filteredNames = $.ui.autocomplete.filter(playerNames, request.term);
-                    response( filteredNames );
-                }
-            });
-        },
-        minLength: 1,
-        select: function( event, ui ) {
-            log( "Selected: " + ui.item.value + " aka " + ui.item.id );
-        },
-        messages: {
-            noResults: '',
-            results: function() {}
-        }
-    });
+    console.log("VM initialized!");
 };
 
 $(document).ready(function () {

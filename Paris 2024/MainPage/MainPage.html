@@ -121,11 +121,11 @@
             </thead>
             <tbody data-bind="foreach: records">
                 <tr>
-                    <td data-bind="text: Country"></td>
-                    <td data-bind="text: GoldMedals"></td>
-                    <td data-bind="text: SilverMedals"></td>
-                    <td data-bind="text: BronzeMedals"></td>
-                    <td data-bind="text: Medals"></td>
+                    <td data-bind="text: CountryName"></td>
+                    <td data-bind="text: GoldMedal"></td>
+                    <td data-bind="text: SilverMedal"></td>
+                    <td data-bind="text: BronzeMedal"></td>
+                    <td data-bind="text: Total"></td>
                 </tr>
             </tbody>
         </table>
@@ -138,6 +138,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script src="assets/js/bs-init.js"></script>
     <script src="assets/js/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/knockout@3.5.1/build/output/knockout-latest.js"></script>
+    <script src="medalhas_home.js"></script>
     <script>
         AOS.init();
     </script>

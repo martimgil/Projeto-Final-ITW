@@ -2,8 +2,8 @@ var vm = function () {
     console.log('ViewModel initiated...');
     //--- Variáveis locais
     var self = this;
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/api/CountryMedals?Countries=5');
-    self.displayName = 'Medalheiro - Top 5';
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/api/CountryMedals?Countries=200&Order=4');
+    self.displayName = 'Medalheiro';
     self.records = ko.observableArray([]);
     self.error = ko.observable('');
     self.CountryCode = ko.observable('');
