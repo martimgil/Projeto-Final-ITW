@@ -42,7 +42,7 @@ var vm = function () {
                 self.coacheslist.push(data[i]);
             }
         });
-        };
+        }
     };
     self.favoriteCoach = function (id, event){
         if(JSON.parse(window.localStorage,getItem('favCoaches'))==null){
