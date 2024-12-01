@@ -35,7 +35,7 @@ var vm = function () {
             self.totalPages(1)
             console.log(data);
             showLoading();
-            self.records(data);
+            self.coaches(data);
             self.totalRecords(data.length);
             hideLoading();
             for(var i in data){
