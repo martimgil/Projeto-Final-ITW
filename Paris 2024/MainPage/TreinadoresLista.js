@@ -27,47 +27,37 @@ var vm = function () {
         } else {
             var chandeUrl = 'http://192.168.160.58/Paris2024/API/Coaches/Search?q=' + $("#searchbar").val();
             self.coacheslist = [];
-        ajaxHelper(chandeUrl, 'GET').done(function(data){
-            console.log(data);
-            if (data.length ==0){
-                return alert(("Não foram encontrados resultados"))
-            }
-            self.totalPages(1)
-            console.log(data);
-            showLoading();
-            self.coaches(data);
-            self.totalRecords(data.length);
-            hideLoading();
-            for(var i in data){
-                self.coacheslist.push(data[i]);
-            }
-        });
-        }
-    };
-    self.favoriteCoach = function (id, event){
-        if(JSON.parse(window.localStorage,getItem('favCoaches'))==null){
-            console.log("Não existem treinadores favoritos");
-            window.localStorage.setItem('favCoaches', '[]');
-            var a = JSON.parse((window.localStorage.getItem('favCoaches')));
-            b = a.concat[id];
-            window.localStorage.setItem('favCoaches', JSON.stringify(b));}
-            else{
-                var c = JSON.parse(window.localStorage.getItem('favCoaches'));
-                for(var i=0; i < c.length; i++){
-                    if (id == c[i]){
-                        return false
-                    }
+            ajaxHelper(chandeUrl, 'GET').done(function(data){
+                console.log(data);
+                if (data.length ==0){
+                    return alert(("Não foram encontrados resultados"))
                 }
-                var a = JSON.parse((window.localStorage.getItem('favCoaches')));
-                b = a.concat[id];
-                window.localStorage.setItem('favCoaches', JSON.stringify(b));
-                console.log('O treinador foi adicionado aos favoritos! ');
-            }
-            console.log(JSON.parse(window.localStorage.getItem('favCoaches')));
+                self.totalPages(1)
+                console.log(data);
+                showLoading();
+                self.coaches(data);
+                self.totalRecords(data.length);
+                hideLoading();
+                for(var i in data){
+                    self.coacheslist.push(data[i]);
+                }
+            });
+        };
+    };
+    self.favoriteCoach = function (id, event) {
+        let favCoaches = JSON.parse(window.localStorage.getItem('favCoaches')) || [];
+        if (!favCoaches.includes(id)) {
+            favCoaches.push(id);
+            window.localStorage.setItem('favCoaches', JSON.stringify(favCoaches));
+            console.log('O treinador foi adicionado aos favoritos!');
+        } else {
+            console.log('O treinador já está na lista de favoritos.');
         }
-        self.onEnter = function (d, e){
-            e.keyCode === 13 && self.search();
-            return true;
+        console.log(JSON.parse(window.localStorage.getItem('favCoaches')));
+    };
+    self.onEnter = function (d, e){
+        e.keyCode === 13 && self.search();
+        return true;
     };
     self.previousPage = ko.computed(function () {
         return self.currentPage() * 1 - 1;
@@ -119,6 +109,19 @@ var vm = function () {
             console.log("totalPages=", self.totalPages());
             self.totalRecords(data.TotalCoaches);
             console.log("totalRecords=", self.totalRecords());
+
+            self.coaches().forEach(function (coach) {
+                self.getCoachDetails(coach.Id).done(function (details) {
+                    Object.assign(coach, details);
+                });
+            });
+        });
+    };
+    self.getCoachDetails = function (id) {
+        var detailUri = self.baseUri() + '/' + id;
+        return ajaxHelper(detailUri, 'GET').done(function (data) {
+            console.log(data);
+            return data;
         });
     };
 
@@ -197,23 +200,21 @@ $(document).ready(function () {
             $.ajax({
                 type: 'GET',
                 url: 'http://192.168.160.58/Paris2024/API/Coaches/Search?q=' + $("#searchbar").val(),
-
-            sucess: function (data){
-                response($.map(data, function(item){
-                    return item.Name;
-                }));
-            },
+                success: function (data){
+                    response($.map(data, function(item){
+                        return item.Name;
+                    }));
+                },
                 error: function(result){
                     alert(result.statusText);
                 },
-
             });
         },
         select: function(e, ui){
             $.ajax({
                 type: 'GET',
                 url: 'http://192.168.160.58/Paris2024/API/Coaches/Search?q=' + ui.item.label,
-                sucess: function(data){
+                success: function(data){
                     window.location = 'TreinadorDetalhe.html?id=' + data[0].Id;
                 }
             })
@@ -224,4 +225,3 @@ $(document).ready(function () {
         }
     })
 });
-

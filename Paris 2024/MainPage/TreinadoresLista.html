@@ -43,7 +43,7 @@
   <div style="position: relative;">
     <input type="text" placeholder="Pesquise por um treinador" id="searchbar" data-bind="event: {keypress: onEnter}">
     <button style="margin-left: 1px;" class="fa fa-search btn btn-outline-danger" id="CoachesSearchBar" type="submit" data-bind="click: search"></button>
-    <a class="btn btn-danger" style="float: right;" href="" role="button">Visualiza aqui os teus favoritos! </a>
+    <a class="btn btn-danger" style="float: right;" href="TreinadoresFavoritos.html" role="button">Visualiza aqui os teus favoritos</a>
   </div>
 <!-- ko if: coaches().length > 0 -->
 <div class="row small" data-aos="fade-up">
@@ -79,7 +79,10 @@
     <th scope="col" data-aos="fade-up">ID</th>
     <th scope="col" data-aos="fade-up">Nome</th>
     <th scope="col" data-aos="fade-up">Sexo</th>
+    <th scope="col" data-aos="fade-up">Data de Nascimento</th>
     <th scope="col" data-aos="fade-up">Função</th>
+    <th scope="col" data-aos="fade-up">País</th>
+    <th scope="col" data-aos="fade-up">Foto</th>
     <th scope="col" class="text-right" data-aos="fade-up"></th>
   </tr>
   </thead>
@@ -87,10 +90,14 @@
   <tr data-aos="fade-up">
     <td class="align-middle" data-bind="text: Id" data-aos="fade-up"></td>
     <td class="align-middle" data-bind="text: Name" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text: Sex" data-aos="fade-up"></td>
     <td class="align-middle" data-bind="text: Function" data-aos="fade-up"></td>
+
+
     <td class="text-end" data-aos="fade-up">
       <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href: './TreinadorDetalhe.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
+      <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteCoach(Id, event) }">
+        <i class="fa fa-heart-o" title="Adicionar aos favoritos"></i>
+      </button>
     </td>
   </tr>
   </tbody>

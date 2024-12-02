@@ -19,28 +19,28 @@ var vm = function () {
     self.URL = ko.observable('');
     self.Sports = ko.observableArray([]);
 
-self.activate = function (id) {
-    console.log('CALL: getAthlete...');
-    var composedUri = self.baseUri() + id;
-    ajaxHelper(composedUri, 'GET').done(function (data) {
-        console.log(data);
-        self.Photo(data.Photo);
-        self.Id(data.Id);
-        self.Name(data.Name);
-        self.Sex(data.Sex);
-        self.BirthDate(new Date(data.BirthDate).toLocaleDateString());
-        self.Function(data.Function);
-        self.Country_code(data.Country_code);
-        self.Country(data.Country);
-        self.URL(data.URL);
-        self.Sports(data.Sports);
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        console.log("AJAX Call [" + composedUri + "] Fail...");
-        self.error(errorThrown);
-    }).always(function () {
-        hideLoading(); // Ensure hideLoading is called after the AJAX call completes
-    });
-};
+    self.activate = function (id) {
+        console.log('CALL: getAthlete...');
+        var composedUri = self.baseUri() + id;
+        ajaxHelper(composedUri, 'GET').done(function (data) {
+            console.log(data);
+            self.Photo(data.Photo);
+            self.Id(data.Id);
+            self.Name(data.Name);
+            self.Sex(data.Sex);
+            self.BirthDate(new Date(data.BirthDate).toLocaleDateString());
+            self.Function(data.Function);
+            self.Country_code(data.Country_code);
+            self.Country(data.Country);
+            self.URL(data.URL);
+            self.Sports(data.Sports);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.log("AJAX Call [" + composedUri + "] Fail...");
+            self.error(errorThrown);
+        }).always(function () {
+            hideLoading(); // Ensure hideLoading is called after the AJAX call completes
+        });
+    };
 
     function ajaxHelper(uri, method, data) {
         self.error(''); // Clear error message
