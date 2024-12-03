@@ -36,21 +36,14 @@
   </div>
 </nav>
 <div class="container" data-aos="fade-up">
-  <h6 class="title" data-aos="fade-up">Detalhes do Atleta</h6>
+  <h6 class="title" data-aos="fade-up">Detalhes do Árbitro</h6>
   <hr data-aos="fade-up">
   <div class="row">
     <div class="col-md-8" data-aos="fade-up">
-      <!-- ko if: NameShort -->
+      <!-- ko if: Name -->
       <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">Nome reduzido</div>
-        <div class="col-8" data-bind="text: NameShort" data-aos="fade-up"></div>
-      </div>
-      <!-- /ko -->
-
-      <!-- ko if: NameTV -->
-      <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">Nome nas transmissões televisivas</div>
-        <div class="col-8" data-bind="text: NameTV" data-aos="fade-up"></div>
+        <div class="col-4" data-aos="fade-up">Nome</div>
+        <div class="col-8" data-bind="text: Name" data-aos="fade-up"></div>
       </div>
       <!-- /ko -->
 
@@ -68,107 +61,45 @@
       </div>
       <!-- /ko -->
 
-      <!-- ko if: BirthPlace -->
+      <!-- ko if: Category -->
       <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">Local de nascimento</div>
-        <div class="col-8" data-bind="text: BirthPlace" data-aos="fade-up"></div>
+        <div class="col-4" data-aos="fade-up">Categoria</div>
+        <div class="col-8" data-bind="text: Category" data-aos="fade-up"></div>
       </div>
       <!-- /ko -->
 
-      <!-- ko if: BirthCountry -->
+      <!-- ko if: Function -->
       <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">País de nascimento</div>
-        <div class="col-8" data-bind="text: BirthCountry" data-aos="fade-up"></div>
+        <div class="col-4" data-aos="fade-up">Funções</div>
+        <div class="col-8" data-bind="text: Function" data-aos="fade-up"></div>
       </div>
       <!-- /ko -->
 
-      <!-- ko if: Nickname -->
+      <!-- ko if: OrganisationCode -->
       <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">Alcunha</div>
-        <div class="col-8" data-bind="text: Nickname" data-aos="fade-up"></div>
+        <div class="col-4" data-aos="fade-up">Código da organização</div>
+        <div class="col-8" data-bind="text: OrganisationCode" data-aos="fade-up"></div>
       </div>
       <!-- /ko -->
 
-      <!-- ko if: Residence_country -->
+      <!-- ko if: Organisation -->
       <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">País de residência</div>
-        <div class="col-8" data-bind="text: Residence_country" data-aos="fade-up"></div>
+        <div class="col-4" data-aos="fade-up">Organização</div>
+        <div class="col-8" data-bind="text: Organisation" data-aos="fade-up"></div>
       </div>
       <!-- /ko -->
 
-      <!-- ko if: Residence_place -->
+      <!-- ko if: OrganisationLong -->
       <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">Local de residência</div>
-        <div class="col-8" data-bind="text: Residence_place" data-aos="fade-up"></div>
+        <div class="col-4" data-aos="fade-up">Nome completo da organização</div>
+        <div class="col-8" data-bind="text: OrganisationLong" data-aos="fade-up"></div>
       </div>
       <!-- /ko -->
 
-      <!-- ko if: Occupation -->
+      <!-- ko if: URL -->
       <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">Ocupação</div>
-        <div class="col-8" data-bind="text: Occupation" data-aos="fade-up"></div>
-      </div>
-      <!-- /ko -->
-
-      <!-- ko if: Lang -->
-      <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">Língua</div>
-        <div class="col-8" data-bind="text: Lang" data-aos="fade-up"></div>
-      </div>
-      <!-- /ko -->
-
-      <!-- ko if: Nationality_code -->
-      <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">Nacionalidade</div>
-        <div class="col-8" data-bind="text: Nationality_code" data-aos="fade-up"></div>
-      </div>
-      <!-- /ko -->
-
-      <!-- ko if: RepresentsCountry -->
-      <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">País que representa</div>
-        <div class="col-8" data-bind="text: RepresentsCountry" data-aos="fade-up"></div>
-      </div>
-      <!-- /ko -->
-
-      <!-- ko if: Height -->
-      <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">Altura</div>
-        <div class="col-8" data-bind="text: Height" data-aos="fade-up"></div>
-      </div>
-      <!-- /ko -->
-
-      <!-- ko if: Weight -->
-      <div class="row border-bottom" data-aos="fade-up">
-        <div class="col-4" data-aos="fade-up">Peso</div>
-        <div class="col-8" data-bind="text: Weight" data-aos="fade-up"></div>
-      </div>
-      <!-- /ko -->
-      <!-- ko if: Medals -->
-      <div class="row border-bottom" data-aos="fade-up">
-        <p class="title" style="font-size: 2rem">MEDALHAS</p>
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <td>Posição</td>
-              <td>Modalidade</td>
-              <td>Competição</td>
-              <td>Equipa</td>
-            </tr>
-          </thead>
-          <tbody data-bind="foreach: Medals">
-            <tr>
-              <td data-bind="text: Medal_Type">
-                <p class="d-none gold-medal" id="gold">O</p>
-                <p class="d-none silver-medal" id="silver">P</p>
-                <p class="d-none bronze-medal" id="bronze">S</p>
-              </td>
-              <td data-bind="text: Sport_name"></td>
-              <td data-bind="text: Competition_name"></td>
-                <td data-bind="text: Team_name"></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="col-4" data-aos="fade-up">Url</div>
+        <div class="col-8" data-bind="text: URL" data-aos="fade-up"></div>
       </div>
       <!-- /ko -->
       <!-- ko if: Sports -->
@@ -179,6 +110,13 @@
             <tr>
               <td>Id</td>
               <td>Nome</td>
+              <td>Url</td>
+              <td>Atletas</td>
+              <td>Treinadores</td>
+              <td>Competições</td>
+              <td>Equipas</td>
+              <td>Árbitros</td>
+              <td>Arenas</td>
             </tr>
 
           </thead>
@@ -186,30 +124,19 @@
             <tr>
               <td data-bind="text: Id"></td>
               <td data-bind="text: Name"></td>
+              <td data-bind="text: URL"></td>
+              <td data-bind="text: Athletes"></td>
+              <td data-bind="text: Coaches"></td>
+              <td data-bind="text: Competitions"></td>
+              <td data-bind="text: Teams"></td>
+              <td data-bind="text: Technical_officials"></td>
+              <td data-bind="text: Venues"></td>
             </tr>
         </table>
       </div>
       <!-- /ko -->
 
-      <!-- ko if: Competitions -->
-      <div class="row border-bottom" data-aos="fade-up">
-        <p class="title" style="font-size: 2rem">COMPETIÇÕES</p>
-        <table class="table table-striped">
-          <thead>
-          <tr>
-            <td>ID</td>
-            <td>Nome</td>
-            <td>Tag</td>
-          </tr>
-          </thead>
-          <tbody data-bind="foreach: Competitions">
-          <tr>
-            <td data-bind="text: SportId"></td>
-            <td data-bind="text: Name"></td>
-            <td data-bind="text: Tag"></td>
-        </table>
-      </div>
-      <!-- /ko -->
+
     </div>
     <div class="col-md-4" data-aos="fade-up">
       <!-- ko if: Image -->
@@ -263,6 +190,6 @@
 <script>
   AOS.init();
 </script>
-<script src="Atletas.js"></script>
+<script src="ArbitrosDetalhe.js"></script>
 </body>
 </html>
