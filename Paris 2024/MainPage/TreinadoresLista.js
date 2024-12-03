@@ -13,6 +13,7 @@ var vm = function () {
     self.totalRecords = ko.observable(0);
     self.hasPrevious = ko.observable(false);
     self.hasNext = ko.observable(false);
+    self.coachDetails = ko.observableArray([]);
     self.search = function () {
         console.log('searching');
         if ($("#searchbar").val() === ""){
@@ -110,18 +111,7 @@ var vm = function () {
             self.totalRecords(data.TotalCoaches);
             console.log("totalRecords=", self.totalRecords());
 
-            self.coaches().forEach(function (coach) {
-                self.getCoachDetails(coach.Id).done(function (details) {
-                    Object.assign(coach, details);
-                });
-            });
-        });
-    };
-    self.getCoachDetails = function (id) {
-        var detailUri = self.baseUri() + '/' + id;
-        return ajaxHelper(detailUri, 'GET').done(function (data) {
-            console.log(data);
-            return data;
+
         });
     };
 

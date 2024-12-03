@@ -60,3 +60,9 @@
     font-size: 1rem;
     color: White !important;
 }
+.ui-autocomplete {
+    background-color: white; /* Define a cor de fundo sólida */
+    border: 1px solid #ccc; /* Adiciona uma borda para melhor visibilidade */
+    z-index: 1000; /* Garante que a lista apareça acima de outros elementos */
+    width:50%; /* Define a largura da lista */
+}

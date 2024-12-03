@@ -36,37 +36,46 @@
 </nav>
 <div class="p-5 text-center" style="margin-top: 80px;">
     <h6 class="mb-3 title">Atletas Favoritos</h6>
-    <p class="mb-3">Aqui estão os Atletas que adicionaste aos favoritos.</p>
+    <p class="mb-3">Aqui estão os atletas que adicionaste aos favoritos.</p>
     <a class="btn btn-danger" href="Atletas.html" role="button">Voltar aos Atletas</a>
     <button class="btn btn-warning" id="clearFavourites" href="AtletasLista.html" role="button">Limpar favoritos</button>
     <hr>
 </div>
-<div class="container d-flex justify-content-center" style="margin-bottom: 100px">
+<div class="container d-flex justify-content-center" style="margin-bottom: 100px" data-aos="fade-up">
     <!-- ko if: records -->
-    <table class="table table-dark table-striped">
+    <table class="table table-striped">
         <thead>
-        <td class="fw-bolder">Nome</td>
-        <td class="fw-bolder">Nacionalidade</td>
-        <td></td>
-        <td class="text-right fw-bolder"></td>
+        <tr>
+            <td class="fw-bolder">Foto</td>
+            <td class="fw-bolder">Nome</td>
+            <td class="fw-bolder">Função</td>
+            <td class="fw-bolder">Pais</td>
+            <td class="fw-bolder">Data de nascimento</td>
+            <td class="text-right fw-bolder"></td>
+        </tr>
         </thead>
         <tbody data-bind="foreach: records">
-        <td data-bind="text: Name"></td>
-        <td data-bind="text: Country"></td>
-
-        <td class="text-end">
-            <a class="btn btn-default btn-light btn-sm" data-bind="attr: { href:'./Atleta.html?id=' + Id }"><i class="fa fa-eye" title="Selecione para ver detalhes"></i></a>
-            <button class="btn btn-default btn-sm fav-btn bg-light" data-bind="click: function (data, event) {$root.removeFavourite(AthleteId)}"><i class="fa fa-trash-alt" title="Selecione para adicionar aos favoritos"></i></button>
-        </td>
+        <tr>
+            <td><img data-bind="attr: { src: Photo, alt: Name }" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right"  class="img-fluid" />
+            </td>
+            <td data-bind="text: Name"></td>
+            <td data-bind="text: Function"></td>
+            <td data-bind="text: Country"></td>
+            <td data-bind="text: BirthDate"></td>
+            <td class="text-end">
+                <a class="btn btn-default btn-light btn-sm" data-bind="attr: { href:'./Atleta.html?id=' + Id }"><i class="fa fa-eye" title="Selecione para ver detalhes"></i></a>
+                <button class="btn btn-default btn-sm fav-btn bg-light" data-bind="click: function (data, event) {$root.removeFavourite(Id)}"><i class="fas fa-trash-alt" title="Selecione para adicionar aos favoritos"></i></button>
+            </td>
+        </tr>
         </tbody>
     </table>
     <!-- /ko -->
     <!-- ko ifnot: records-->
     <div class="row d-block">
-        <p><h1>Não foram encontrados favoritos! <i style="color: red"class="fas fa-heart"></i></h1><h6>Volta e adiciona alguns!</h6></p>
+        <p><h1>Não foram encontrados favoritos! <i style="color: red" class="fas fa-heart"></i></h1><h6>Volta e adiciona alguns!</h6></p>
     </div>
     <!-- /ko -->
-
+</div>
 
 
 

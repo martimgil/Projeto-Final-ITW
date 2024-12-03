@@ -34,16 +34,18 @@
     </div>
   </div>
 </nav>
+
+
 <div class="container" data-aos="fade-up">
   <div class="border-bottom py-2 mb-2" data-aos="fade-up">
     <h2 data-bind="text:displayName" class="title" data-aos="fade-up"></h2>
-
   </div>
-  <div class="input-group" style="float:right; width: 25%">
-    <input type="text" class=" form-control form-control-sm" id="searchbar" placeholder="Pesquise por um atleta...">    <datalist id="athletes">
-    </datalist>
-    <button  type="submit" class="btn btn-default btn-sm" data-bind="click: search" title="Pesquisar"><i class="fas fa-search"></i></button>
-    <button type="button" onclick="window.location.href = 'atletas.html'" class="btn btn-default btn-sm" data-aos="fade-up"><i class="fas fa-times"></i></button>
+  <br>
+  <br>
+  <div style="position: relative;">
+    <input type="text" placeholder="Pesquise por um treinador" id="searchbar" data-bind="event: {keypress: onEnter}">
+    <button style="margin-left: 1px;" class="fa fa-search btn btn-outline-danger" id="athleteesSearchBar" type="submit" data-bind="click: search"></button>
+    <a class="btn btn-danger" style="float: right;" href="AtletasFavoritos.html" role="button">Visualiza aqui os teus favoritos</a>
   </div>
   <br>
   <br>
@@ -97,8 +99,8 @@
       <td class="align-middle" data-bind="text:Sex" data-aos="fade-up"></td>
       <td class="text-end" data-aos="fade-up">
         <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href:'./atleta.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
-        <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteAthletes(Id, event) }">
-          <i class="fa fa-heart-o" title="Adicionar aos favoritos"></i>
+        <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteAthlete(Id, event) }" style="margin-left: 5px;">
+          <i class="fa fa-heart" title="Adicionar aos favoritos"></i>
         </button>
       </td>
 

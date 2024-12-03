@@ -8,7 +8,7 @@ var vm = function () {
     self.activate = function () {
         console.log('CALL: getFavouriteCoaches...');
         var favCoachesList = JSON.parse(window.localStorage.getItem('favCoaches')) || [];
-
+        console.log("favoritos", favCoachesList);
         if (favCoachesList.length === 0) {
             self.records(null);
             hideLoading();
@@ -21,6 +21,7 @@ var vm = function () {
 
         Promise.all(requests).then(function (responses) {
             self.records(responses);
+            console.log("respostas", responses);
             hideLoading();
         }).catch(function (error) {
             console.log("Failed to fetch coach details", error);
