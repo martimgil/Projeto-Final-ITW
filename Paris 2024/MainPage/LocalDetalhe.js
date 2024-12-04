@@ -1,30 +1,30 @@
-// ViewModel Knockout
+var NameMap = ko.observable('');
+
 var vm = function () {
-    var self = this; // Definir `self` adequadamente
+    var self = this;
     console.log("ViewModel initiated...");
 
     //--- Variáveis locais
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Technical_officials/');
-    self.displayName = 'Detalhes do Árbitro';
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/venues/');
+    self.displayName = 'venues Details';
     self.Photo = ko.observable('');
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
     self.Id = ko.observable('');
     self.Name = ko.observable('');
-    self.Sex = ko.observable('');
-    self.BirthDate = ko.observable('');
-    self.Category = ko.observable('');
-    self.Function = ko.observable('');
-    self.OrganisationCode = ko.observable('');
-    self.Organisation = ko.observable('');
-    self.OrganisationLong = ko.observable('');
     self.URL = ko.observable('');
     self.Sports = ko.observable('');
+    self.DateStart = ko.observable('');
+    self.DateEnd = ko.observable('');
+    self.Tag = ko.observable('');
 
-
+    self.records = ko.observableArray([]);
+    self.map = null;
+    self.route = [];
+    self.bounds = [];
 
     self.activate = function (id) {
-        console.log('CALL: getTechnical_official...');
+        console.log('CALL: getvenues...');
         var composedUri = self.baseUri() + id;
         ajaxHelper(composedUri, 'GET').done(function (data) {
             console.log(data);
@@ -33,16 +33,13 @@ var vm = function () {
             console.log(data.Photo);
             self.Id(data.Id);
             self.Name(data.Name);
-            self.Sex(data.Sex);
-            self.BirthDate(new Date(data.BirthDate).toLocaleDateString());
-            self.Category(data.Category);
-            self.Function(data.Function);
-            self.OrganisationCode(data.OrganisationCode);
-            self.Organisation(data.Organisation);
-            self.OrganisationLong(data.OrganisationLong);
             self.URL(data.URL);
             self.Sports(data.Sports);
-            console.log(("Sports"), data.Sports);
+            self.DateStart(data.DateStart);
+            self.DateEnd(data.DateEnd);
+            self.Tag(data.Tag);
+            NameMap(data.Name);
+            self.loadData();
         });
     };
 
@@ -86,6 +83,57 @@ var vm = function () {
         }
     }
 
+    self.initMap = function () {
+        self.map = L.map('map').setView([48.8566, 2.3522], 12); // Increased zoom level to 12
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(self.map);
+    };
+
+function addMarkerToMap(coords, name) {
+    if (coords) {
+        var marker = L.marker([coords.lat, coords.lng]).addTo(self.map)
+            .bindPopup(name);
+        self.map.setView([coords.lat, coords.lng], 15); // Define o zoom para 15
+    } else {
+        console.log(`Local não encontrado: ${name}`);
+    }
+}
+
+    self.loadData = function () {
+        var name = NameMap();
+        console.log("Nome", name);
+
+        getCoordinates(name, function (coords) {
+            addMarkerToMap(coords, name);
+        });
+    };
+
+    const OPENCAGE_API_KEY = '6320ddc3579b4ae288ed9bcf75570d8b';
+
+function getCoordinates(venueName, callback) {
+    var query = `${venueName}, Paris, FR`;
+    var url = `https://api.opencagedata.com/geocode/v1/json?q=${query}&key=${OPENCAGE_API_KEY}`;
+    $.ajax({
+        url: url,
+        success: function(data) {
+            if (data.results.length > 0) {
+                var coords = data.results[0].geometry;
+                console.log("Coordinates found:", coords);
+                callback(coords);
+            } else {
+                console.log("No coordinates found for:", venueName);
+                callback(null);
+            }
+        },
+        error: function() {
+            console.log("Error fetching coordinates for:", venueName);
+            callback(null);
+        }
+    });
+}
+
     // --- start ....
     showLoading();
     var pg = getUrlParameter('id');
@@ -100,7 +148,9 @@ var vm = function () {
 
 $(document).ready(function () {
     console.log("document.ready!");
-    ko.applyBindings(new vm());
+    var viewModel = new vm();
+    ko.applyBindings(viewModel);
+    viewModel.initMap();
 });
 
 $(document).ajaxComplete(function () {
