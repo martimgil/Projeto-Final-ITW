@@ -3,20 +3,17 @@ var vm = function () {
     console.log('ViewModel initiated...');
     //---Variáveis locais
     var self = this;
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Coaches');
-    self.displayName = 'Lista de Treinadores';
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/NOCS');
+    self.displayName = 'Comités Olímpicos Nacionais';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
-    self.coaches = ko.observableArray([]);
+    self.NOCS = ko.observableArray([]);
     self.currentPage = ko.observable(1);
     self.pagesize = ko.observable(20);
     self.totalRecords = ko.observable(0);
     self.hasPrevious = ko.observable(false);
     self.hasNext = ko.observable(false);
     self.coachDetails = ko.observableArray([]);
-    self.Photo = ko.observable('');
-
-
     self.search = function () {
         console.log('searching');
         if ($("#searchbar").val() === ""){
@@ -29,8 +26,8 @@ var vm = function () {
                 self.activate(pg);
             }
         } else {
-            var chandeUrl = 'http://192.168.160.58/Paris2024/API/Coaches/Search?q=' + $("#searchbar").val();
-            self.coacheslist = [];
+            var chandeUrl = 'http://192.168.160.58/Paris2024/API/NOCS/Search?q=' + $("#searchbar").val();
+            self.NOCSlist = [];
             ajaxHelper(chandeUrl, 'GET').done(function(data){
                 console.log(data);
                 if (data.length ==0){
@@ -39,25 +36,25 @@ var vm = function () {
                 self.totalPages(1)
                 console.log(data);
                 showLoading();
-                self.coaches(data);
+                self.NOCS(data);
                 self.totalRecords(data.length);
                 hideLoading();
                 for(var i in data){
-                    self.coacheslist.push(data[i]);
+                    self.NOCSlist.push(data[i]);
                 }
             });
         };
     };
     self.favoriteCoach = function (id, event) {
-        let favCoaches = JSON.parse(window.localStorage.getItem('favCoaches')) || [];
-        if (!favCoaches.includes(id)) {
-            favCoaches.push(id);
-            window.localStorage.setItem('favCoaches', JSON.stringify(favCoaches));
-            console.log('O treinador foi adicionado aos favoritos!');
+        let favNOCS = JSON.parse(window.localStorage.getItem('favNOCS')) || [];
+        if (!favNOCS.includes(id)) {
+            favNOCS.push(id);
+            window.localStorage.setItem('favNOCS', JSON.stringify(favNOCS));
+            console.log('O Comité Olímpico Nacional foi adicionado aos favoritos!');
         } else {
-            console.log('O treinador já está na lista de favoritos.');
+            console.log('O Comité Olímpico Nacional já está na lista de favoritos.');
         }
-        console.log(JSON.parse(window.localStorage.getItem('favCoaches')));
+        console.log(JSON.parse(window.localStorage.getItem('favNOCS')));
     };
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
@@ -94,13 +91,13 @@ var vm = function () {
 
     //--- Page Events
     self.activate = function (id) {
-        console.log('CALL: getCoaches...');
+        console.log('CALL: getNOCS...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
         ajaxHelper(composedUri, 'GET').done(function (data) {
             console.log(data);
             hideLoading();
-            self.coaches(data.Coaches);
-            console.log("coaches=", self.coaches());
+            self.NOCS(data.NOCs);
+            console.log("NOCS=", self.NOCS());
             self.currentPage(data.CurrentPage);
             console.log("currentPage=", self.currentPage());
             self.hasNext(data.HasNext);
@@ -111,45 +108,14 @@ var vm = function () {
             console.log("pagesize=", self.pagesize());
             self.totalPages(data.TotalPages);
             console.log("totalPages=", self.totalPages());
-            self.totalRecords(data.TotalCoaches);
+            self.totalRecords(data.TotalNOCs || 0); // Ensure totalRecords is a number
             console.log("totalRecords=", self.totalRecords());
-            self.coaches().forEach(function(coach) {
-                console.log("id", coach.Id);
-                getPhotoUrl(coach.Id).then(function(data) {
-                    console.log(("detalhes", data));
-                    coach.Photo = data.Photo;
-                    console.log("photo", coach.Photo);
-                    coach.Country = data.Country;
-                    console.log("Country", coach.Country);
-                    self.Photo = ko.observable(coach.Photo);
-
-
-                });
-            });
-
-
-            Promise.all(photoPromises).then(function(updatedCoaches){
-                self.coaches(updatedCoaches);
-                console.log("Updated coaches with photos", self.coaches());
-
-                console.log("coaches", self.coaches());
-            });
-            console.log("coaches", self.coaches());
-
         });
-
     };
-    function getPhotoUrl(id){
-        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Coaches/' + id;
-        return ajaxHelper(detailsUrl, 'GET').done(function(data){
-            console.log(detailsUrl);
-            return data;
-        });
-    }
 
     //--- Internal functions
     function ajaxHelper(uri, method, data) {
-        self.error('');
+        self.error(''); // Clear error message
         return $.ajax({
             type: method,
             url: uri,
@@ -167,8 +133,6 @@ var vm = function () {
             }
         });
     }
-
-
 
     function sleep(milliseconds) {
         const start = Date.now();
@@ -214,9 +178,6 @@ var vm = function () {
     console.log("VM initialized!");
 };
 
-
-
-
 $(document).ready(function () {
     console.log("ready!");
     ko.applyBindings(new vm());
@@ -226,7 +187,7 @@ $(document).ready(function () {
         source: function (request, response){
             $.ajax({
                 type: 'GET',
-                url: 'http://192.168.160.58/Paris2024/API/Coaches/Search?q=' + $("#searchbar").val(),
+                url: 'http://192.168.160.58/Paris2024/API/NOCS/Search?q=' + $("#searchbar").val(),
                 success: function (data){
                     response($.map(data, function(item){
                         return item.Name;
@@ -240,9 +201,9 @@ $(document).ready(function () {
         select: function(e, ui){
             $.ajax({
                 type: 'GET',
-                url: 'http://192.168.160.58/Paris2024/API/Coaches/Search?q=' + ui.item.label,
+                url: 'http://192.168.160.58/Paris2024/API/NOCS/Search?q=' + ui.item.label,
                 success: function(data){
-                    window.location = 'TreinadorDetalhe.html?id=' + data[0].Id;
+                    window.location = 'Comité Olímpico NacionalDetalhe.html?id=' + data[0].Id;
                 }
             })
         },
@@ -252,4 +213,3 @@ $(document).ready(function () {
         }
     })
 });
-

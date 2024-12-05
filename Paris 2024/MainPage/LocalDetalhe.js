@@ -20,8 +20,7 @@ var vm = function () {
 
     self.records = ko.observableArray([]);
     self.map = null;
-    self.route = [];
-    self.bounds = [];
+
 
     self.activate = function (id) {
         console.log('CALL: getvenues...');
@@ -84,7 +83,7 @@ var vm = function () {
     }
 
     self.initMap = function () {
-        self.map = L.map('map').setView([48.8566, 2.3522], 12); // Increased zoom level to 12
+        self.map = L.map('map').setView([48.8566, 2.3522], 12);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
@@ -95,7 +94,7 @@ function addMarkerToMap(coords, name) {
     if (coords) {
         var marker = L.marker([coords.lat, coords.lng]).addTo(self.map)
             .bindPopup(name);
-        self.map.setView([coords.lat, coords.lng], 15); // Define o zoom para 15
+        self.map.setView([coords.lat, coords.lng], 15);  // Isso serve para o zoom ficar a 15% das coordenadas que vem da API
     } else {
         console.log(`Local não encontrado: ${name}`);
     }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Treinadores - Paris 2024</title>
+  <title>Lista de Comités Olímpicos Nacionais - Paris 2024</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/Features-Centered-Icons-icons.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
@@ -44,18 +44,18 @@
   <br>
   <div style="position: relative;">
     <input type="text" placeholder="Pesquise por um treinador" id="searchbar" data-bind="event: {keypress: onEnter}">
-    <button style="margin-left: 1px;" class="fa fa-search btn btn-outline-danger" id="CoachesSearchBar" type="submit" data-bind="click: search"></button>
+    <button style="margin-left: 1px;" class="fa fa-search btn btn-outline-danger" id="NOCSSearchBar" type="submit" data-bind="click: search"></button>
     <a class="btn btn-danger" style="float: right;" href="TreinadoresFavoritos.html" role="button">Visualiza aqui os teus favoritos</a>
   </div>
   <br>
   <br>
 
 
-<!-- ko if: coaches().length > 0 -->
+<!-- ko if: NOCS().length > 0 -->
 <div class="row small" data-aos="fade-up">
   <p class=" col-4 mr-auto pt-2" data-aos="fade-up">
     <span data-bind="html: 'Page: ' + currentPage() + ' of ' + totalPages()" data-aos="fade-up"></span><br />
-    <span data-bind="html: 'Coaches: '+ fromRecord() + '-' + toRecord() + ' of ' + totalRecords()" data-aos="fade-up"></span>
+    <span data-bind="html: 'NOCS: '+ fromRecord() + '-' + toRecord() + ' of ' + totalRecords()" data-aos="fade-up"></span>
   </p>
   <div class="col-8 my-0 pt-3" data-aos="fade-up">
     <ul class="pagination float-end" data-aos="fade-up">
@@ -83,27 +83,30 @@
   <thead class="table-secondary" data-aos="fade-up">
   <tr data-aos="fade-up">
     <th scope="col" data-aos="fade-up">ID</th>
-    <th scope="col" data-aos="fade-up">Nome</th>
-    <th scope="col" data-aos="fade-up">Função</th>
-    <th scope="col" data-aos="fade-up">Sexo</th>
+    <th scope="col" data-aos="fade-up">País</th>
+    <th scope="col" data-aos="fade-up">N.º Atletas</th>
+    <th scope="col" data-aos="fade-up">N.º Treinadores</th>
+    <th scope="col" data-aos="fade-up">N.º Medalhas</th>
+    <th scope="col" data-aos="fade-up">N.º Equipas</th>
+
 
     <th scope="col" class="text-right" data-aos="fade-up"></th>
   </tr>
   </thead>
-  <tbody data-bind="foreach: coaches" data-aos="fade-up">
+  <tbody data-bind="foreach: NOCS" data-aos="fade-up">
   <tr data-aos="fade-up">
     <td class="align-middle" data-bind="text: Id" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text: Name" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text: Function" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text: Sex" data-aos="fade-up"></td>
-
-
+    <td class="align-middle" data-bind="text: Country" data-aos="fade-up"></td>
+    <td class="align-middle" data-bind="text: Athletes" data-aos="fade-up"></td>
+    <td class="align-middle" data-bind="text: Coaches" data-aos="fade-up"></td>
+    <td class="align-middle" data-bind="text: Medals" data-aos="fade-up"></td>
+    <td class="align-middle" data-bind="text: Teams" data-aos="fade-up"></td>
 
 
 
 
     <td class="text-end" data-aos="fade-up">
-      <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href: './TreinadorDetalhe.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
+      <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href: './NOCDetalhe.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
       <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteCoach(Id, event) }" style="margin-left: 5px;">
         <i class="fa fa-heart" title="Adicionar aos favoritos"></i>
       </button>
@@ -133,7 +136,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/bs-init.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-<script src="TreinadoresLista.js"></script>
+<script src="NOCLista.js"></script>
 <script>
   AOS.init();
 </script>
