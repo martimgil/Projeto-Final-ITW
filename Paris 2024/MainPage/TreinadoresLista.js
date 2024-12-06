@@ -15,7 +15,7 @@ var vm = function () {
     self.hasNext = ko.observable(false);
     self.coachDetails = ko.observableArray([]);
     self.Photo = ko.observable('');
-
+    self.coaches2 = ko.observableArray([]);
 
     self.search = function () {
         console.log('searching');
@@ -41,7 +41,6 @@ var vm = function () {
                 showLoading();
                 self.coaches(data);
                 self.totalRecords(data.length);
-                hideLoading();
                 for(var i in data){
                     self.coacheslist.push(data[i]);
                 }
@@ -96,9 +95,9 @@ var vm = function () {
     self.activate = function (id) {
         console.log('CALL: getCoaches...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
-        ajaxHelper(composedUri, 'GET').done(function (data) {
+        ajaxHelper(composedUri, 'GET').done(async function (data) {
             console.log(data);
-            hideLoading();
+
             self.coaches(data.Coaches);
             console.log("coaches=", self.coaches());
             self.currentPage(data.CurrentPage);
@@ -113,32 +112,16 @@ var vm = function () {
             console.log("totalPages=", self.totalPages());
             self.totalRecords(data.TotalCoaches);
             console.log("totalRecords=", self.totalRecords());
-            self.coaches().forEach(function(coach) {
-                console.log("id", coach.Id);
-                getPhotoUrl(coach.Id).then(function(data) {
-                    console.log(("detalhes", data));
-                    coach.Photo = data.Photo;
-                    console.log("photo", coach.Photo);
-                    coach.Country = data.Country;
-                    console.log("Country", coach.Country);
-                    self.Photo = ko.observable(coach.Photo);
+
+            await fetchAllCoachDetails();
+            self.coaches2(self.coaches());
+            console.log("coaches2", self.coaches2());
 
 
-                });
-            });
-
-
-            Promise.all(photoPromises).then(function(updatedCoaches){
-                self.coaches(updatedCoaches);
-                console.log("Updated coaches with photos", self.coaches());
-
-                console.log("coaches", self.coaches());
-            });
-            console.log("coaches", self.coaches());
 
         });
-
     };
+
     function getPhotoUrl(id){
         var detailsUrl = 'http://192.168.160.58/Paris2024/API/Coaches/' + id;
         return ajaxHelper(detailsUrl, 'GET').done(function(data){
@@ -146,6 +129,32 @@ var vm = function () {
             return data;
         });
     }
+
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function fetchCoachDetails(coach) {
+        console.log("id", coach.Id);
+        const data = await getPhotoUrl(coach.Id);
+        console.log("detalhes", data);
+        coach.Photo = data.Photo || 'identidade/PersonNotFound.png';
+        console.log("photo", coach.Photo);
+        coach.Country = data.Country;
+        console.log("Country", coach.Country);
+        self.Photo = ko.observable(coach.Photo);
+    }
+
+    async function fetchAllCoachDetails() {
+        for (const coach of self.coaches()) { //Percorre cada treinador que vem da 1.ºAPI
+            await fetchCoachDetails(coach); //Chama a outra assincrona
+            await delay(100); // Intervalo de 500ms entre cada solicitação
+        }
+
+        hideLoading();
+
+    }
+
 
     //--- Internal functions
     function ajaxHelper(uri, method, data) {
@@ -158,17 +167,13 @@ var vm = function () {
             data: data ? JSON.stringify(data) : null,
             success: function (data) {
                 console.log("AJAX Call[" + uri + "] Success...");
-                hideLoading();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("AJAX Call[" + uri + "] Fail...");
-                hideLoading();
                 self.error(errorThrown);
             }
         });
     }
-
-
 
     function sleep(milliseconds) {
         const start = Date.now();
@@ -182,9 +187,7 @@ var vm = function () {
         });
     }
     function hideLoading() {
-        $('#myModal').on('shown.bs.modal', function (e) {
-            $("#myModal").modal('hide');
-        })
+        $("#myModal").modal('hide');
     }
 
     function getUrlParameter(sParam) {
@@ -213,9 +216,6 @@ var vm = function () {
     }
     console.log("VM initialized!");
 };
-
-
-
 
 $(document).ready(function () {
     console.log("ready!");
@@ -252,4 +252,3 @@ $(document).ready(function () {
         }
     })
 });
-
