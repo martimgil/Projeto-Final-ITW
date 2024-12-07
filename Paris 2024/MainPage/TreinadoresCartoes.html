@@ -60,20 +60,20 @@
   <div class="col-8 my-0 pt-3" data-aos="fade-up">
     <ul class="pagination float-end" data-aos="fade-up">
       <!-- ko if: currentPage() > 5 && totalPages() > 10 -->
-      <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="First Page" data-bind="attr: { href: './TreinadoresLista.html?page=' + '1',  rel:'prev'}">⇤</a></li>
-      <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="Previous Page" data-bind="attr: { href: './TreinadoresLista.html?page=' + previousPage(),  rel:'prev'}">←</a></li>
+      <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="First Page" data-bind="attr: { href: './TreinadoresCartoes.html?page=' + '1',  rel:'prev'}">⇤</a></li>
+      <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="Previous Page" data-bind="attr: { href: './TreinadoresCartoes.html?page=' + previousPage(),  rel:'prev'}">←</a></li>
       <!-- /ko -->
       <!-- ko foreach: pageArray()-->
       <!-- ko if:$data == $parent.currentPage() -->
       <li class="active page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { title:'Current Page ' + $data }, text: $data" data-aos="fade-up"></a></li>
       <!-- /ko -->
       <!-- ko if:$data != $parent.currentPage() -->
-      <li class="page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { href: './TreinadoresLista.html?page=' + $data + '&pagesize=' + $parent.pagesize(), title:'Goto Page ' + $data }, text:$data" data-aos="fade-up"></a></li>
+      <li class="page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { href: './TreinadoresCartoes.html?page=' + $data + '&pagesize=' + $parent.pagesize(), title:'Goto Page ' + $data }, text:$data" data-aos="fade-up"></a></li>
       <!-- /ko -->
       <!-- /ko -->
       <!-- ko if: currentPage() < totalPages() - 4 && totalPages() > 9 -->
-      <li class="page-item" data-aos="fade-up"><a class="page-link" title="Next Page" data-bind="attr: { href: './TreinadoresLista.html?page=' + nextPage(), rel:'next' }" data-aos="fade-up">→</a></li>
-      <li class="page-item" data-aos="fade-up"><a class="page-link" title="Last Page" data-bind="attr: { href: './TreinadoresLista.html?page=' + totalPages() }" data-aos="fade-up">⇥</a></li>
+      <li class="page-item" data-aos="fade-up"><a class="page-link" title="Next Page" data-bind="attr: { href: './TreinadoresCartoes.html?page=' + nextPage(), rel:'next' }" data-aos="fade-up">→</a></li>
+      <li class="page-item" data-aos="fade-up"><a class="page-link" title="Last Page" data-bind="attr: { href: './TreinadoresCartoes.html?page=' + totalPages() }" data-aos="fade-up">⇥</a></li>
       <!-- /ko -->
     </ul>
   </div>
@@ -96,7 +96,6 @@
           <p data-aos="fade-up"><i class="fa fa-flag"></i> <span data-bind="text: Country"></span></p>
           <p data-aos="fade-up"><i class="fa fa-briefcase"></i> <span data-bind="text: Function"></span></p>
           <p data-aos="fade-up"><i class="fa fa-venus-mars"></i> <span data-bind="text: Sex"></span></p>
-          <p data-aos="fade-up"><i class="fa fa-futbol"></i> Desportos</p>
           <div data-bind="foreach: Sports">
             <p data-aos="fade-up"><i class="fa fa-trophy"></i> <span data-bind="text: Name"></span></p>
           </div>
