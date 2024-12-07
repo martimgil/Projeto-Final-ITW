@@ -3,64 +3,65 @@ var vm = function () {
     console.log('ViewModel initiated...');
     //---Variáveis locais
     var self = this;
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/athletes');
-    self.displayName = 'Lista de Atletas';
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Athletes');
+    self.displayName = 'Atletas';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
-    self.athletes = ko.observableArray([]);
+    self.Athletes = ko.observableArray([]);
     self.currentPage = ko.observable(1);
     self.pagesize = ko.observable(20);
-    self.totalRecords = ko.observable(50);
+    self.totalRecords = ko.observable(0);
     self.hasPrevious = ko.observable(false);
     self.hasNext = ko.observable(false);
-    self.search = function() {
-        console.log('searching')
-        if ($("#searchbar").val() === "") {
+    self.AthleteDetails = ko.observableArray([]);
+    self.Photo = ko.observable('');
+    self.Athletes2 = ko.observableArray([]);
+
+    self.search = function () {
+        console.log('searching');
+        if ($("#searchbar").val() === ""){
             showLoading();
             var pg = getUrlParameter('page');
             console.log(pg);
-            if (pg == undefined)
+            if(pg == undefined)
                 self.activate(1);
-            else {
+            else{
                 self.activate(pg);
             }
         } else {
-            var changeUrl = 'http://192.168.160.58/Paris2024/api/Search/Athletes?q=' + $("#searchbar").val();
+            var chandeUrl = 'http://192.168.160.58/Paris2024/API/Athletes/Search?q=' + $("#searchbar").val();
             self.Athleteslist = [];
-            ajaxHelper(changeUrl, 'GET').done(function (data) {
-                console.log(data.length)
-                if (data.length == 0) {
-                    return alert('Não foram encontrados resultados')
+            ajaxHelper(chandeUrl, 'GET').done(function(data){
+                console.log(data);
+                if (data.length ==0){
+                    return alert(("Não foram encontrados resultados"))
                 }
                 self.totalPages(1)
                 console.log(data);
                 showLoading();
-                self.athletes(data);
+                self.Athletes(data);
                 self.totalRecords(data.length);
-                hideLoading();
-                for (var i in data) {
+                for(var i in data){
                     self.Athleteslist.push(data[i]);
                 }
             });
-        }
-        ;
+        };
     };
-    self.favoriteAthlete = function(id, event) {
+    self.favoriteAthlete = function (id, event) {
         let favAthletes = JSON.parse(window.localStorage.getItem('favAthletes')) || [];
         if (!favAthletes.includes(id)) {
             favAthletes.push(id);
             window.localStorage.setItem('favAthletes', JSON.stringify(favAthletes));
-            console.log('O atleta foi adicionado aos favoritos!');
+            console.log('O treinador foi adicionado aos favoritos!');
         } else {
-            console.log('O atleta já está na lista de favoritos.');
+            console.log('O treinador já está na lista de favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favAthletes')));
     };
-    self.onEnter = function(d, e) {
-        e.keyCode === 13 && self.search()
+    self.onEnter = function (d, e){
+        e.keyCode === 13 && self.search();
         return true;
     };
-
     self.previousPage = ko.computed(function () {
         return self.currentPage() * 1 - 1;
     }, self);
@@ -89,49 +90,89 @@ var vm = function () {
             list.push(i + step);
         return list;
     };
+
     //--- Page Events
     self.activate = function (id) {
         console.log('CALL: getAthletes...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
-        console.log("composedUri=", composedUri);
-        ajaxHelper(composedUri, 'GET').done(function (data) {
-            console.log("Data", data);
-            hideLoading();
-            self.athletes(data.Athletes);
-            self.currentPage(data.CurrentPage);
-            self.hasNext(data.HasNext);
-            self.hasPrevious(data.HasPrevious);
-            self.pagesize(data.PageSize);
-            self.totalPages(data.TotalPages);
-            self.totalRecords(data.TotalAthletes);
+        ajaxHelper(composedUri, 'GET').done(async function (data) {
+            console.log(data);
 
-            self.athletes().forEach(function (athlete) {
-                self.getAthleteDetails(athlete.Id).done(function (details) {
-                    Object.assign(athlete, details);
-                });
-            });
+            self.Athletes(data.Athletes);
+            console.log("Athletes=", self.Athletes());
+            self.currentPage(data.CurrentPage);
+            console.log("currentPage=", self.currentPage());
+            self.hasNext(data.HasNext);
+            console.log("hasNext=", self.hasNext());
+            self.hasPrevious(data.HasPrevious);
+            console.log("hasPrevious=", self.hasPrevious());
+            self.pagesize(data.PageSize);
+            console.log("pagesize=", self.pagesize());
+            self.totalPages(data.TotalPages);
+            console.log("totalPages=", self.totalPages());
+            self.totalRecords(data.TotalOfficials);
+            console.log("totalRecords=", self.totalRecords());
+
+            await fetchAllAthleteDetails();
+            self.Athletes2(self.Athletes());
+            console.log("Athletes2", self.Athletes2());
         });
     };
-    self.getAtheleteDetails = function (id) {
-        var detailUri = self.baseUri() + "/" + id;
-        return ajaxHelper(detailUri, 'GET').done(function (data) {
-            console.log("Athlete details:", data);
+
+    function getPhotoUrl(id){
+        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Athletes/' + id;
+        return ajaxHelper(detailsUrl, 'GET').done(function(data){
+            console.log(detailsUrl);
             return data;
         });
-    };
+    }
+
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function fetchAthleteDetails(Athlete) {
+        console.log("id", Athlete.Id);
+        const data = await getPhotoUrl(Athlete.Id);
+        console.log("detalhes", data);
+        Athlete.Photo = data.Photo || 'identidade/PersonNotFound.png';
+        console.log("photo", Athlete.Photo);
+        Athlete.Country = data.Country;
+        console.log("Country", Athlete.Country);
+        self.Photo = ko.observable(Athlete.Photo);
+        Athlete.Sports = data.Sports;
+        console.log("Sport", Athlete.Sport);
+        Athlete.Competitions = data.Competitions;
+        console.log("Competitions", Athlete.Competitions);
+        Athlete.BirthPlace = data.BirthPlace;
+        console.log("BirthPlace", Athlete.BirthPlace);
+    }
+
+    async function fetchAllAthleteDetails() {
+        for (const Athlete of self.Athletes()) { //Percorre cada treinador que vem da 1.ºAPI
+            await fetchAthleteDetails(Athlete); //Chama a outra assincrona
+            await delay(100); // Intervalo de 500ms entre cada solicitação
+        }
+
+        hideLoading();
+
+    }
+
 
     //--- Internal functions
     function ajaxHelper(uri, method, data) {
-        self.error(''); // Clear error message
+        self.error('');
         return $.ajax({
             type: method,
             url: uri,
             dataType: 'json',
             contentType: 'application/json',
             data: data ? JSON.stringify(data) : null,
+            success: function (data) {
+                console.log("AJAX Call[" + uri + "] Success...");
+            },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("AJAX Call[" + uri + "] Fail...");
-                hideLoading();
                 self.error(errorThrown);
             }
         });
@@ -139,7 +180,7 @@ var vm = function () {
 
     function sleep(milliseconds) {
         const start = Date.now();
-        while (Date.now() - start < milliseconds) ;
+        while (Date.now() - start < milliseconds);
     }
 
     function showLoading() {
@@ -148,11 +189,8 @@ var vm = function () {
             keyboard: false
         });
     }
-
     function hideLoading() {
-        $('#myModal').on('shown.bs.modal', function (e) {
-            $("#myModal").modal('hide');
-        });
+        $("#myModal").modal('hide');
     }
 
     function getUrlParameter(sParam) {
@@ -168,7 +206,7 @@ var vm = function () {
                 return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
             }
         }
-    }
+    };
 
     //--- start ....
     showLoading();
@@ -179,79 +217,41 @@ var vm = function () {
     else {
         self.activate(pg);
     }
-    self.search = function (){
-        console.log("searching")
-        if ($("#searchbar").val() === "") {
-            showLoading();
-            var pg = getUrlParameter('page');
-            console.log(pg);
-            if (pg == undefined)
-                self.activate(1);
-            else {
-                self.activate(pg);
-            }
-        } else {
-            var changeUrl = 'http://192.168.160.58/Paris2024/api/Search/Athletes?q=' + $("#searchbar").val();
-            self.Athleteslist = [];
-            ajaxHelper(changeUrl, 'GET').done(function(data) {
-                console.log(data.length)
-                if (data.length == 0) {
-                    return alert('No results found')
-                }
-                self.totalPages(1)
-                console.log(data);
-                showLoading();
-                self.records(data);
-                self.totalRecords(data.length);
-                hideLoading();
-                for (var i in data) {
-                    self.Athleteslist.push(data[i]);
-                }
-            });
-        };
-    };
-
-            self.onEnter = function (d, e) {
-                e.keyCode === 13&&self.search()
-                    self.search();
-            };
-    $.ui.autocomplete.filter = function (array, term) {
-        var matcher = new RegExp("^" + $.ui.autocomplete.escapeRegex(term), "i");
-        return $.grep(array, function (value) {
-            return matcher.test(value.label || value.value || value);
-        });
-    };
-
-    $("#searchbar").autocomplete({
-        source: function( request, response ) {
-            $.ajax({
-                url: "http://192.168.160.58/Paris2024/API/Players/Search?q=" + request.term,
-                dataType: "json",
-                success: function( data ) {
-                    var playerNames = data.map(function(record) {
-                        return record.Name;
-                    });
-                    var filteredNames = $.ui.autocomplete.filter(playerNames, request.term);
-                    response( filteredNames );
-                }
-            });
-        },
-        minLength: 1,
-        select: function( event, ui ) {
-            log( "Selected: " + ui.item.value + " aka " + ui.item.id );
-        },
-        messages: {
-            noResults: '',
-            results: function() {}
-        }
-    });
+    console.log("VM initialized!");
 };
 
 $(document).ready(function () {
     console.log("ready!");
     ko.applyBindings(new vm());
+    $("#searchbar").autocomplete({
+        minLength: 3,
+        autoFill: true,
+        source: function (request, response){
+            $.ajax({
+                type: 'GET',
+                url: 'http://192.168.160.58/Paris2024/API/Athletes/Search?q=' + $("#searchbar").val(),
+                success: function (data){
+                    response($.map(data, function(item){
+                        return item.Name;
+                    }));
+                },
+                error: function(result){
+                    alert(result.statusText);
+                },
+            });
+        },
+        select: function(e, ui){
+            $.ajax({
+                type: 'GET',
+                url: 'http://192.168.160.58/Paris2024/API/Athletes/Search?q=' + ui.item.label,
+                success: function(data){
+                    window.location = 'TreinadorDetalhe.html?id=' + data[0].Id;
+                }
+            })
+        },
+        messages: {
+            noResults: '',
+            results: function() {}
+        }
+    })
 });
-
-$(document).ajaxComplete(function (event, xhr, options) {
-    $("#myModal").modal('hide');
-})

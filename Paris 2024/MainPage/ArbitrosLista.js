@@ -110,15 +110,12 @@ var vm = function () {
             console.log("pagesize=", self.pagesize());
             self.totalPages(data.TotalPages);
             console.log("totalPages=", self.totalPages());
-            self.totalRecords(data.TotalTechnical_officials);
+            self.totalRecords(data.TotalOfficials);
             console.log("totalRecords=", self.totalRecords());
 
             await fetchAllTechnical_officialDetails();
             self.Technical_officials2(self.Technical_officials());
             console.log("Technical_officials2", self.Technical_officials2());
-
-
-
         });
     };
 
@@ -145,6 +142,10 @@ var vm = function () {
         self.Photo = ko.observable(Technical_official.Photo);
         Technical_official.Organisation = data.Organisation;
         console.log("Organisation", Technical_official.Organisation);
+        Technical_official.Function = data.Function;
+        console.log("Function", Technical_official.Function);
+        Technical_official.OrganisationLong = data.OrganisationLong;
+        console.log("OrganisationLong", Technical_official.OrganisationLong);
     }
 
     async function fetchAllTechnical_officialDetails() {
