@@ -83,8 +83,8 @@
   <thead class="table-secondary" data-aos="fade-up">
   <tr data-aos="fade-up">
     <th scope="col" data-aos="fade-up">Foto</th>
-    <th scope="col" data-aos="fade-up">ID</th>
     <th scope="col" data-aos="fade-up">Nome</th>
+    <th scope="col" data-aos="fade-up">País</th>
     <th scope="col" data-aos="fade-up">Função</th>
     <th scope="col" data-aos="fade-up">Sexo</th>
 
@@ -93,10 +93,11 @@
   </thead>
   <tbody data-bind="foreach: coaches2" data-aos="fade-up">
   <tr data-aos="fade-up">
+    <td><img data-bind="attr: {src: Photo}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right"  class="img-fluid" />
     <td class="align-middle" data-bind="text: Name" data-aos="fade-up"></td>
+    <td class="align-middle"data-bind="text: Country" data-aos="fade-up"></td>
     <td class="align-middle" data-bind="text: Function" data-aos="fade-up"></td>
     <td class="align-middle" data-bind="text: Sex" data-aos="fade-up"></td>
-    <td><img data-bind="attr: {src: Photo}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right"  class="img-fluid" />
 
 
     <td class="text-end" data-aos="fade-up">
