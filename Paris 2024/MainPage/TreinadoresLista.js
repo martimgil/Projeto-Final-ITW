@@ -143,6 +143,8 @@ var vm = function () {
         coach.Country = data.Country;
         console.log("Country", coach.Country);
         self.Photo = ko.observable(coach.Photo);
+        coach.Sports = data.Sports;
+        console.log("Sports", coach.Sports);
     }
 
     async function fetchAllCoachDetails() {
