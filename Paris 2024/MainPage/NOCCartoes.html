@@ -57,54 +57,54 @@
   <div class="col-8 my-0 pt-3" data-aos="fade-up">
     <ul class="pagination float-end" data-aos="fade-up">
       <!-- ko if: currentPage() > 5 && totalPages() > 10 -->
-      <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="First Page" data-bind="attr: { href: './NOCLista.html?page=' + '1',  rel:'prev'}">⇤</a></li>
-      <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="Previous Page" data-bind="attr: { href: './NOCLista.html?page=' + previousPage(),  rel:'prev'}">←</a></li>
+      <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="First Page" data-bind="attr: { href: './NOCCartoes.html?page=' + '1',  rel:'prev'}">⇤</a></li>
+      <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="Previous Page" data-bind="attr: { href: './NOCCartoes.html?page=' + previousPage(),  rel:'prev'}">←</a></li>
       <!-- /ko -->
       <!-- ko foreach: pageArray()-->
       <!-- ko if:$data == $parent.currentPage() -->
       <li class="active page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { title:'Current Page ' + $data }, text: $data" data-aos="fade-up"></a></li>
       <!-- /ko -->
       <!-- ko if:$data != $parent.currentPage() -->
-      <li class="page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { href: './NOCLista.html?page=' + $data + '&pagesize=' + $parent.pagesize(), title:'Goto Page ' + $data }, text:$data" data-aos="fade-up"></a></li>
+      <li class="page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { href: './NOCCartoes.html?page=' + $data + '&pagesize=' + $parent.pagesize(), title:'Goto Page ' + $data }, text:$data" data-aos="fade-up"></a></li>
       <!-- /ko -->
       <!-- /ko -->
       <!-- ko if: currentPage() < totalPages() - 4 && totalPages() > 9 -->
-      <li class="page-item" data-aos="fade-up"><a class="page-link" title="Next Page" data-bind="attr: { href: './NOCLista.html?page=' + nextPage(), rel:'next' }" data-aos="fade-up">→</a></li>
-      <li class="page-item" data-aos="fade-up"><a class="page-link" title="Last Page" data-bind="attr: { href: './NOCLista.html?page=' + totalPages() }" data-aos="fade-up">⇥</a></li>
+      <li class="page-item" data-aos="fade-up"><a class="page-link" title="Next Page" data-bind="attr: { href: './NOCCartoes.html?page=' + nextPage(), rel:'next' }" data-aos="fade-up">→</a></li>
+      <li class="page-item" data-aos="fade-up"><a class="page-link" title="Last Page" data-bind="attr: { href: './NOCCartoes.html?page=' + totalPages() }" data-aos="fade-up">⇥</a></li>
       <!-- /ko -->
     </ul>
   </div>
 </div>
-<table class="table table-striped table-sm small" data-aos="fade-up">
-  <thead class="table-secondary" data-aos="fade-up">
-  <tr data-aos="fade-up">
-    <th scope="col" data-aos="fade-up">Bandeira</th>
-    <th scope="col" data-aos="fade-up">País</th>
-    <th scope="col" data-aos="fade-up">N.º Atletas</th>
-    <th scope="col" data-aos="fade-up">N.º Treinadores</th>
-    <th scope="col" data-aos="fade-up">N.º Medalhas</th>
-    <th scope="col" data-aos="fade-up">N.º Equipas</th>
-    <th scope="col" class="text-right" data-aos="fade-up"></th>
-  </tr>
-  </thead>
-  <tbody data-bind="foreach: NOCs2" data-aos="fade-up">
-  <tr data-aos="fade-up">
-    <td><img data-bind="attr: {src: Photo}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right"  class="img-fluid" /></td>
-    <td class="align-middle" data-bind="text: Country" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text: Athletes" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text: Coaches" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text: Medals" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text: Teams" data-aos="fade-up"></td>
-    <td class="text-end" data-aos="fade-up">
-      <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href: './NOCDetalhe.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
-      <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteCoach(Id, event) }" style="margin-left: 5px;">
-        <i class="fa fa-heart" title="Adicionar aos favoritos"></i>
-      </button>
-    </td>
-  </tr>
-  </tbody>
-</table>
 <!-- /ko -->
+  <div class="container" data-aos="fade-up">
+    <div class="row" data-aos="fade-up" data-bind="foreach: NOCs2">
+      <div class="col-md-3" data-aos="fade-up">
+        <div class="card mb-3" data-aos="fade-up">
+          <div class="card-header" data-aos="fade-up">
+            <h5 class="card-title" data-bind="text: Country" data-aos="fade-up"></h5>
+          </div>
+          <div class="card-body align-content-center align-middle" data-aos="fade-up">
+            <div class="row align-content-center" data-aos="fade-up">
+              <img class="align-content-center" data-bind="attr: {src: Photo}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 340px; width: auto; float: right" class="img-fluid" />
+            </div>
+          </div>
+          <div class="card-body" data-aos="fade-up">
+            <p data-aos="fade-up"><i class="fa fa-flag"></i> <span data-bind="text: Country"></span></p>
+            <p data-aos="fade-up"><i class="fa fa-notepad"></i> <span data-bind="text: Note"></span></p>
+
+          </div>
+          <div class="card-footer" data-aos="fade-up">
+            <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href:'./ArbitrosDetalhe.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
+            <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteTechnical_official(Id, event) }" style="margin-left: 5px;">
+              <i class="fa fa-heart" title="Adicionar aos favoritos"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-aos="fade-up">

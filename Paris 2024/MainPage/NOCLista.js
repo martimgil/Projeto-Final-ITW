@@ -3,11 +3,11 @@ var vm = function () {
     console.log('ViewModel initiated...');
     //---Variáveis locais
     var self = this;
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/NOCS');
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/NOCs');
     self.displayName = 'Comités Olímpicos Nacionais';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
-    self.NOCS = ko.observableArray([]);
+    self.NOCs = ko.observableArray([]);
     self.currentPage = ko.observable(1);
     self.pagesize = ko.observable(20);
     self.totalRecords = ko.observable(0);
@@ -15,7 +15,7 @@ var vm = function () {
     self.hasNext = ko.observable(false);
     self.NOCDetails = ko.observableArray([]);
     self.Photo = ko.observable('');
-    self.NOCS2 = ko.observableArray([]);
+    self.NOCs2 = ko.observableArray([]);
 
     self.search = function () {
         console.log('searching');
@@ -29,8 +29,8 @@ var vm = function () {
                 self.activate(pg);
             }
         } else {
-            var chandeUrl = 'http://192.168.160.58/Paris2024/API/NOCS/Search?q=' + $("#searchbar").val();
-            self.NOCSlist = [];
+            var chandeUrl = 'http://192.168.160.58/Paris2024/API/NOCs/Search?q=' + $("#searchbar").val();
+            self.NOCslist = [];
             ajaxHelper(chandeUrl, 'GET').done(function(data){
                 console.log(data);
                 if (data.length ==0){
@@ -39,24 +39,24 @@ var vm = function () {
                 self.totalPages(1)
                 console.log(data);
                 showLoading();
-                self.NOCS(data);
+                self.NOCs(data);
                 self.totalRecords(data.length);
                 for(var i in data){
-                    self.NOCSlist.push(data[i]);
+                    self.NOCslist.push(data[i]);
                 }
             });
         };
     };
     self.favoriteNOC = function (id, event) {
-        let favNOCS = JSON.parse(window.localStorage.getItem('favNOCS')) || [];
-        if (!favNOCS.includes(id)) {
-            favNOCS.push(id);
-            window.localStorage.setItem('favNOCS', JSON.stringify(favNOCS));
-            console.log('O treinador foi adicionado aos favoritos!');
+        let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
+        if (!favNOCs.includes(id)) {
+            favNOCs.push(id);
+            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
+            console.log('O Comité foi adicionado aos favoritos!');
         } else {
-            console.log('O treinador já está na lista de favoritos.');
+            console.log('O Comité já está na lista de favoritos.');
         }
-        console.log(JSON.parse(window.localStorage.getItem('favNOCS')));
+        console.log(JSON.parse(window.localStorage.getItem('favNOCs')));
     };
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
@@ -93,13 +93,13 @@ var vm = function () {
 
     //--- Page Events
     self.activate = function (id) {
-        console.log('CALL: getNOCS...');
+        console.log('CALL: getNOCs...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
         ajaxHelper(composedUri, 'GET').done(async function (data) {
             console.log(data);
 
-            self.NOCS(data.NOCS);
-            console.log("NOCS=", self.NOCS());
+            self.NOCs(data.NOCs);
+            console.log("NOCs=", self.NOCs());
             self.currentPage(data.CurrentPage);
             console.log("currentPage=", self.currentPage());
             self.hasNext(data.HasNext);
@@ -110,17 +110,21 @@ var vm = function () {
             console.log("pagesize=", self.pagesize());
             self.totalPages(data.TotalPages);
             console.log("totalPages=", self.totalPages());
-            self.totalRecords(data.TotalOfficials);
+            console.log("length=", data.NOCs.length);
+            self.totalRecords(data.TotalNOCs);
             console.log("totalRecords=", self.totalRecords());
 
             await fetchAllNOCDetails();
-            self.NOCS2(self.NOCS());
-            console.log("NOCS2", self.NOCS2());
+            self.NOCs2(self.NOCs());
+            console.log("NOCs2", self.NOCs2());
+
+
+
         });
     };
 
     function getPhotoUrl(id){
-        var detailsUrl = 'http://192.168.160.58/Paris2024/API/NOCS/' + id;
+        var detailsUrl = 'http://192.168.160.58/Paris2024/API/NOCs/' + id;
         return ajaxHelper(detailsUrl, 'GET').done(function(data){
             console.log(detailsUrl);
             return data;
@@ -139,15 +143,12 @@ var vm = function () {
         console.log("photo", NOC.Photo);
         NOC.Note = data.Note;
         console.log("note", NOC.Note);
-        NOC.Url = data.Url;
-        console.log("url", NOC.Url);
-
     }
 
     async function fetchAllNOCDetails() {
-        for (const NOC of self.NOCS()) { //Percorre cada treinador que vem da 1.ºAPI
+        for (const NOC of self.NOCs()) { //Percorre cada treinador que vem da 1.ºAPI
             await fetchNOCDetails(NOC); //Chama a outra assincrona
-            await delay(100); // Intervalo de 500ms entre cada solicitação
+            await delay(100); // Intervalo de 100ms entre cada gajo
         }
 
         hideLoading();
@@ -225,7 +226,7 @@ $(document).ready(function () {
         source: function (request, response){
             $.ajax({
                 type: 'GET',
-                url: 'http://192.168.160.58/Paris2024/API/NOCS/Search?q=' + $("#searchbar").val(),
+                url: 'http://192.168.160.58/Paris2024/API/NOCs/Search?q=' + $("#searchbar").val(),
                 success: function (data){
                     response($.map(data, function(item){
                         return item.Name;
@@ -239,9 +240,9 @@ $(document).ready(function () {
         select: function(e, ui){
             $.ajax({
                 type: 'GET',
-                url: 'http://192.168.160.58/Paris2024/API/NOCS/Search?q=' + ui.item.label,
+                url: 'http://192.168.160.58/Paris2024/API/NOCs/Search?q=' + ui.item.label,
                 success: function(data){
-                    window.location = 'TreinadorDetalhe.html?id=' + data[0].Id;
+                    window.location = 'NOCDetalhe.html?id=' + data[0].Id;
                 }
             })
         },
