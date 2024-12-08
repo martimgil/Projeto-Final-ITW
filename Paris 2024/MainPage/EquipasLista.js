@@ -3,21 +3,65 @@ var vm = function () {
     console.log('ViewModel initiated...');
     //---Variáveis locais
     var self = this;
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/teams');
-    self.displayName = 'Paris2024 teams List';
-    self.teams = ko.observableArray([]);
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Technical_officials');
+    self.displayName = 'Árbitros';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
+    self.Technical_officials = ko.observableArray([]);
     self.currentPage = ko.observable(1);
     self.pagesize = ko.observable(20);
-    self.totalRecords = ko.observable(50);
+    self.totalRecords = ko.observable(0);
     self.hasPrevious = ko.observable(false);
     self.hasNext = ko.observable(false);
+    self.Technical_officialDetails = ko.observableArray([]);
+    self.Photo = ko.observable('');
+    self.Technical_officials2 = ko.observableArray([]);
 
-
-
-
-
+    self.search = function () {
+        console.log('searching');
+        if ($("#searchbar").val() === ""){
+            showLoading();
+            var pg = getUrlParameter('page');
+            console.log(pg);
+            if(pg == undefined)
+                self.activate(1);
+            else{
+                self.activate(pg);
+            }
+        } else {
+            var chandeUrl = 'http://192.168.160.58/Paris2024/API/Technical_officials/Search?q=' + $("#searchbar").val();
+            self.Technical_officialslist = [];
+            ajaxHelper(chandeUrl, 'GET').done(function(data){
+                console.log(data);
+                if (data.length ==0){
+                    return alert(("Não foram encontrados resultados"))
+                }
+                self.totalPages(1)
+                console.log(data);
+                showLoading();
+                self.Technical_officials(data);
+                self.totalRecords(data.length);
+                for(var i in data){
+                    self.Technical_officialslist.push(data[i]);
+                }
+            });
+        };
+    };
+    self.favoriteTechnical_official = function (id, event) {
+        let favTechnical_officials = JSON.parse(window.localStorage.getItem('favTechnical_officials')) || [];
+        if (!favTechnical_officials.includes(id)) {
+            favTechnical_officials.push(id);
+            window.localStorage.setItem('favTechnical_officials', JSON.stringify(favTechnical_officials));
+            console.log('O treinador foi adicionado aos favoritos!');
+        } else {
+            console.log('O treinador já está na lista de favoritos.');
+        }
+        console.log(JSON.parse(window.localStorage.getItem('favTechnical_officials')));
+    };
+    self.onEnter = function (d, e){
+        e.keyCode === 13 && self.search();
+        return true;
+    };
     self.previousPage = ko.computed(function () {
         return self.currentPage() * 1 - 1;
     }, self);
@@ -49,35 +93,86 @@ var vm = function () {
 
     //--- Page Events
     self.activate = function (id) {
-        console.log('CALL: getteams...');
+        console.log('CALL: getTechnical_officials...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
-        ajaxHelper(composedUri, 'GET').done(function (data) {
-            console.log("dados", data);
-            hideLoading();
-            self.teams(data.teams);
-            console.log("teams", self.teams());
+        ajaxHelper(composedUri, 'GET').done(async function (data) {
+            console.log(data);
+
+            self.Technical_officials(data.Technical_officials);
+            console.log("Technical_officials=", self.Technical_officials());
             self.currentPage(data.CurrentPage);
+            console.log("currentPage=", self.currentPage());
             self.hasNext(data.HasNext);
+            console.log("hasNext=", self.hasNext());
             self.hasPrevious(data.HasPrevious);
-            self.pagesize(data.PageSize)
+            console.log("hasPrevious=", self.hasPrevious());
+            self.pagesize(data.PageSize);
+            console.log("pagesize=", self.pagesize());
             self.totalPages(data.TotalPages);
-            self.totalRecords(data.TotalTeams);
-            console.log("data", data)
+            console.log("totalPages=", self.totalPages());
+            self.totalRecords(data.TotalOfficials);
+            console.log("totalRecords=", self.totalRecords());
+
+            await fetchAllTechnical_officialDetails();
+            self.Technical_officials2(self.Technical_officials());
+            console.log("Technical_officials2", self.Technical_officials2());
         });
     };
 
+    function getPhotoUrl(id){
+        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Technical_officials/' + id;
+        return ajaxHelper(detailsUrl, 'GET').done(function(data){
+            console.log(detailsUrl);
+            return data;
+        });
+    }
+
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function fetchTechnical_officialDetails(Technical_official) {
+        console.log("id", Technical_official.Id);
+        const data = await getPhotoUrl(Technical_official.Id);
+        console.log("detalhes", data);
+        Technical_official.Photo = data.Photo || 'identidade/PersonNotFound.png';
+        console.log("photo", Technical_official.Photo);
+        Technical_official.Country = data.Country;
+        console.log("Country", Technical_official.Country);
+        self.Photo = ko.observable(Technical_official.Photo);
+        Technical_official.Organisation = data.Organisation;
+        console.log("Organisation", Technical_official.Organisation);
+        Technical_official.Function = data.Function;
+        console.log("Function", Technical_official.Function);
+        Technical_official.OrganisationLong = data.OrganisationLong;
+        console.log("OrganisationLong", Technical_official.OrganisationLong);
+    }
+
+    async function fetchAllTechnical_officialDetails() {
+        for (const Technical_official of self.Technical_officials()) { //Percorre cada treinador que vem da 1.ºAPI
+            await fetchTechnical_officialDetails(Technical_official); //Chama a outra assincrona
+            await delay(100); // Intervalo de 500ms entre cada solicitação
+        }
+
+        hideLoading();
+
+    }
+
+
     //--- Internal functions
     function ajaxHelper(uri, method, data) {
-        self.error(''); // Clear error message
+        self.error('');
         return $.ajax({
             type: method,
             url: uri,
             dataType: 'json',
             contentType: 'application/json',
             data: data ? JSON.stringify(data) : null,
+            success: function (data) {
+                console.log("AJAX Call[" + uri + "] Success...");
+            },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("AJAX Call[" + uri + "] Fail...");
-                hideLoading();
                 self.error(errorThrown);
             }
         });
@@ -95,9 +190,7 @@ var vm = function () {
         });
     }
     function hideLoading() {
-        $('#myModal').on('shown.bs.modal', function (e) {
-            $("#myModal").modal('hide');
-        })
+        $("#myModal").modal('hide');
     }
 
     function getUrlParameter(sParam) {
@@ -130,8 +223,35 @@ var vm = function () {
 $(document).ready(function () {
     console.log("ready!");
     ko.applyBindings(new vm());
+    $("#searchbar").autocomplete({
+        minLength: 3,
+        autoFill: true,
+        source: function (request, response){
+            $.ajax({
+                type: 'GET',
+                url: 'http://192.168.160.58/Paris2024/API/Technical_officials/Search?q=' + $("#searchbar").val(),
+                success: function (data){
+                    response($.map(data, function(item){
+                        return item.Name;
+                    }));
+                },
+                error: function(result){
+                    alert(result.statusText);
+                },
+            });
+        },
+        select: function(e, ui){
+            $.ajax({
+                type: 'GET',
+                url: 'http://192.168.160.58/Paris2024/API/Technical_officials/Search?q=' + ui.item.label,
+                success: function(data){
+                    window.location = 'TreinadorDetalhe.html?id=' + data[0].Id;
+                }
+            })
+        },
+        messages: {
+            noResults: '',
+            results: function() {}
+        }
+    })
 });
-
-$(document).ajaxComplete(function (event, xhr, options) {
-    $("#myModal").modal('hide');
-})

@@ -13,7 +13,10 @@ var vm = function () {
     self.totalRecords = ko.observable(0);
     self.hasPrevious = ko.observable(false);
     self.hasNext = ko.observable(false);
-    self.coachDetails = ko.observableArray([]);
+    self.NOCDetails = ko.observableArray([]);
+    self.Photo = ko.observable('');
+    self.NOCS2 = ko.observableArray([]);
+
     self.search = function () {
         console.log('searching');
         if ($("#searchbar").val() === ""){
@@ -38,21 +41,20 @@ var vm = function () {
                 showLoading();
                 self.NOCS(data);
                 self.totalRecords(data.length);
-                hideLoading();
                 for(var i in data){
                     self.NOCSlist.push(data[i]);
                 }
             });
         };
     };
-    self.favoriteCoach = function (id, event) {
+    self.favoriteNOC = function (id, event) {
         let favNOCS = JSON.parse(window.localStorage.getItem('favNOCS')) || [];
         if (!favNOCS.includes(id)) {
             favNOCS.push(id);
             window.localStorage.setItem('favNOCS', JSON.stringify(favNOCS));
-            console.log('O Comité Olímpico Nacional foi adicionado aos favoritos!');
+            console.log('O treinador foi adicionado aos favoritos!');
         } else {
-            console.log('O Comité Olímpico Nacional já está na lista de favoritos.');
+            console.log('O treinador já está na lista de favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favNOCS')));
     };
@@ -93,10 +95,10 @@ var vm = function () {
     self.activate = function (id) {
         console.log('CALL: getNOCS...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
-        ajaxHelper(composedUri, 'GET').done(function (data) {
+        ajaxHelper(composedUri, 'GET').done(async function (data) {
             console.log(data);
-            hideLoading();
-            self.NOCS(data.NOCs);
+
+            self.NOCS(data.NOCS);
             console.log("NOCS=", self.NOCS());
             self.currentPage(data.CurrentPage);
             console.log("currentPage=", self.currentPage());
@@ -108,14 +110,54 @@ var vm = function () {
             console.log("pagesize=", self.pagesize());
             self.totalPages(data.TotalPages);
             console.log("totalPages=", self.totalPages());
-            self.totalRecords(data.TotalNOCs || 0); // Ensure totalRecords is a number
+            self.totalRecords(data.TotalOfficials);
             console.log("totalRecords=", self.totalRecords());
+
+            await fetchAllNOCDetails();
+            self.NOCS2(self.NOCS());
+            console.log("NOCS2", self.NOCS2());
         });
     };
 
+    function getPhotoUrl(id){
+        var detailsUrl = 'http://192.168.160.58/Paris2024/API/NOCS/' + id;
+        return ajaxHelper(detailsUrl, 'GET').done(function(data){
+            console.log(detailsUrl);
+            return data;
+        });
+    }
+
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function fetchNOCDetails(NOC) {
+        console.log("id", NOC.Id);
+        const data = await getPhotoUrl(NOC.Id);
+        console.log("detalhes", data);
+        NOC.Photo = data.Photo || 'identidade/PersonNotFound.png';
+        console.log("photo", NOC.Photo);
+        NOC.Note = data.Note;
+        console.log("note", NOC.Note);
+        NOC.Url = data.Url;
+        console.log("url", NOC.Url);
+
+    }
+
+    async function fetchAllNOCDetails() {
+        for (const NOC of self.NOCS()) { //Percorre cada treinador que vem da 1.ºAPI
+            await fetchNOCDetails(NOC); //Chama a outra assincrona
+            await delay(100); // Intervalo de 500ms entre cada solicitação
+        }
+
+        hideLoading();
+
+    }
+
+
     //--- Internal functions
     function ajaxHelper(uri, method, data) {
-        self.error(''); // Clear error message
+        self.error('');
         return $.ajax({
             type: method,
             url: uri,
@@ -124,11 +166,9 @@ var vm = function () {
             data: data ? JSON.stringify(data) : null,
             success: function (data) {
                 console.log("AJAX Call[" + uri + "] Success...");
-                hideLoading();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("AJAX Call[" + uri + "] Fail...");
-                hideLoading();
                 self.error(errorThrown);
             }
         });
@@ -146,9 +186,7 @@ var vm = function () {
         });
     }
     function hideLoading() {
-        $('#myModal').on('shown.bs.modal', function (e) {
-            $("#myModal").modal('hide');
-        })
+        $("#myModal").modal('hide');
     }
 
     function getUrlParameter(sParam) {
@@ -203,7 +241,7 @@ $(document).ready(function () {
                 type: 'GET',
                 url: 'http://192.168.160.58/Paris2024/API/NOCS/Search?q=' + ui.item.label,
                 success: function(data){
-                    window.location = 'Comité Olímpico NacionalDetalhe.html?id=' + data[0].Id;
+                    window.location = 'TreinadorDetalhe.html?id=' + data[0].Id;
                 }
             })
         },
