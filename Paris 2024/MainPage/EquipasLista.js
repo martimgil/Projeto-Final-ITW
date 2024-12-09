@@ -9,7 +9,7 @@ var vm = function () {
     self.passingMessage = ko.observable('');
     self.Teams = ko.observableArray([]);
     self.currentPage = ko.observable(1);
-    self.pagesize = ko.observable(20);
+    self.pagesize = ko.observable(2000);
     self.totalRecords = ko.observable(0);
     self.hasPrevious = ko.observable(false);
     self.hasNext = ko.observable(false);
@@ -94,43 +94,73 @@ var vm = function () {
     };
 
     //--- Page Events
-self.activate = function (id) {
-    console.log('CALL: getTeams...');
-    var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
-    ajaxHelper(composedUri, 'GET').done(function (data) {
-        console.log(data);
+    self.activate = function (id) {
+        console.log('CALL: getTeams...');
+        var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
+        ajaxHelper(composedUri, 'GET').done(async function (data) {
+            console.log(data);
 
-        self.Teams(data.Teams);
-        console.log("Teams=", self.Teams());
-        console.log("value", $('#disciplines_code').val());
+            self.Teams(data.Teams);
+            console.log("Teams=", self.Teams());
+            self.currentPage(data.CurrentPage);
+            console.log("currentPage=", self.currentPage());
+            self.hasNext(data.HasNext);
+            console.log("hasNext=", self.hasNext());
+            self.hasPrevious(data.HasPrevious);
+            console.log("hasPrevious=", self.hasPrevious());
+            self.pagesize(data.PageSize);
+            console.log("pagesize=", self.pagesize());
+            self.totalPages(data.TotalPages);
+            console.log("totalPages=", self.totalPages());
+            self.totalRecords(data.TotalTeams);
+            console.log("totalRecords=", self.totalRecords());
 
-        self.currentPage(data.CurrentPage);
-        console.log("currentPage=", self.currentPage());
-        self.hasNext(data.HasNext);
-        console.log("hasNext=", self.hasNext());
-        self.hasPrevious(data.HasPrevious);
-        console.log("hasPrevious=", self.hasPrevious());
-        self.pagesize(data.PageSize);
-        console.log("pagesize=", self.pagesize());
-        self.totalPages(data.TotalPages);
-        console.log("totalPages=", self.totalPages());
-        self.totalRecords(data.TotalTeams);
-        console.log("totalRecords=", self.totalRecords());
+            await fetchAllTeamsDetails2();
 
-        self.filteredTeams = ko.computed(function() {
-            var selectedSportCode = $('#disciplines_code').val();
-            if (!selectedSportCode) {
-                return self.Teams();
-            }
-            var filtered = ko.utils.arrayFilter(self.Teams(), function(team) {
-                return team.sport_code === selectedSportCode;
-            });
-            console.log('Filtered Teams:', filtered);
-            return filtered.length ? filtered : self.Teams();
         });
-    });
-};
+    };
 
+    self.filterByDisciplineCode = function (){
+        console.log("funçao foi chamada")
+        const selectedCode = $('#disciplines_code').val();
+        console.log("Selected Code", selectedCode);
+        const filtered = self.Teams().filter(team => team.Sport_Codes === selectedCode);
+        self.filteredTeams(filtered);
+        console.log("Filtered Teams", filtered);
+    };
+
+
+    function getDetailsTeams(id) {
+        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Teams/' + id;
+        return ajaxHelper(detailsUrl, 'GET').done(function (data) {
+            console.log(detailsUrl);
+            return data;
+        });
+    }
+
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function fetchAllTeamsDetails(Team) {
+        console.log("id", Team.Id);
+        const data = await getDetailsTeams(Team.Id);
+        console.log("detalhes", data);
+        Team.Num_athletes = data.Num_athletes;
+        console.log("Num_athletes", Team.Num_athletes);
+        Team.Num_coaches = data.Num_coaches;
+        console.log("Num_coaches", Team.Num_coaches);
+        Team.Sport = data.Sport.Name;
+        console.log("Sport.Name", Team.Sport.Name);
+
+    }
+
+    async function fetchAllTeamsDetails2() {
+        for (const team of self.Teams()) {
+            await fetchAllTeamsDetails(team);
+            await delay(500);
+        }
+    }
 
     //--- Internal functions
     function ajaxHelper(uri, method, data) {

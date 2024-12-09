@@ -44,36 +44,38 @@
   <br>
 
   <div class="container" data-aos="fade-up">
-    <select class="form-select" id="disciplines_code" name="disciplines_code">
-      <option value="VBV">Beach Volleyball</option>
-      <option value="ARC">Archery</option>
-      <option value="ATH">Athletics</option>
+    <select class="form-select" data-bind="event: { change: filterByDisciplineCode }" id="disciplines_code" name="disciplines_code">
+      <option>Escolha uma opção</option>
+      <option value="VBV">Voleibol de Praia</option>
+      <option value="ARC">Tiro com Arco</option>
+      <option value="ATH">Atletismo</option>
       <option value="BDM">Badminton</option>
       <option value="BK3">Basketball 3x3</option>
       <option value="BKB">Basketball</option>
-      <option value="CSP">Canoe Sprint</option>
-      <option value="CTR">Cycling Track</option>
-      <option value="DIV">Diving</option>
-      <option value="EQU">Equestrian</option>
-      <option value="FBL">Football</option>
-      <option value="FEN">Fencing</option>
-      <option value="GAR">Artistic Gymnastics</option>
-      <option value="GRY">Rhythmic Gymnastics</option>
-      <option value="HBL">Handball</option>
-      <option value="HOC">Hockey</option>
+      <option value="CSP">Canoagem de Velocidade</option>
+      <option value="CTR">Ciclismo de Pista</option>
+      <option value="DIV">Mergulho</option>
+      <option value="EQU">Equitação</option>
+      <option value="FBL">Futebol</option>
+      <option value="FEN">Esgrima</option>
+      <option value="GAR">Ginástica Artística</option>
+      <option value="GRY">Ginástica Rítmica</option>
+      <option value="HBL">Handebol</option>
+      <option value="HOC">Hóquei</option>
       <option value="JUD">Judo</option>
-      <option value="ROW">Rowing</option>
+      <option value="ROW">Remo</option>
       <option value="RU7">Rugby Sevens</option>
-      <option value="SAL">Sailing</option>
-      <option value="SHO">Shooting</option>
-      <option value="SWA">Artistic Swimming</option>
-      <option value="SWM">Swimming</option>
-      <option value="TEN">Tennis</option>
-      <option value="TRI">Triathlon</option>
-      <option value="TTE">Table Tennis</option>
-      <option value="VVO">Volleyball</option>
-      <option value="WPO">Water Polo</option>
+      <option value="SAL">Vela</option>
+      <option value="SHO">Tiro </option>
+      <option value="SWA">Natação Artística</option>
+      <option value="SWM">Natação</option>
+      <option value="TEN">Tenis</option>
+      <option value="TRI">Triatlo</option>
+      <option value="TTE">Tenis de Mesa</option>
+      <option value="VVO">Voleiboll</option>
+      <option value="WPO">Polo Aquático</option>
     </select>
+    <label>Escolha a modalidade</label>
   </div>
 
 
@@ -82,9 +84,8 @@
   <tr data-aos="fade-up">
     <th scope="col" data-aos="fade-up">ID</th>
     <th scope="col" data-aos="fade-up">Nome</th>
-    <th scope="col" data-aos="fade-up">Função</th>
     <th scope="col" data-aos="fade-up">Sexo</th>
-
+    <th scope="col" data-aos="fade-up">País</th>
     <th scope="col" class="text-right" data-aos="fade-up"></th>
   </tr>
   </thead>
@@ -93,6 +94,7 @@
     <td class="align-middle" data-bind="text: Id" data-aos="fade-up"></td>
     <td class="align-middle" data-bind="text: Name" data-aos="fade-up"></td>
     <td class="align-middle" data-bind="text: Sex" data-aos="fade-up"></td>
+      <td class="align-middle" data-bind="text: Country" data-aos="fade-up"></td>
 
     <td class="text-end" data-aos="fade-up">
       <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href: './EquipasDetalhe.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
