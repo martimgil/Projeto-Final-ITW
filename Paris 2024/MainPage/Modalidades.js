@@ -48,6 +48,8 @@ var vm = function () {
                 for(var i in data){
                     self.Athleteslist.push(data[i]);
                 }
+
+
             });
         }
     };

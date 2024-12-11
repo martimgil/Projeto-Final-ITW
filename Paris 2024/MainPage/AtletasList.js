@@ -17,7 +17,7 @@ var vm = function () {
     self.Photo = ko.observable('');
     self.Athletes2 = ko.observableArray([]);
 
-    self.search = function () {
+    self.search =  function () {
         console.log('searching');
         if ($("#searchbar").val() === ""){
             showLoading();
@@ -31,7 +31,7 @@ var vm = function () {
         } else {
             var chandeUrl = 'http://192.168.160.58/Paris2024/API/Athletes/Search?q=' + $("#searchbar").val();
             self.Athleteslist = [];
-            ajaxHelper(chandeUrl, 'GET').done(function(data){
+            ajaxHelper(chandeUrl, 'GET').done(async function(data){
                 console.log(data);
                 if (data.length ==0){
                     return alert(("Não foram encontrados resultados"))
@@ -39,14 +39,34 @@ var vm = function () {
                 self.totalPages(1)
                 console.log(data);
                 showLoading();
+                const filteredData = self.Athletes().filter(item => data.some(filter => filter.Id === item.Id && filter.Name === item.Name));
                 self.Athletes(data);
-                self.totalRecords(data.length);
                 for(var i in data){
                     self.Athleteslist.push(data[i]);
                 }
+
+
+                await fetchAllAthleteDetails();
+
+                self.Athletes2(self.Athletes());
+
+                console.log("Athletes2", self.Athletes2());
+                hideLoading();
+
+
             });
         };
     };
+    self.Erase = function (){
+        //showLoading();
+        $("#searchbar").val("");
+        var composedUri = self.baseUri();
+        ajaxHelper(composedUri, 'GET').done(function (data) {
+            console.log(data);
+            self.Sports(data);
+        });
+    };
+
     self.favoriteAthlete = function (id, event) {
         let favAthletes = JSON.parse(window.localStorage.getItem('favAthletes')) || [];
         if (!favAthletes.includes(id)) {
@@ -151,7 +171,7 @@ var vm = function () {
     async function fetchAllAthleteDetails() {
         for (const Athlete of self.Athletes()) { //Percorre cada treinador que vem da 1.ºAPI
             await fetchAthleteDetails(Athlete); //Chama a outra assincrona
-            await delay(100); // Intervalo de 500ms entre cada solicitação
+            await delay(1); // Intervalo de 500ms entre cada solicitação
         }
 
         hideLoading();
