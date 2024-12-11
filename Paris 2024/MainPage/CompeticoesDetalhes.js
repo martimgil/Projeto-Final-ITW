@@ -4,8 +4,8 @@ var vm = function () {
     console.log("ViewModel initiated...");
 
     //--- Variáveis locais
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Teams/');
-    self.displayName = 'Teams Details';
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Competitions/');
+    self.displayName = 'Competitions Details';
     self.error = ko.observable('');
     self.Id = ko.observable('');
     self.Name = ko.observable('');
@@ -75,7 +75,7 @@ var vm = function () {
 
         for (var i = 0; i < sURLVariables.length; i++) {
             sParameterName = sURLVariables[i].split('=');
-            if (sParameterName[0] === sParam) {
+            if (sParameterName[0].toLowerCase() === sParam.toLowerCase()) {
                 return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
             }
         }
@@ -83,12 +83,14 @@ var vm = function () {
 
     // --- start ....
     showLoading();
-    var pg = getUrlParameter('id');
+    var sportId = getUrlParameter('sportId');
+    var name = getUrlParameter('name');
+
     console.log(pg);
-    if (pg === undefined)
+    if (sportId === undefined)
         self.activate(1);
     else {
-        self.activate(pg);
+        self.activate(sportId);
     }
     console.log("VM initialized!");
 };
