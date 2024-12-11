@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-    <title>Estádios e Espaços Desportivos - Paris 2024</title>
+  <title>Estádios e Espaços Desportivos - Paris 2024</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
   <link rel="stylesheet" href="assets/css/Features-Centered-Icons-icons.css">
@@ -33,27 +33,47 @@
     </div>
   </div>
 </nav>
+
+<div class="container" data-aos="fade-up">
+  <div class="container" data-aos="fade-up">
+    <div class="border-bottom py-2 mb-2" data-aos="fade-up">
+      <h2 data-bind="text:displayName" class="title" data-aos="fade-up"></h2>
+    </div>
+    <br>
+    <br>
+    <div style="position: relative;">
+      <input type="text" placeholder="Insira o nome ou acrónimo" id="searchbar" data-bind="event: {keypress: onEnter}">
+      <button style="margin-left: 1px;" class="fa fa-search btn btn-outline-danger" id="athleteesSearchBar" type="submit" data-bind="click: search"></button>
+      <button style="margin-left: 1px;" class="fa fa-times btn btn-outline-danger" id="ResetSearchBar" type="submit" data-bind="click: Erase"></button>
+    </div>
+    <br>
+    <br>
+  </div>
 <!-- Working Area -->
 
 <table class="table table-striped table-sm small" data-aos="fade-up">
   <thead class="table-secondary" data-aos="fade-up">
   <tr data-aos="fade-up">
-    <th scope="col" data-aos="fade-up">Id</th>
+    <th scope="col" data-aos="fade-up">Código</th>
     <th scope="col" data-aos="fade-up">Nome</th>
-    <th scope="col" data-aos="fade-up">Data de Inicio</th>
-    <th scope="col" data-aos="fade-up">Data de Fim</th>
-    <th scope="col" data-aos="fade-up">N.º Desportos</th>
+    <th scope="col" data-aos="fade-up">Competições</th>
+    <th scope="col" data-aos="fade-up">N.º Atletas</th>
+    <th scope="col" data-aos="fade-up">N.º Treinadores</th>
+    <th scope="col" data-aos="fade-up">Pictograma</th>
+    <th scope="col" data-aos="fade-up">URL oficial</th>
     <th scope="col" class="text-right" data-aos="fade-up"></th>
   </tr>
   </thead>
-  <tbody data-bind="foreach: venues" data-aos="fade-up">
+  <tbody data-bind="foreach: Sports" data-aos="fade-up">
   <tr data-aos="fade-up">
 
     <td class="align-middle" data-bind="text:Id" data-aos="fade-up"></td>
     <td class="align-middle" data-bind="text:Name" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text:DateStart" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text:DateEnd" data-aos="fade-up"></td>
-    <td class="align-middle" data-bind="text:NumSports" data-aos="fade-up"></td>
+    <td class="align-middle" data-bind="text:Competitions" data-aos="fade-up"></td>
+    <td class="align-middle" data-bind="text:Athletes" data-aos="fade-up"></td>
+    <td class="align-middle" data-bind="text:Coaches" data-aos="fade-up"></td>
+    <td class="align-middle" data-aos="fade-up"><img height="50" data-bind="attr: {src:Pictogram}"></td>
+    <td class="align-middle" data-aos="fade-up"> <a class="fa fa-external-link" data-bind="attr: {href: Sport_url}" style="text-decoration: none; color: black"> <span style="font-family: 'Segoe Fluent Icons'"> [Ver]</span></a></td>
     <td class="text-end" data-aos="fade-up">
       <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href:'./LocalDetalhe.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
     </td>
@@ -90,6 +110,7 @@
 <script>
   AOS.init();
 </script>
-<script src="Locais.js"></script>
+<script src="Modalidades.js"></script>
+</div>
 </body>
 </html>
