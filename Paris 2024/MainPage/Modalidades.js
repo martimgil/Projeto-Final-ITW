@@ -5,7 +5,6 @@ var vm = function () {
     self.baseUri = ko.observable('http://192.168.160.58/Paris2024/api/Sports');
     self.displayName = 'Modalidades';
     self.Sports = ko.observableArray([]);
-    self.Default = ko.observableArray([]);
 
     //--- Page Events
     self.activate = function (id) {
@@ -14,6 +13,7 @@ var vm = function () {
         ajaxHelper(composedUri, 'GET').done(function (data) {
             console.log(data);
             self.Sports(data);
+            hideLoading();
         });
     };
 
@@ -53,7 +53,8 @@ var vm = function () {
     };
 
     self.Erase = function (){
-        $("#searchbar").val = "";
+        //showLoading();
+        $("#searchbar").val("");
         var composedUri = self.baseUri();
         ajaxHelper(composedUri, 'GET').done(function (data) {
             console.log(data);
@@ -62,6 +63,7 @@ var vm = function () {
     }
 
     //--- start ....
+    //showLoading()
     self.activate(1);
     console.log("VM initialized!");
 }
@@ -77,8 +79,11 @@ function ajaxHelper(uri, method, data) {
         data: data ? JSON.stringify(data) : null,
         error: function (jqXHR, textStatus, errorThrown) {
             alert("AJAX Call[" + uri + "] Fail...");
+            hideLoading();
         }
     });
+
+
 }
 
 function showLoading() {
@@ -94,4 +99,42 @@ function hideLoading() {
 $('document').ready(function () {
     console.log("ready!");
     ko.applyBindings(new vm());
+});
+$(document).ajaxComplete(function () {
+    $("#myModal").modal('hide');
+});
+
+$(document).ready(function () {
+    console.log("ready!");
+    $("#searchbar").autocomplete({
+        minLength: 3,
+        autoFill: true,
+        source: function (request, response){
+            $.ajax({
+                type: 'GET',
+                url: 'http://192.168.160.58/Paris2024/api/Sports/Search?q=' + $("#searchbar").val(),
+                success: function (data){
+                    response($.map(data, function(item){
+                        return item.Name;
+                    }));
+                },
+                error: function(result){
+                    alert(result.statusText);
+                },
+            });
+        },
+        select: function(e, ui){
+            $.ajax({
+                type: 'GET',
+                url: 'http://192.168.160.58/Paris2024/api/Sports/Search?q=' + ui.item.label,
+                success: function(data){
+                    window.location = 'ModalidadesDetalhes.html?id=' + data[0].Id;
+                }
+            })
+        },
+        messages: {
+            noResults: '',
+            results: function() {}
+        }
+    })
 });
