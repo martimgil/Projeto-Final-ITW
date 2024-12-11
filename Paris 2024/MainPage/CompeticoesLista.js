@@ -3,21 +3,21 @@ var vm = function () {
     console.log('ViewModel initiated...');
     //---Variáveis locais
     var self = this;
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Teams');
-    self.displayName = 'Equipas';
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Competitions');
+    self.displayName = 'Competicoes';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
-    self.Teams = ko.observableArray([]);
+    self.Competitions = ko.observableArray([]);
     self.currentPage = ko.observable(1);
     self.pagesize = ko.observable(2000);
     self.totalRecords = ko.observable(0);
     self.hasPrevious = ko.observable(false);
     self.hasNext = ko.observable(false);
-    self.TeamDetails = ko.observableArray([]);
+    self.CompetitionDetails = ko.observableArray([]);
     self.Photo = ko.observable('');
-    self.Teams2 = ko.observableArray([]);
-    self.filteredTeams = ko.observableArray([]);
-    self.filteredTeams2 = ko.observableArray([]);
+    self.Competitions2 = ko.observableArray([]);
+    self.filteredCompetitions = ko.observableArray([]);
+    self.filteredCompetitions2 = ko.observableArray([]);
 
     self.search = function () {
         console.log('searching');
@@ -31,8 +31,8 @@ var vm = function () {
                 self.activate(pg);
             }
         } else {
-            var chandeUrl = 'http://192.168.160.58/Paris2024/API/Teams/Search?q=' + $("#searchbar").val();
-            self.Teamslist = [];
+            var chandeUrl = 'http://192.168.160.58/Paris2024/API/Competitions/Search?q=' + $("#searchbar").val();
+            self.Competitionslist = [];
             ajaxHelper(chandeUrl, 'GET').done(function(data){
                 console.log(data);
                 if (data.length ==0){
@@ -41,24 +41,24 @@ var vm = function () {
                 self.totalPages(1)
                 console.log(data);
                 showLoading();
-                self.Teams(data);
+                self.Competitions(data);
                 self.totalRecords(data.length);
                 for(var i in data){
-                    self.Teamslist.push(data[i]);
+                    self.Competitionslist.push(data[i]);
                 }
             });
         };
     };
-    self.favoriteTeam = function (id, event) {
-        let favTeams = JSON.parse(window.localStorage.getItem('favTeams')) || [];
-        if (!favTeams.includes(id)) {
-            favTeams.push(id);
-            window.localStorage.setItem('favTeams', JSON.stringify(favTeams));
-            console.log('O equipas foi adicionado aos favoritos!');
+    self.favoriteCompetition = function (id, event) {
+        let favCompetitions = JSON.parse(window.localStorage.getItem('favCompetitions')) || [];
+        if (!favCompetitions.includes(id)) {
+            favCompetitions.push(id);
+            window.localStorage.setItem('favCompetitions', JSON.stringify(favCompetitions));
+            console.log('O Competicoes foi adicionado aos favoritos!');
         } else {
-            console.log('O equipas já está na lista de favoritos.');
+            console.log('O Competicoes já está na lista de favoritos.');
         }
-        console.log(JSON.parse(window.localStorage.getItem('favTeams')));
+        console.log(JSON.parse(window.localStorage.getItem('favCompetitions')));
     };
 
     self.onEnter = function (d, e){
@@ -96,13 +96,13 @@ var vm = function () {
 
     //--- Page Events
     self.activate = function (id) {
-        console.log('CALL: getTeams...');
+        console.log('CALL: getCompetitions...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
         ajaxHelper(composedUri, 'GET').done(async function (data) {
             console.log(data);
 
-            self.Teams(data.Teams);
-            console.log("Teams=", self.Teams());
+            self.Competitions(data.Competitions);
+            console.log("Competitions=", self.Competitions());
             self.currentPage(data.CurrentPage);
             console.log("currentPage=", self.currentPage());
             self.hasNext(data.HasNext);
@@ -113,10 +113,10 @@ var vm = function () {
             console.log("pagesize=", self.pagesize());
             self.totalPages(data.TotalPages);
             console.log("totalPages=", self.totalPages());
-            self.totalRecords(data.TotalTeams);
+            self.totalRecords(data.TotalCompetitions);
             console.log("totalRecords=", self.totalRecords());
 
-            await fetchAllTeamsDetails2();
+            await fetchAllCompetitionsDetails2();
 
         });
     };
@@ -125,17 +125,17 @@ var vm = function () {
         console.log("funçao foi chamada")
         const selectedCode = $('#disciplines_code').val();
         console.log("Selected Code", selectedCode);
-        const filtered = self.Teams().filter(team => team.Sport_Codes === selectedCode);
-        self.filteredTeams(filtered);
-        console.log("Filtered Teams", filtered);
-        await fetchAllTeamsDetails2();
-        self.filteredTeams2(self.filteredTeams());
+        const filtered = self.Competitions().filter(Competition => Competition.SportId === selectedCode);
+        self.filteredCompetitions(filtered);
+        console.log("Filtered Competitions", filtered);
+        await fetchAllCompetitionsDetails2();
+        self.filteredCompetitions2(self.filteredCompetitions());
 
     };
 
 
-    function getDetailsTeams(id) {
-        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Teams/' + id;
+    function getDetailsCompetitions(sportId, name) {
+        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Competitions?sportId=' + sportId +'&name=' + name;
         return ajaxHelper(detailsUrl, 'GET').done(function (data) {
             console.log(detailsUrl);
             return data;
@@ -146,22 +146,24 @@ var vm = function () {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async function fetchAllTeamsDetails(Team) {
-        console.log("id", Team.Id);
-        const data = await getDetailsTeams(Team.Id);
+    async function fetchAllCompetitionsDetails(Competition) {
+        console.log("id", Competition.Id);
+        const data = await getDetailsCompetitions(Competition.SportId, Competition.Name);
         console.log("detalhes", data);
-        Team.Num_athletes = data.Num_athletes;
-        console.log("Num_athletes", Team.Num_athletes);
-        Team.Num_coaches = data.Num_coaches;
-        console.log("Num_coaches", Team.Num_coaches);
-        Team.Sport = data.Sport.Name;
-        console.log("Sport.Name", Team.Sport.Name);
+        Competition.SportId = data.SportId;
+        console.log("SportId", Competition.SportId);
+        Competition.Name = data.Name;
+        console.log("Name", Competition.Name);
+        Competition.Tag = data.Tag;
+        console.log("Tag", Competition.Tag);
+        Competition.Photo = data.Photo;
+        console.log("Photo", Competition.Photo);
 
     }
 
-    async function fetchAllTeamsDetails2() {
-        for (const team of self.filteredTeams()) {
-            await fetchAllTeamsDetails(team);
+    async function fetchAllCompetitionsDetails2() {
+        for (const Competition of self.filteredCompetitions()) {
+            await fetchAllCompetitionsDetails(Competition);
             await delay(100);
         }
     }
@@ -231,7 +233,7 @@ $(document).ready(function () {
         source: function (request, response){
             $.ajax({
                 type: 'GET',
-                url: 'http://192.168.160.58/Paris2024/API/Teams/Search?q=' + $("#searchbar").val(),
+                url: 'http://192.168.160.58/Paris2024/API/Competitions/Search?q=' + $("#searchbar").val(),
                 success: function (data){
                     response($.map(data, function(item){
                         return item.Name;
@@ -245,9 +247,9 @@ $(document).ready(function () {
         select: function(e, ui){
             $.ajax({
                 type: 'GET',
-                url: 'http://192.168.160.58/Paris2024/API/Teams/Search?q=' + ui.item.label,
+                url: 'http://192.168.160.58/Paris2024/API/Competitions/Search?q=' + ui.item.label,
                 success: function(data){
-                    window.location = 'equipasDetalhe.html?id=' + data[0].Id;
+                    window.location = 'CompeticoesDetalhe.html?id=' + data[0].Id;
                 }
             })
         },
