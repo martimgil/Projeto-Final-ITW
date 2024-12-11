@@ -4,7 +4,7 @@ var vm = function () {
     //---Variáveis locais
     var self = this;
     self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Competitions');
-    self.displayName = 'Competicoes';
+    self.displayName = 'Competições';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
     self.Competitions = ko.observableArray([]);
@@ -49,18 +49,19 @@ var vm = function () {
             });
         };
     };
-    self.favoriteCompetition = function (id, event) {
+    self.favoriteCompetition = function (sportId, Name, event) {
         let favCompetitions = JSON.parse(window.localStorage.getItem('favCompetitions')) || [];
-        if (!favCompetitions.includes(id)) {
-            favCompetitions.push(id);
+        let competition = { sportId: sportId, name: Name };
+
+        if (!favCompetitions.some(comp => comp.sportId === sportId && comp.name === Name)) {
+            favCompetitions.push(competition);
             window.localStorage.setItem('favCompetitions', JSON.stringify(favCompetitions));
-            console.log('O Competicoes foi adicionado aos favoritos!');
+            console.log(`A competição ${Name} foi adicionada aos favoritos!`);
         } else {
-            console.log('O Competicoes já está na lista de favoritos.');
+            console.log(`A competição ${Name} já está na lista de favoritos.`);
         }
         console.log(JSON.parse(window.localStorage.getItem('favCompetitions')));
     };
-
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
         return true;
