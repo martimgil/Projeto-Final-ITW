@@ -1,22 +1,22 @@
 var vm = function () {
     console.log('ViewModel initiated...');
     var self = this;
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Teams/');
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Competitions/');
     self.error = ko.observable('');
     self.records = ko.observableArray([]);
 
     self.activate = function () {
-        console.log('CALL: getFavouriteTeams...');
-        var favTeamsList = JSON.parse(window.localStorage.getItem('favTeams')) || [];
-        console.log("favoritos", favTeamsList);
-        if (favTeamsList.length === 0) {
+        console.log('CALL: getFavouriteCompetitions...');
+        var favCompetitionsList = JSON.parse(window.localStorage.getItem('favCompetitions')) || [];
+        console.log("favoritos", favCompetitionsList);
+        if (favCompetitionsList.length === 0) {
             self.records(null);
             hideLoading();
             return;
         }
 
-        var requests = favTeamsList.map(function (id) {
-            return ajaxHelper(self.baseUri() + id, 'GET');
+        var requests = favCompetitionsList.map(function (sportId, Name) {
+            return ajaxHelper(self.baseUri() + '?sportId='+ sportId +'&name=' + Name, 'GET');
         });
 
         Promise.all(requests).then(function (responses) {
@@ -30,13 +30,13 @@ var vm = function () {
         });
     };
 
-    self.removeFavourite = function (id) {
-        console.log(id);
-        var favTeamsList = JSON.parse(window.localStorage.getItem('favTeams')) || [];
-        var index = favTeamsList.indexOf(id);
+    self.removeFavourite = function (SportId, Name) {
+        console.log(SportId, Name);
+        var favCompetitionsList = JSON.parse(window.localStorage.getItem('favCompetitions')) || [];
+        var index = favCompetitionsList.findIndex(item => item.id === SportId && item.Name === Name);
         if (index > -1) {
-            favTeamsList.splice(index, 1);
-            window.localStorage.setItem('favTeams', JSON.stringify(favTeamsList));
+            favCompetitionsList.splice(index, 1);
+            window.localStorage.setItem('favCompetitions', JSON.stringify(favCompetitionsList));
             self.activate();
         }
     };
@@ -75,7 +75,7 @@ $(document).ready(function () {
     console.log("ready!");
     ko.applyBindings(new vm());
     $("#clearFavourites").click(function() {
-        if (JSON.parse(window.localStorage.getItem('favTeams'))) {
+        if (JSON.parse(window.localStorage.getItem('favCompetitions'))) {
             window.localStorage.clear();
             window.location.reload();
         } else {
