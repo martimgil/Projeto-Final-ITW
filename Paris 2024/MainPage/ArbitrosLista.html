@@ -43,8 +43,9 @@
   <br>
   <br>
   <div style="position: relative;">
-    <input type="text" placeholder="Pesquise por um árbitro" id="searchbar" data-bind="event: {keypress: onEnter}">
-    <button style="margin-left: 1px;" class="fa fa-search btn btn-outline-danger" id="Technical_officialesSearchBar" type="submit" data-bind="click: search"></button>
+    <input type="text" class="form-control" placeholder="Pesquise por um árbitro" id="searchbar" data-bind="event: {keypress: onEnter}">
+    <button style="margin-left: 1px;" class="fa fa-search btn btn-outline-danger" id="Technical_officialsSearchBar" type="submit" data-bind="click: search"></button>
+    <button style="margin-left: 5px;" class="fa fa-times btn btn-outline-danger" id="ResetSearchBar" type="submit" data-bind="click: Erase"></button>
     <a class="btn btn-danger" style="float: right;" href="ArbitrosFavoritos.html" role="button">Visualiza aqui os teus favoritos</a>
   </div>
   <br>

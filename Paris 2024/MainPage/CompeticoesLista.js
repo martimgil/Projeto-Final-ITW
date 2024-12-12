@@ -33,7 +33,7 @@ var vm = function () {
         } else {
             var chandeUrl = 'http://192.168.160.58/Paris2024/API/Competitions/Search?q=' + $("#searchbar").val();
             self.Competitionslist = [];
-            ajaxHelper(chandeUrl, 'GET').done(function(data){
+            ajaxHelper(chandeUrl, 'GET').done(async function(data){
                 console.log(data);
                 if (data.length ==0){
                     return alert(("Não foram encontrados resultados"))
@@ -46,14 +46,30 @@ var vm = function () {
                 for(var i in data){
                     self.Competitionslist.push(data[i]);
                 }
+                await fetchAllCompetitionsDetails();
+                self.Competitions2(self.Competitions());
+                console.log("Competitions2", self.Competitions2());
+                hideLoading();
+
             });
         };
     };
-    self.favoriteCompetition = function (sportId, Name, event) {
-        let favCompetitions = JSON.parse(window.localStorage.getItem('favCompetitions')) || [];
-        let competition = { sportId: sportId, name: Name };
+    self.Erase = function (){
+        //showLoading();
+        $("#searchbar").val("");
+        var composedUri = self.baseUri();
+        ajaxHelper(composedUri, 'GET').done(function (data) {
+            console.log(data);
+            self.Sports(data);
+        });
+    };
 
-        if (!favCompetitions.some(comp => comp.sportId === sportId && comp.name === Name)) {
+
+    self.favoriteCompetition = function (SportId, Name, event) {
+        let favCompetitions = JSON.parse(window.localStorage.getItem('favCompetitions')) || [];
+        let competition = { SportId: SportId, name: Name };
+
+        if (!favCompetitions.some(comp => comp.SportId === SportId && comp.name === Name)) {
             favCompetitions.push(competition);
             window.localStorage.setItem('favCompetitions', JSON.stringify(favCompetitions));
             console.log(`A competição ${Name} foi adicionada aos favoritos!`);
@@ -135,8 +151,8 @@ var vm = function () {
     };
 
 
-    function getDetailsCompetitions(sportId, name) {
-        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Competitions?sportId=' + sportId +'&name=' + name;
+    function getDetailsCompetitions(SportId, name) {
+        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Competitions?SportId=' + SportId +'&name=' + name;
         return ajaxHelper(detailsUrl, 'GET').done(function (data) {
             console.log(detailsUrl);
             return data;
@@ -148,7 +164,7 @@ var vm = function () {
     }
 
     async function fetchAllCompetitionsDetails(Competition) {
-        console.log("id", Competition.Id);
+        console.log("id", Competition.SportId);
         const data = await getDetailsCompetitions(Competition.SportId, Competition.Name);
         console.log("detalhes", data);
         Competition.SportId = data.SportId;
@@ -250,7 +266,7 @@ $(document).ready(function () {
                 type: 'GET',
                 url: 'http://192.168.160.58/Paris2024/API/Competitions/Search?q=' + ui.item.label,
                 success: function(data){
-                    window.location = 'CompeticoesDetalhe.html?id=' + data[0].Id;
+                    window.location = 'CompeticoesDetalhe.html?SportId=' + data[0].SportId;
                 }
             })
         },

@@ -16,6 +16,7 @@ var vm = function () {
     self.Technical_officialDetails = ko.observableArray([]);
     self.Photo = ko.observable('');
     self.Technical_officials2 = ko.observableArray([]);
+    self.Sex = ko.observable('');
 
     self.search = function () {
         console.log('searching');
@@ -31,7 +32,7 @@ var vm = function () {
         } else {
             var chandeUrl = 'http://192.168.160.58/Paris2024/API/Technical_officials/Search?q=' + $("#searchbar").val();
             self.Technical_officialslist = [];
-            ajaxHelper(chandeUrl, 'GET').done(function(data){
+            ajaxHelper(chandeUrl, 'GET').done(async function(data){
                 console.log(data);
                 if (data.length ==0){
                     return alert(("Não foram encontrados resultados"))
@@ -44,9 +45,25 @@ var vm = function () {
                 for(var i in data){
                     self.Technical_officialslist.push(data[i]);
                 }
+                
+                await fetchAllTechnical_officialDetails();
+                
+                self.Technical_officials2(self.Technical_officials());
+                console.log("Technical_officials2", self.Technical_officials2());
+                hideLoading()
             });
         };
     };
+    self.Erase = function (){
+        //showLoading();
+        $("#searchbar").val("");
+        var composedUri = self.baseUri();
+        ajaxHelper(composedUri, 'GET').done(function (data) {
+            console.log(data);
+            self.Technical_officials(data);
+        });
+    };
+    
     self.favoriteTechnical_official = function (id, event) {
         let favTechnical_officials = JSON.parse(window.localStorage.getItem('favTechnical_officials')) || [];
         if (!favTechnical_officials.includes(id)) {
@@ -112,10 +129,12 @@ var vm = function () {
             console.log("totalPages=", self.totalPages());
             self.totalRecords(data.TotalOfficials);
             console.log("totalRecords=", self.totalRecords());
-
             await fetchAllTechnical_officialDetails();
             self.Technical_officials2(self.Technical_officials());
             console.log("Technical_officials2", self.Technical_officials2());
+            self.Sex(data.Sex);
+
+
         });
     };
 
@@ -146,6 +165,9 @@ var vm = function () {
         console.log("Function", Technical_official.Function);
         Technical_official.OrganisationLong = data.OrganisationLong;
         console.log("OrganisationLong", Technical_official.OrganisationLong);
+        Technical_official.Sex = data.Sex
+        self.Sex(data.Sex)
+
     }
 
     async function fetchAllTechnical_officialDetails() {

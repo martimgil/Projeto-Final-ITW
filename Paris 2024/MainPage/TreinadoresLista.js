@@ -16,6 +16,7 @@ var vm = function () {
     self.coachDetails = ko.observableArray([]);
     self.Photo = ko.observable('');
     self.coaches2 = ko.observableArray([]);
+    self.Sex = ko.observable('');
 
     self.search = function () {
         console.log('searching');
@@ -31,7 +32,7 @@ var vm = function () {
         } else {
             var chandeUrl = 'http://192.168.160.58/Paris2024/API/Coaches/Search?q=' + $("#searchbar").val();
             self.coacheslist = [];
-            ajaxHelper(chandeUrl, 'GET').done(function(data){
+            ajaxHelper(chandeUrl, 'GET').done(async function(data){
                 console.log(data);
                 if (data.length ==0){
                     return alert(("Não foram encontrados resultados"))
@@ -44,6 +45,10 @@ var vm = function () {
                 for(var i in data){
                     self.coacheslist.push(data[i]);
                 }
+                await fetchAllCoachDetails();
+                self.coaches2(self.coaches());
+                console.log("coaches2", self.coaches2());
+                hideLoading();
             });
         };
     };
@@ -145,6 +150,9 @@ var vm = function () {
         self.Photo = ko.observable(coach.Photo);
         coach.Sports = data.Sports;
         console.log("Sports", coach.Sports);
+        coach.Sex = data.Sex
+        self.Sex(data.Sex)
+        coach.Function = data.Function;
     }
 
     async function fetchAllCoachDetails() {

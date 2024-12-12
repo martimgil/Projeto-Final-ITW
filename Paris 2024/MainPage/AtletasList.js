@@ -42,7 +42,6 @@ var vm = function () {
                 self.totalPages(1)
                 console.log(data);
                 showLoading();
-                const filteredData = self.Athletes().filter(item => data.some(filter => filter.Id === item.Id && filter.Name === item.Name));
                 self.Athletes(data);
                 for(var i in data){
                     self.Athleteslist.push(data[i]);
@@ -55,8 +54,6 @@ var vm = function () {
 
                 console.log("Athletes2", self.Athletes2());
                 hideLoading();
-
-
             });
         };
     };
@@ -133,12 +130,12 @@ var vm = function () {
             console.log("pagesize=", self.pagesize());
             self.totalPages(data.TotalPages);
             console.log("totalPages=", self.totalPages());
-            self.totalRecords(data.TotalOfficials);
+            self.totalRecords(data.TotalRecords);
             console.log("totalRecords=", self.totalRecords());
-
             await fetchAllAthleteDetails();
             self.Athletes2(self.Athletes());
             console.log("Athletes2", self.Athletes2());
+
         });
     };
 
@@ -173,6 +170,8 @@ var vm = function () {
         self.BirthDate(data.BirthDate);
         Athlete.Sex = data.Sex
         self.Sex(data.Sex)
+        console.log(self.Sex)
+
     }
 
     async function fetchAllAthleteDetails() {
