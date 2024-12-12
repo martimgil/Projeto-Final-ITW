@@ -34,7 +34,7 @@ var vm = function () {
         });
     };
     self.initMap = function () {
-        self.map = L.map('map').setView([48.8566, 2.3522], 6); // Inicializa em Paris
+        self.map = L.map('map').setView([48.8566, 2.3522], 6);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'

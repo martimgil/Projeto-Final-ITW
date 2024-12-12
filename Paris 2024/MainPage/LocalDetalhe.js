@@ -17,10 +17,10 @@ var vm = function () {
     self.DateStart = ko.observable('');
     self.DateEnd = ko.observable('');
     self.Tag = ko.observable('');
-
+    self.Lat = ko.observable('');
+    self.Lon = ko.observable('');
     self.records = ko.observableArray([]);
     self.map = null;
-
 
     self.activate = function (id) {
         console.log('CALL: getvenues...');
@@ -38,7 +38,11 @@ var vm = function () {
             self.DateEnd(data.DateEnd);
             self.Tag(data.Tag);
             NameMap(data.Name);
-            self.loadData();
+            self.Lat(data.Lat);
+            console.log(data.Lat);
+            self.Lon(data.Lon);
+            console.log(data.Lon);
+            self.addMarkerToMap(self.Lat(), self.Lon(), self.Name());
         });
     };
 
@@ -90,48 +94,13 @@ var vm = function () {
         }).addTo(self.map);
     };
 
-function addMarkerToMap(coords, name) {
-    if (coords) {
-        var marker = L.marker([coords.lat, coords.lng]).addTo(self.map)
-            .bindPopup(name);
-        self.map.setView([coords.lat, coords.lng], 15);  // Isso serve para o zoom ficar a 15% das coordenadas que vem da API
-    } else {
-        console.log(`Local não encontrado: ${name}`);
-    }
-}
-
-    self.loadData = function () {
-        var name = NameMap();
-        console.log("Nome", name);
-
-        getCoordinates(name, function (coords) {
-            addMarkerToMap(coords, name);
-        });
-    };
-
-    const OPENCAGE_API_KEY = '6320ddc3579b4ae288ed9bcf75570d8b';
-
-function getCoordinates(venueName, callback) {
-    var query = `${venueName}, Paris, FR`;
-    var url = `https://api.opencagedata.com/geocode/v1/json?q=${query}&key=${OPENCAGE_API_KEY}`;
-    $.ajax({
-        url: url,
-        success: function(data) {
-            if (data.results.length > 0) {
-                var coords = data.results[0].geometry;
-                console.log("Coordinates found:", coords);
-                callback(coords);
-            } else {
-                console.log("No coordinates found for:", venueName);
-                callback(null);
-            }
-        },
-        error: function() {
-            console.log("Error fetching coordinates for:", venueName);
-            callback(null);
+    self.addMarkerToMap = function (lat, lon, name) {
+        if (lat && lon) {
+            var marker = L.marker([lat, lon]).addTo(self.map)
+                .bindPopup(name);
+            self.map.setView([lat, lon], 15);  // Isso serve para o zoom ficar a 15% das coordenadas que vem da API
         }
-    });
-}
+    };
 
     // --- start ....
     showLoading();
