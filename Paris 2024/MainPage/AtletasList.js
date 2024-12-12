@@ -16,6 +16,9 @@ var vm = function () {
     self.AthleteDetails = ko.observableArray([]);
     self.Photo = ko.observable('');
     self.Athletes2 = ko.observableArray([]);
+    self.BirthDate = ko.observable('');
+    self.Sex = ko.observable('');
+
 
     self.search =  function () {
         console.log('searching');
@@ -166,6 +169,10 @@ var vm = function () {
         console.log("Competitions", Athlete.Competitions);
         Athlete.BirthPlace = data.BirthPlace;
         console.log("BirthPlace", Athlete.BirthPlace);
+        Athlete.BirthDate = data.BirthDate;
+        self.BirthDate(data.BirthDate);
+        Athlete.Sex = data.Sex
+        self.Sex(data.Sex)
     }
 
     async function fetchAllAthleteDetails() {

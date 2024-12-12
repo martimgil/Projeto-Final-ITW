@@ -95,23 +95,17 @@
     <tr data-aos="fade-up">
       <td><img class="align-content-center" data-bind="attr: {src: Photo}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right" class="img-fluid" />
       </td>
-      <!-- ko if: Name -->
       <td class="align-middle" data-bind="text:Name" data-aos="fade-up"></td>
-        <!-- /ko -->
-      <!-- ko if: BirthDate -->
+
 
       <td class="align-middle" data-bind="text:BirthDate" data-aos="fade-up"></td>
-      <!-- /ko -->
-      <!-- ko if: BirthPlace -->
-      <td class="align-middle" data-bind="text:BirthPlace" data-aos="fade-up"></td>
-        <!-- /ko -->
 
-      <!-- ko if: Country -->
+      <td class="align-middle" data-bind="text:BirthPlace" data-aos="fade-up"></td>
+
         <td class="align-middle" data-bind="text:Country" data-aos="fade-up"></td>
-        <!-- /ko -->
-      <!--ko if: Sex -->
+
       <td class="align-middle" data-bind="text:Sex" data-aos="fade-up"></td>
-        <!-- /ko -->
+
       <td class="text-end" data-aos="fade-up">
         <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href:'./atleta.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
         <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteAthlete(Id, event) }" style="margin-left: 5px;">
