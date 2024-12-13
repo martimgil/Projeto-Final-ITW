@@ -41,15 +41,14 @@ var vm = function () {
                 self.totalPages(1)
                 console.log(data);
                 showLoading();
-                self.Competitions(data);
+                self.filteredCompetitions(data);
                 self.totalRecords(data.length);
                 for(var i in data){
                     self.Competitionslist.push(data[i]);
                 }
-                await fetchAllCompetitionsDetails();
-                self.Competitions2(self.Competitions());
-                console.log("Competitions2", self.Competitions2());
-                hideLoading();
+                await fetchAllCompetitionsDetails2();
+                self.filteredCompetitions2(self.filteredCompetitions());
+                console.log("Competitions2", self.filteredCompetitions2());
 
             });
         };
@@ -132,7 +131,7 @@ var vm = function () {
             console.log("totalPages=", self.totalPages());
             self.totalRecords(data.TotalCompetitions);
             console.log("totalRecords=", self.totalRecords());
-
+            hideLoading();
             await fetchAllCompetitionsDetails2();
 
         });
@@ -152,7 +151,7 @@ var vm = function () {
 
 
     function getDetailsCompetitions(SportId, name) {
-        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Competitions?SportId=' + SportId +'&name=' + name;
+        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Competitions?SportId=' + encodeURIComponent(SportId) +'&name=' + encodeURIComponent(name);
         return ajaxHelper(detailsUrl, 'GET').done(function (data) {
             console.log(detailsUrl);
             return data;
@@ -164,8 +163,8 @@ var vm = function () {
     }
 
     async function fetchAllCompetitionsDetails(Competition) {
-        console.log("id", Competition.SportId);
         const data = await getDetailsCompetitions(Competition.SportId, Competition.Name);
+        console.log("id", Competition.SportId);
         console.log("detalhes", data);
         Competition.SportId = data.SportId;
         console.log("SportId", Competition.SportId);
@@ -179,10 +178,12 @@ var vm = function () {
     }
 
     async function fetchAllCompetitionsDetails2() {
+        showLoading();
         for (const Competition of self.filteredCompetitions()) {
             await fetchAllCompetitionsDetails(Competition);
-            await delay(100);
+            await delay(1);
         }
+        hideLoading()
     }
 
     //--- Internal functions
@@ -230,7 +231,6 @@ var vm = function () {
     };
 
     //--- start ....
-    showLoading();
     var pg = getUrlParameter('page');
     console.log(pg);
     if (pg == undefined)
@@ -238,6 +238,7 @@ var vm = function () {
     else {
         self.activate(pg);
     }
+
     console.log("VM initialized!");
 };
 

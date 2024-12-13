@@ -15,8 +15,11 @@ var vm = function () {
             return;
         }
 
-        var requests = favCompetitionsList.map(function (sportId, Name) {
-            return ajaxHelper(self.baseUri() + '?sportId='+ sportId +'&name=' + Name, 'GET');
+        var requests = favCompetitionsList.map(function (item) {
+            console.log('Processing item:', item);
+            var encodedname = encodeURIComponent(item.name);
+            console.log('Encoded name:', encodedname);
+            return ajaxHelper(self.baseUri() + '?sportId=' + item.SportId + '&name=' + encodedname, 'GET');
         });
 
         Promise.all(requests).then(function (responses) {
@@ -28,12 +31,13 @@ var vm = function () {
             self.error(error);
             hideLoading();
         });
+        hideLoading()
     };
 
-    self.removeFavourite = function (SportId, Name) {
-        console.log(SportId, Name);
+    self.removeFavourite = function (SportId, name) {
+        console.log(SportId, name);
         var favCompetitionsList = JSON.parse(window.localStorage.getItem('favCompetitions')) || [];
-        var index = favCompetitionsList.findIndex(item => item.id === SportId && item.Name === Name);
+        var index = favCompetitionsList.findIndex(item => item.id === SportId && item.name === name);
         if (index > -1) {
             favCompetitionsList.splice(index, 1);
             window.localStorage.setItem('favCompetitions', JSON.stringify(favCompetitionsList));
