@@ -18,6 +18,10 @@ var vm = function () {
     self.Teams2 = ko.observableArray([]);
     self.filteredTeams = ko.observableArray([]);
     self.filteredTeams2 = ko.observableArray([]);
+    self.Id = ko.observable('');
+    self.Sex = ko.observable('');
+    self.Num_athletes = ko.observable('');
+    self.Num_coaches = ko.observable('');
 
     self.search = function () {
         console.log('searching');
@@ -33,7 +37,7 @@ var vm = function () {
         } else {
             var chandeUrl = 'http://192.168.160.58/Paris2024/API/Teams/Search?q=' + $("#searchbar").val();
             self.Teamslist = [];
-            ajaxHelper(chandeUrl, 'GET').done(function(data){
+            ajaxHelper(chandeUrl, 'GET').done(async function(data){
                 console.log(data);
                 if (data.length ==0){
                     return alert(("Não foram encontrados resultados"))
@@ -41,11 +45,18 @@ var vm = function () {
                 self.totalPages(1)
                 console.log(data);
                 showLoading();
-                self.Teams(data);
-                self.totalRecords(data.length);
+                self.filteredTeams(data);
                 for(var i in data){
                     self.Teamslist.push(data[i]);
                 }
+                await fetchAllTeamsDetails2();
+
+
+
+                self.filteredTeams2(self.Teams());
+                console.log("Teams2", self.filteredTeams2());
+                hideLoading();
+
             });
         };
     };
@@ -149,15 +160,22 @@ var vm = function () {
     }
 
     async function fetchAllTeamsDetails(Team) {
-        console.log("id", Team.Id);
         const data = await getDetailsTeams(Team.Id);
         console.log("detalhes", data);
-        Team.Num_athletes = data.Num_athletes;
-        console.log("Num_athletes", Team.Num_athletes);
+
         Team.Num_coaches = data.Num_coaches;
         console.log("Num_coaches", Team.Num_coaches);
         Team.Sport = data.Sport.Name;
         console.log("Sport.Name", Team.Sport.Name);
+        Team.Id = data.Id;
+        console.log("Id", Team.Id);
+        self.Id(Team.Id);
+        Team.Sex = data.Sex;
+        self.Sex(data.Sex)
+        console.log("sex", data.Sex);
+        Team.Num_athletes = data.Num_athletes;
+        self.Num_athletes(data.Num_athletes);
+        console.log("Num_athletes", Team.Num_athletes);
 
     }
 
