@@ -99,26 +99,15 @@ var vm = function () {
     //--- Page Events
     self.activate = function (id) {
         console.log('CALL: getAthletics...');
-        var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
+        var composedUri = self.baseUri()  + "/Events"
         ajaxHelper(composedUri, 'GET').done(async function (data) {
             console.log(data);
 
             self.Athletics(data.Athletics);
             console.log("Athletics=", self.Athletics());
-            self.currentPage(data.CurrentPage);
-            console.log("currentPage=", self.currentPage());
-            self.hasNext(data.HasNext);
-            console.log("hasNext=", self.hasNext());
-            self.hasPrevious(data.HasPrevious);
-            console.log("hasPrevious=", self.hasPrevious());
-            self.pagesize(data.PageSize);
-            console.log("pagesize=", self.pagesize());
-            self.totalPages(data.TotalPages);
-            console.log("totalPages=", self.totalPages());
-            self.totalRecords(data.TotalAthletics);
-            console.log("totalRecords=", self.totalRecords());
 
-            await fetchAllAthleticsDetails();
+
+           // await fetchAllAthleticsDetails();
             self.Athletics2(self.Athletics());
             console.log("Athletics2", self.Athletics2());
 
