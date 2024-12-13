@@ -12,73 +12,97 @@
   <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color: #494c72">
+<nav class="navbar navbar-expand-lg fixed-top" style="background-color: #494c72; margin: 0 0 80px 0; ">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#"><img src="https://olympics.com/_pr/topic-assets/paris-2024/emblem-oly.svg" alt="Paris 2024 Emblem" style="height: 60px; width: 60px;"></a>
+    <a class="navbar-brand  mx-auto" href="MainPage.html"><img src="https://olympics.com/_pr/topic-assets/paris-2024/emblem-oly.svg" alt="Paris 2024 Emblem" style="height: 60px; width: 60px;" > </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <a class="nav-link active"  aria-current="page" href="atletas.html"><i class="fa fa-person-running"></i> Atletas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Contactos</a>
+          <a class="nav-link active"  aria-current="page" href="TreinadoresLista.html"><i class="fa-solid fa-dumbbell"></i> Treinadores</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ms-auto" href="#" style="float: right">Iniciar sessão</a>
+          <a class="nav-link ms-auto" href="ArbitrosLista.html" style="float: right"><i class="fa-solid fa-gavel"></i> Árbitros</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link ms-auto" href="EquipasLista.html" style="float: right"><i class="fa-solid fa-user-group"></i> Equipas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link ms-auto" href="CompeticoesLista.html" style="float: right"><i class="fa-solid fa-trophy"></i> Competições</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link ms-auto" href="Modalidade.html" style="float: right"><i class="fa-solid fa-football-ball"></i> Modalidades</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link ms-auto" href="NOCLista.html" style="float: right"><i class="fa-solid fa-flag"></i> Comités</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link ms-auto" href="Locais.html" style="float: right"><i class="fa-solid fa-location-dot"></i> Locais</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link ms-auto" href="Tocha.html" style="float: right"><i class="fa-solid fa-fire"></i> Tocha</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link ms-auto" href="Medalheiro.html" style="float: right"><i class="fa-solid fa-medal"></i> Medalhas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link ms-auto" href="Favoritos.html" style="float: right"><i class="fa-solid fa-heart"></i></a>
+        </li>
+
       </ul>
       <span class="navbar-text"></span>
     </div>
   </div>
+  </div>
 </nav>
 
 
-<div class="container" data-aos="fade-up">
+<div class="container" style="margin: 100px 0 0 0 " data-aos="fade-up">
   <div class="border-bottom py-2 mb-2" data-aos="fade-up">
     <h2 data-bind="text:displayName" class="title" data-aos="fade-up"></h2>
   </div>
   <br>
   <br>
-  <div style="position: relative;">
-    <input type="text" class="form-control" placeholder="Pesquise por um atleta" id="searchbar" data-bind="event: {keypress: onEnter}">
-    <button style="margin-left: 1px;" class="fa fa-search btn btn-outline-danger" id="athletesSearchBar" type="submit" data-bind="click: search"></button>
-    <button style="margin-left: 5px;" class="fa fa-times btn btn-outline-danger" id="ResetSearchBar" type="submit" data-bind="click: Erase"></button>
-    <a class="btn btn-danger" style="float: right;" href="AtletasFavoritos.html" role="button">Visualiza aqui os teus favoritos</a>
-  </div>
+<div style="display: flex; align-items: center;">
+  <input type="text" class="form-control" style="width: 30%; margin-right: 5px;" placeholder="Pesquise por um atleta" id="searchbar" data-bind="event: {keypress: onEnter}">
+  <button style="margin-left: 5px;" class="fa fa-search btn btn-outline-danger" id="athletesSearchBar" type="submit" data-bind="click: search"></button>
+  <button style="margin-left: 5px;" class="fa fa-times btn btn-outline-danger" id="ResetSearchBar" type="submit" data-bind="click: Erase"></button>
+  <a class="btn btn-danger" style="float: right; margin-left: auto;" href="AtletasFavoritos.html" role="button">Visualiza aqui os teus favoritos</a>
+</div>
   <br>
   <br>
 
-  <!-- ko if: Athletes().length > 0 -->
-<div class="row small" data-aos="fade-up">
-  <p class="col-4 mr-auto pt-2" data-aos="fade-up">
-    <span data-bind="html: 'Page: ' + currentPage() + ' of ' + totalPages()" data-aos="fade-up"></span><br />
-    <span data-bind="html: 'Athletes: ' + fromRecord() + '-' + toRecord() + ' of ' + totalRecords()" data-aos="fade-up"></span>
-  </p>
-  <div class="col-8 my-0 pt-3" data-aos="fade-up">
-    <ul class="pagination float-end" data-aos="fade-up">
-      <!-- ko if: currentPage() > 5 && totalPages() > 10 -->
-      <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="First Page" data-bind="attr: { href: './atletas.html?page=1', rel: 'prev' }">⇤</a></li>
-      <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="Previous Page" data-bind="attr: { href: './atletas.html?page=' + previousPage(), rel: 'prev' }">←</a></li>
-      <!-- /ko -->
-      <!-- ko foreach: pageArray() -->
-      <!-- ko if: $data == $parent.currentPage() -->
-      <li class="active page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { title: 'Current Page ' + $data }, text: $data" data-aos="fade-up"></a></li>
-      <!-- /ko -->
-      <!-- ko if: $data != $parent.currentPage() -->
-      <li class="page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { href: './atletas.html?page=' + $data + '&pagesize=' + $parent.pagesize(), title: 'Goto Page ' + $data }, text: $data" data-aos="fade-up"></a></li>
-      <!-- /ko -->
-      <!-- /ko -->
-      <!-- ko if: currentPage() < totalPages() - 4 && totalPages() > 9 -->
-      <li class="page-item" data-aos="fade-up"><a class="page-link" title="Next Page" data-bind="attr: { href: './atletas.html?page=' + nextPage(), rel: 'next' }" data-aos="fade-up">→</a></li>
-      <li class="page-item" data-aos="fade-up"><a class="page-link" title="Last Page" data-bind="attr: { href: './atletas.html?page=' + totalPages() }" data-aos="fade-up">⇥</a></li>
-      <!-- /ko -->
-    </ul>
-  </div>
-</div>
-<!-- /ko -->
+  <!-- ko if:Athletes().length > 0 -->
+  <div class="row small" data-aos="fade-up">
+    <p class=" col-4 mr-auto pt-2" data-aos="fade-up">
+      <span data-bind="html: 'Page: ' + currentPage() + ' of ' + totalPages()" data-aos="fade-up"></span><br />
+      <span data-bind="html: 'Athletes: '+ fromRecord() + '-' + toRecord() + ' of ' + totalRecords()" data-aos="fade-up"></span>
+    </p>
+    <div class="col-8 my-0 pt-3" data-aos="fade-up">
+      <ul class="pagination float-end" data-aos="fade-up">
+        <!-- ko if: currentPage() > 5 && totalPages() > 10 -->
+        <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="First Page" data-bind="attr: { href: './atletas.html?page=' + '1',  rel:'prev'}">⇤</a></li>
+        <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="Previous Page" data-bind="attr: { href: './atletas.html?page=' + previousPage(),  rel:'prev'}">←</a></li>
+        <!-- /ko -->
+        <!-- ko foreach: pageArray()-->
+        <!-- ko if:$data == $parent.currentPage() -->
+        <li class="active page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { title:'Current Page ' + $data }, text: $data" data-aos="fade-up"></a></li>
+        <!-- /ko -->
+        <!-- ko if:$data != $parent.currentPage() -->
+        <li class="page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { href: './atletas.html?page=' + $data + '&pagesize=' + $parent.pagesize(), title:'Goto Page ' + $data }, text:$data" data-aos="fade-up"></a></li>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- ko if: currentPage() < totalPages() - 4 && totalPages() > 9 -->
+        <li class="page-item" data-aos="fade-up"><a class="page-link" title="Next Page" data-bind="attr: { href: './atletas.html?page=' + nextPage(), rel:'next' }" data-aos="fade-up">→</a></li>
+        <li class="page-item" data-aos="fade-up"><a class="page-link" title="Last Page" data-bind="attr: { href: './atletas.html?page=' + totalPages() }" data-aos="fade-up">⇥</a></li>
+        <!-- /ko -->
       </ul>
     </div>
   </div>
@@ -123,6 +147,17 @@
     </tbody>
   </table>
 </div>
+<img src="identidade/banner3.png" width="100%" height="auto">
+<nav class="navbar fixed-bottom bg-body-tertiary border-top">
+  <div class="container">
+    <div class="small">
+      <div class="navbar-text d-block d-md-none"> &copy; 2024 - ITW</div>
+      <div class="navbar-text d-none d-md-inline-block"> &copy; 2024 - Introdução às Tecnologias Web</div>
+    </div>
+    <div class="navbar-center navbar-text small d-md-inline-block">Made with <i class="fa fa-heart red"></i> by Martim Gil/Daniel Duque </div>
+    <div class="navbar-right navbar-text small d-none d-md-inline-block"><a class="nav-link" href="https://www.ua.pt/" target="_blank" title="Universidade de Aveiro">Universidade de Aveiro</a></div>
+  </div>
+</nav>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-aos="fade-up">
   <div class="modal-dialog modal-dialog-centered" role="document" data-aos="fade-up">
