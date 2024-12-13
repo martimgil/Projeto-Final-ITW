@@ -49,38 +49,44 @@
   <br>
 
   <div class="container" data-aos="fade-up">
-    <select class="form-select" data-bind="event: { change: filterByDisciplineCode }" id="disciplines_code" name="disciplines_code">
-      <option>Escolha uma opção</option>
-      <option value="VBV">Voleibol de Praia</option>
-      <option value="ARC">Tiro com Arco</option>
-      <option value="ATH">Atletismo</option>
-      <option value="BDM">Badminton</option>
-      <option value="BK3">Basketball 3x3</option>
-      <option value="BKB">Basketball</option>
-      <option value="CSP">Canoagem de Velocidade</option>
-      <option value="CTR">Ciclismo de Pista</option>
-      <option value="DIV">Mergulho</option>
-      <option value="EQU">Equitação</option>
-      <option value="FBL">Futebol</option>
-      <option value="FEN">Esgrima</option>
-      <option value="GAR">Ginástica Artística</option>
-      <option value="GRY">Ginástica Rítmica</option>
-      <option value="HBL">Handebol</option>
-      <option value="HOC">Hóquei</option>
-      <option value="JUD">Judo</option>
-      <option value="ROW">Remo</option>
-      <option value="RU7">Rugby Sevens</option>
-      <option value="SAL">Vela</option>
-      <option value="SHO">Tiro </option>
-      <option value="SWA">Natação Artística</option>
-      <option value="SWM">Natação</option>
-      <option value="TEN">Tenis</option>
-      <option value="TRI">Triatlo</option>
-      <option value="TTE">Tenis de Mesa</option>
-      <option value="VVO">Voleiboll</option>
-      <option value="WPO">Polo Aquático</option>
-    </select>
-    <label>Escolha a modalidade</label>
+  <div class="mb-3">
+    <div class="form-floating">
+      <select class="form-select" id="disciplines_code" name="disciplines_code" data-bind="event: { change: filterByDisciplineCode }">
+        <option selected>-- Escolha uma opção --</option>
+        <option value="VBV">Voleibol de Praia</option>
+        <option value="ARC">Tiro com Arco</option>
+        <option value="ATH">Atletismo</option>
+        <option value="BDM">Badminton</option>
+        <option value="BK3">Basketball 3x3</option>
+        <option value="BKB">Basketball</option>
+        <option value="CSP">Canoagem de Velocidade</option>
+        <option value="CTR">Ciclismo de Pista</option>
+        <option value="DIV">Mergulho</option>
+        <option value="EQU">Equitação</option>
+        <option value="FBL">Futebol</option>
+        <option value="FEN">Esgrima</option>
+        <option value="GAR">Ginástica Artística</option>
+        <option value="GRY">Ginástica Rítmica</option>
+        <option value="HBL">Handebol</option>
+        <option value="HOC">Hóquei</option>
+        <option value="JUD">Judo</option>
+        <option value="ROW">Remo</option>
+        <option value="RU7">Rugby Sevens</option>
+        <option value="SAL">Vela</option>
+        <option value="SHO">Tiro</option>
+        <option value="SWA">Natação Artística</option>
+        <option value="SWM">Natação</option>
+        <option value="TEN">Tenis</option>
+        <option value="TRI">Triatlo</option>
+        <option value="TTE">Tenis de Mesa</option>
+        <option value="VVO">Voleiboll</option>
+        <option value="WPO">Polo Aquático</option>
+      </select>
+      <label for="disciplines_code" class="form-label">Escolha a modalidade</label>
+
+
+    </div>
+
   </div>
 
 
@@ -117,6 +123,7 @@
   </tr>
   </tbody>
 </table>
+</div>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-aos="fade-up">

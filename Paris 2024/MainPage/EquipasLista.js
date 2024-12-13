@@ -122,6 +122,7 @@ var vm = function () {
     };
 
     self.filterByDisciplineCode = async function (){
+        showLoading()
         console.log("funçao foi chamada")
         const selectedCode = $('#disciplines_code').val();
         console.log("Selected Code", selectedCode);
@@ -130,6 +131,7 @@ var vm = function () {
         console.log("Filtered Teams", filtered);
         await fetchAllTeamsDetails2();
         self.filteredTeams2(self.filteredTeams());
+        hideLoading()
 
     };
 
@@ -211,7 +213,6 @@ var vm = function () {
     };
 
     //--- start ....
-    showLoading();
     var pg = getUrlParameter('page');
     console.log(pg);
     if (pg == undefined)
