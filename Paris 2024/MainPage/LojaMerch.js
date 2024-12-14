@@ -64,12 +64,13 @@ function valid() {
 }
 
 function clean() {
+    localStorage.removeItem('Cart');
+
+
+    document.getElementById('quantidades').innerText = '0';
+    document.getElementById('total').innerText = '0.00';
+
     for (let i = 1; i <= 15; i++) {
-        document.getElementById('qty' + i).value = 0;
+        document.getElementById(`qty${i}`).value = '0';
     }
-    precoTotal = 0;
-    qtdTotal = 0;
-    inputPrecoTotal.innerText = "0.00";
-    inputQtdTotal.innerText = 0;
-    window.localStorage.removeItem('Cart');
 }
