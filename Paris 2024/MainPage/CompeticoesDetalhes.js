@@ -1,49 +1,34 @@
 // ViewModel Knockout
 var vm = function () {
-    var self = this;
+    var self = this; // Definir `self` adequadamente
     console.log("ViewModel initiated...");
 
     //--- Variáveis locais
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Competitions/');
-    self.displayName = 'Competitions Details';
-    self.error = ko.observable('');
-    self.Id = ko.observable('');
-    self.Name = ko.observable('');
-    self.Sex = ko.observable('');
-    self.Num_athletes = ko.observable('');
-    self.Num_coaches = ko.observable('');
-    self.Athletes = ko.observableArray([]);
-    self.Coaches = ko.observableArray([]);
-    self.NOC = ko.observableArray([]);
-    self.Sport = ko.observableArray([]);
-    self.Medals = ko.observableArray([]);
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/api/Competitions');
+    self.displayName = 'Detalhes da Competição';
+    self.CompInfo = ko.observableArray([]);
+    self.CompInfo2 = ko.observableArray([]);
+    self.SName = ko.observable('');
+
 
     self.activate = function (id) {
         console.log('CALL: getAthlete...');
         var composedUri = self.baseUri() + id;
         ajaxHelper(composedUri, 'GET').done(function (data) {
-            console.log(data);
-            self.Id(data.Id);
-            self.Name(data.Name);
-            self.Sex(data.Sex);
-            self.Num_athletes(data.Num_athletes);
-            self.Num_coaches(data.Num_coaches);
-            self.Athletes(data.Athletes);
-            self.Coaches(data.Coaches);
-            self.NOC(data.NOC);
-            self.Sport(data.Sport);
-            self.Medals(data.Medals);
-
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.log("AJAX Call [" + composedUri + "] Fail...");
-            self.error(errorThrown);
-        }).always(function () {
             hideLoading();
+
+            self.CompInfo(data);
+
+            var SportUri = 'http://192.168.160.58/Paris2024/api/Sports/' + data.SportId;
+            ajaxHelper(SportUri, 'GET').done(function (data) {
+                self.CompInfo().Sport = data.Name;
+                self.CompInfo2(self.CompInfo());
+            });
+            console.log(self.CompInfo());
         });
     };
 
     function ajaxHelper(uri, method, data) {
-        self.error(''); // Clear error message
         return $.ajax({
             type: method,
             url: uri,
@@ -52,6 +37,7 @@ var vm = function () {
             data: data ? JSON.stringify(data) : null,
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("AJAX Call [" + uri + "] Fail...");
+                hideLoading();
                 self.error(errorThrown);
             }
         });
@@ -68,29 +54,34 @@ var vm = function () {
         $('#myModal').modal('hide');
     }
 
-    function getUrlParameter(sParam) {
+    function getUrlParameters() {
         var sPageURL = window.location.search.substring(1),
             sURLVariables = sPageURL.split('&'),
-            sParameterName;
+            params = {};
 
         for (var i = 0; i < sURLVariables.length; i++) {
-            sParameterName = sURLVariables[i].split('=');
-            if (sParameterName[0].toLowerCase() === sParam.toLowerCase()) {
-                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] === 'sportId') {
+                params.sportId = sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            } else if (sParameterName[0] === 'name') {
+                params.name = sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
             }
+        }
+
+        // If both sportId and name are found, return the formatted string
+        if (params.sportId && params.name) {
+            return `?sportId=${params.sportId}&name=${params.name}`;
         }
     }
 
     // --- start ....
     showLoading();
-    var sportId = getUrlParameter('sportId');
-    var name = getUrlParameter('name');
-
+    var pg = getUrlParameters();
     console.log(pg);
-    if (sportId === undefined)
+    if (pg === undefined)
         self.activate(1);
     else {
-        self.activate(sportId);
+        self.activate(pg);
     }
     console.log("VM initialized!");
 };
@@ -98,4 +89,8 @@ var vm = function () {
 $(document).ready(function () {
     console.log("document.ready!");
     ko.applyBindings(new vm());
+});
+
+$(document).ajaxComplete(function () {
+    $("#myModal").modal('hide');
 });

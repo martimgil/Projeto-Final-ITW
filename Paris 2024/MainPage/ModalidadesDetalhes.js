@@ -57,10 +57,7 @@ var vm = function () {
             }
         }
     }
-    function Competitions () {
 
-
-    }
     // --- start ....
     showLoading();
     var pg = getUrlParameter('id');

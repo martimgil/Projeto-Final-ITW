@@ -119,6 +119,19 @@ var vm = function () {
         }
 
     };
+    self.favoriteCompetition = function (SportId, Name, event) {
+        let favCompetitions = JSON.parse(window.localStorage.getItem('favCompetitions')) || [];
+        let competition = { SportId: SportId, name: Name };
+
+        if (!favCompetitions.some(comp => comp.SportId === SportId && comp.name === Name)) {
+            favCompetitions.push(competition);
+            window.localStorage.setItem('favCompetitions', JSON.stringify(favCompetitions));
+            console.log(`A competição ${Name} foi adicionada aos favoritos!`);
+        } else {
+            console.log(`A competição ${Name} já está na lista de favoritos.`);
+        }
+        console.log(JSON.parse(window.localStorage.getItem('favCompetitions')));
+    };
 
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
@@ -209,18 +222,10 @@ var vm = function () {
                         self.Dict.push(Athlete);
                     }
 
-                    // After processing all athletes, update the dictionary
                     self.Dict(data.Competitions);
                     console.log("Dictionary", self.Dict());
                 });
             }
-
-
-        }
-
-
-        function delay(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
         }
     };
 
