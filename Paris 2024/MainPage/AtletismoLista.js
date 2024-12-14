@@ -99,22 +99,119 @@ var vm = function () {
     //--- Page Events
     self.activate = function (id) {
         console.log('CALL: getAthletics...');
-        var composedUri = self.baseUri()  + "/Events"
+        var composedUri = self.baseUri() + "/Events";
         ajaxHelper(composedUri, 'GET').done(async function (data) {
-            console.log(data);
-
-            self.Athletics(data.Athletics);
+            console.log("data", data);
+            var flattenedData = flattenAthleticsData(data);
+            self.Athletics(flattenedData);
+            self.Athletics2(flattenedData.slice());
             console.log("Athletics=", self.Athletics());
-
-
-           // await fetchAllAthleticsDetails();
-            self.Athletics2(self.Athletics());
             console.log("Athletics2", self.Athletics2());
-
-
-
+            populateEventSelect();
+            populateStageSelect();
         });
     };
+
+    function flattenAthleticsData(data) {
+        var flattenedData = [];
+        data.forEach(function (athletics) {
+            athletics.Stages.forEach(function (stage) {
+                var entry = {
+                    EventId: athletics.EventId,
+                    EventName: athletics.EventName,
+                    StageId: stage.StageId,
+                    StageName: stage.StageName
+                };
+                flattenedData.push(entry);
+            });
+        });
+        return flattenedData;
+    }
+
+    function populateEventSelect() {
+        var selectBox = document.getElementById('eventSelect');
+        var eventIds = new Set();
+        self.Athletics().forEach(function (athletics) {
+            if (!eventIds.has(athletics.EventId)) {
+                eventIds.add(athletics.EventId);
+                var option = document.createElement('option');
+                option.value = athletics.EventId;
+                option.text = athletics.EventName;
+                selectBox.appendChild(option);
+            }
+        });
+    }
+
+    function populateStageSelect() {
+        var selectBox = document.getElementById('stageSelect');
+        var stageIds = new Set();
+        self.Athletics().forEach(function (athletics) {
+            if (!stageIds.has(athletics.StageId)) {
+                stageIds.add(athletics.StageId);
+                var option = document.createElement('option');
+                option.value = athletics.StageId;
+                option.text = athletics.StageName;
+                selectBox.appendChild(option);
+            }
+        });
+    }
+
+    function filterTableByEvent() {
+        var selectedEventId = document.getElementById('eventSelect').value;
+        var selectBox = document.getElementById('stageSelect');
+        selectBox.innerHTML = '<option value="0">Todas as fases</option>';
+
+        if(selectedEventId == 0){
+            self.Athletics(self.Athletics2());
+        } else{
+            var filteredAthletics = self.Athletics2().filter(function (athletics) {
+                return athletics.EventId == selectedEventId;
+            });
+        }
+
+        filteredAthletics.forEach(function (athletics) {
+            var option = document.createElement('option');
+            option.value = athletics.StageId;
+            option.text = athletics.StageName;
+            selectBox.appendChild(option);
+        });
+        self.Athletics(filteredAthletics);
+        console.log("Filtered Athletics:", filteredAthletics);
+    }
+
+    function filterTableByStage(){
+        var selectedStageId = document.getElementById('stageSelect').value;
+        var filteredAthletics = self.Athletics2().filter(function (athletics){
+            return athletics.StageId == selectedStageId;
+        });
+        self.Athletics(filteredAthletics);
+        console.log("Filtered Athletics:", filteredAthletics);
+    }
+
+    document.getElementById('eventSelect').addEventListener('change', function (){
+        filterStagesByEvent();
+        filterTableByEvent();
+    });
+    document.getElementById('stageSelect').addEventListener('change', filterTableByStage);
+
+
+
+    function filterStagesByEvent() {
+        var selectedEventId = document.getElementById('eventSelect').value;
+        var selectBox = document.getElementById('stageSelect');
+        selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
+
+        var filteredStages = self.Athletics2().filter(function (athletics) {
+            return athletics.EventId == selectedEventId;
+        });
+
+        filteredStages.forEach(function (athletics) {
+            var option = document.createElement('option');
+            option.value = athletics.StageId;
+            option.text = athletics.StageName;
+            selectBox.appendChild(option);
+        });
+    }
 
     function getPhotoUrl(id){
         var detailsUrl = 'http://192.168.160.58/Paris2024/API/Athletics/' + id;
@@ -151,9 +248,7 @@ var vm = function () {
         }
 
         hideLoading();
-
     }
-
 
     //--- Internal functions
     function ajaxHelper(uri, method, data) {
