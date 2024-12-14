@@ -10,48 +10,115 @@ var vm = function () {
     self.Competitions = ko.observableArray([]);
     self.currentPage = ko.observable(1);
     self.pagesize = ko.observable(20);
+    self.pagesize2 = ko.observable(500);
     self.totalRecords = ko.observable(0);
     self.hasPrevious = ko.observable(false);
     self.hasNext = ko.observable(false);
     self.CompetitionDetails = ko.observableArray([]);
     self.Photo = ko.observable('');
     self.Competitions2 = ko.observableArray([]);
-    self.AthleteN = ko.observable('');
+    self.Sports = ko.observableArray([]);
+    self.Name = ko.observableArray([]);
+    self.selectedItem = ko.observable();
 
-    self.search = function () {
+    self.Dict = ko.observableArray([]);
+
+
+    self.search = async function () {
+        showLoading()
         console.log('searching');
-        if ($("#searchbar").val() === ""){
+        var search = $("#searchbar").val();
+        if (search === "") {
             var pg = getUrlParameter('page');
-            console.log(pg);
-            if(pg == undefined)
+            if (pg == undefined)
                 self.activate(1);
-            else{
+            else {
                 self.activate(pg);
             }
         } else {
-            var chandeUrl = 'http://192.168.160.58/Paris2024/api/Competitions/Search?q=' + $("#searchbar").val();
-            ajaxHelper(chandeUrl, 'GET').done(function(data){
-                console.log(data);
-                if (data.length ==0){
-                    return alert(("Não foram encontrados resultados"))
-                }
-                console.log(data);
-                const filteredData = self.Competitions().filter(item => data.some(filter => filter.Id === item.Id && filter.Name === item.Name));
+            var searchUrl = 'http://192.168.160.58/Paris2024/api/Competitions/Search?q=' + search;
+            var Sport = self.selectedItem();
+            console.log(Sport);
+            if(Sport !== undefined){
+                ajaxHelper(searchUrl, 'GET').done(async function (data) {
+                    console.log(data);
+                    if (data.length == 0) {
+                        alert("Não foram encontrados resultados");
+                        return;
+                    }
+                    // Update competitions with search results
+                    for (const Athlete of data) {
+                        await fetchAthleteDetails(Athlete); // Fetch athlete-related details
+                        await fetchCompDetails(Athlete); // Fetch competition-related details
+                        await delay(1); // Optional delay between requests
+                    }
 
-                self.Competitions(filteredData);
-            });
+                    const filtered = data.filter(Competition => Competition.Sport === Sport);
+
+                    self.Competitions2(filtered);
+
+                    self.totalRecords(filtered.length);
+                    console.log("totalRecords updated to:", self.totalRecords());
+                    self.totalPages(Math.ceil(self.totalRecords() / self.pagesize()));
+                    console.log("totalPages recalculated to:", self.totalPages());
+
+                    self.currentPage(1);
+                });
+            }
+            else{
+                ajaxHelper(searchUrl, 'GET').done(async function (data) {
+                    console.log(data);
+                    if (data.length == 0) {
+                        alert("Não foram encontrados resultados");
+                        return;
+                    }
+                    // Update competitions with search results
+                    for (const Athlete of data) {
+                        await fetchAthleteDetails(Athlete); // Fetch athlete-related details
+                        await fetchCompDetails(Athlete); // Fetch competition-related details
+                        await delay(1); // Optional delay between requests
+                    }
+
+                    self.Competitions2(data);
+
+                    self.totalRecords(data.length);
+                    console.log("totalRecords updated to:", self.totalRecords());
+                    self.totalPages(Math.ceil(self.totalRecords() / self.pagesize()));
+                    console.log("totalPages recalculated to:", self.totalPages());
+
+                    self.currentPage(1);
+                });
+            }
+
         }
+        hideLoading()
     };
 
     self.Erase = function (){
-        //showLoading();
-        $("#searchbar").val("");
-        var composedUri = self.baseUri();
-        ajaxHelper(composedUri, 'GET').done(function (data) {
-            console.log(data);
-            self.Competitions(data);
-        });
+        self.selectedItem(null);
+        self.activate(1);
     }
+
+    self.Select = async function () {
+        const selected = self.selectedItem();
+
+        if (!selected) {
+
+            self.activate(1);
+        }
+        else{
+            const filtered = self.Dict().filter(Competition => Competition.Sport === selected);
+            self.Competitions2(filtered);
+
+            self.totalRecords(filtered.length);
+            console.log("totalRecords updated to:", self.totalRecords());
+            self.totalPages(Math.ceil(self.totalRecords() / self.pagesize()));
+            console.log("totalPages recalculated to:", self.totalPages());
+
+            self.currentPage(1);
+        }
+
+    };
 
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
@@ -86,8 +153,11 @@ var vm = function () {
         return list;
     };
 
+
+
     //--- Page Events
     self.activate = function (id) {
+        showLoading()
         console.log('CALL: getCompetitions...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
         ajaxHelper(composedUri, 'GET').done(async function (data) {
@@ -108,12 +178,88 @@ var vm = function () {
             self.totalRecords(data.TotalCompetitions);
             console.log("totalRecords=", self.totalRecords());
 
+            var composedUri = 'http://192.168.160.58/Paris2024/api/Sports';
+            ajaxHelper(composedUri, 'GET').done(function (data) {
+                self.Sports(data);
+                for (const Name of self.Sports()){
+                    self.Name.push(Name.Name)
+                }
+            });
+
+
+            await fetchAllAthleteDetails();
             hideLoading();
+            Dictionary(); //If Dictionary function starts before the page finishes loading may result in error 500
             self.Competitions2(self.Competitions());
             console.log("Competitions2", self.Competitions2());
         });
+
+        function Dictionary() {
+            if (self.Dict().length === 0){
+                var backUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize2();
+                ajaxHelper(backUri, 'GET').done(async function (data) {
+                    for (const Athlete of data.Competitions) {
+                        console.log('Processing Athlete:', Athlete);
+                        // Fetch athlete and competition details in parallel
+                        await Promise.all([
+                            fetchAthleteDetails(Athlete),
+                            fetchCompDetails(Athlete)
+                        ]);
+
+                        self.Dict.push(Athlete);
+                    }
+
+                    // After processing all athletes, update the dictionary
+                    self.Dict(data.Competitions);
+                    console.log("Dictionary", self.Dict());
+                });
+            }
+
+
+        }
+
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
     };
 
+    function getPhotoUrl(id) {
+        var detailsUrl = 'http://192.168.160.58/Paris2024/api/Sports/' + id;
+        return ajaxHelper(detailsUrl, 'GET').then(function (data) {
+            return data; // Resolve with data if successful
+        });
+    }
+
+    function getCompUrl(id, name) {
+        var detailUri = 'http://192.168.160.58/Paris2024/api/Competitions?sportId=' + encodeURIComponent(id) + '&name=' + encodeURIComponent(name);
+        return ajaxHelper(detailUri, 'GET').then(function (data) {
+            return data; // Resolve with data if successful
+        });
+    }
+
+    async function fetchAthleteDetails(Athlete) {
+        const data = await getPhotoUrl(Athlete.SportId);
+        Athlete.Sport = data.Name;
+    }
+
+    async function fetchCompDetails(Athlete) {
+        const data = await getCompUrl(Athlete.SportId, Athlete.Name);
+        Athlete.AthleteNumber = data.Athletes.length;
+    }
+
+    async function fetchAllAthleteDetails() {
+        for (const Athlete of self.Competitions()) {
+            await fetchAthleteDetails(Athlete);
+            await fetchCompDetails(Athlete);
+            await delay(1);
+        }
+
+    }
+
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
 
     //--- Internal functions
@@ -125,19 +271,11 @@ var vm = function () {
             dataType: 'json',
             contentType: 'application/json',
             data: data ? JSON.stringify(data) : null,
-            success: function (data) {
-                console.log("AJAX Call[" + uri + "] Success...");
-            },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("AJAX Call[" + uri + "] Fail...");
                 self.error(errorThrown);
             }
         });
-    }
-
-    function sleep(milliseconds) {
-        const start = Date.now();
-        while (Date.now() - start < milliseconds);
     }
 
     function showLoading() {
