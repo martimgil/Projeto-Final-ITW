@@ -90,7 +90,7 @@
           <table>
             <div>
               <ul data-bind="foreach: Competitions">
-                <li><a data-bind="text: Name" style="text-decoration: none; color: black"></a></li>
+                <li><a data-bind="text: Name, attr: { href: './CompeticoesDetalhe.html?sportId=' + encodeURIComponent(SportId) + '&name=' + encodeURIComponent(Name)}" style="text-decoration: none; color: black"></a></li>
               </ul>
             </div>
           </table>
