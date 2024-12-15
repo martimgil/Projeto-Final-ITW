@@ -42,6 +42,13 @@ var vm = function () {
     };
 
     self.plotRoute = function () {
+        var icon = L.icon({
+            iconUrl: 'identidade/tocha.png',
+            iconSize: [120, 120],
+            iconAnchor: [60, 60],
+            popupAnchor: [0, -60]
+        });
+
         self.records().forEach(function (location) {
             if (location.Lat !== null && location.Lon !== null) {
                 var lat = parseFloat(location.Lat);
@@ -50,7 +57,7 @@ var vm = function () {
                 if (!isNaN(lat) && !isNaN(lon)) {
                     var cityName = location.City;
 
-                    L.marker([lat, lon])
+                    L.marker([lat, lon], { icon: icon }) // Adiciona o ícone personalizado aqui
                         .addTo(self.map)
                         .bindPopup('<b>' + cityName + '</b>');
 
