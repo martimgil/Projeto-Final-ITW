@@ -33,3 +33,10 @@ function CartViewModel() {
 document.addEventListener('DOMContentLoaded', function() {
     ko.applyBindings(new CartViewModel());
 });
+
+
+
+function clean() {
+    localStorage.removeItem('Cart');
+
+}
