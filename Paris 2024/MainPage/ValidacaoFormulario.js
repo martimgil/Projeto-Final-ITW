@@ -1,39 +1,133 @@
-function validate(){
-    var retVal = true;
-    retVal1 = validateNome();
-    retVal2 = validateEmail();
-    retVal3 = validateTelefone();
-    retVal4 = validateNIF();
-    retVal5 = validatePostal();
-    retVal6 = validateLocalidade();
-    retVal7 = validateMorada();
-    retVal8 = validatePais();
-
-    return retVal1 && retVal2 && retVal3 && retVal4 && retVal5 && retVal6 && retVal7 && retVal8;
-}
-function validateNome() {
-    nome = document.getElementById("Nome").value;
-    if (nome.length < 3) {
-        document.getElementById("NomeError").classList.remove("d-none");
-        return false;
-    } else {
-        if (!document.getElementById("NomeError").classList.contains("d-none")) {
-            document.getElementById("NomeError").classList.add("d-none");
+$(document).ready(function() {
+    $('#form').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            name: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira o seu nome completo.'
+                    },
+                    stringLength: {
+                        min: 3,
+                        message: 'Nome deve ter no mínimo 3 caracteres.'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z]+ [a-zA-Z]+$/,
+                        message: 'Nome deve ter no mínimo duas palavras.'
+                    }
+                }
+            },
+            email: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira um e-mail válido.'
+                    },
+                    emailAddress: {
+                        message: 'Por favor, insira um e-mail válido.'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: 'Por favor, insira um e-mail válido.'
+                    }
+                }
+            },
+            phone: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira o seu telefone.'
+                    },
+                    regexp: {
+                        regexp: /^\+?[1-9]\d{1,14}$/,
+                        message: 'Por favor, insira um número de telefone válido com até 15 dígitos, opcionalmente precedido por um sinal de mais.'
+                    }
+                }
+            },
+            nif: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira o seu NIF.'
+                    },
+                    regexp: {
+                        regexp: /^\d{9}$/,
+                        message: 'NIF deve conter exatamente 9 dígitos.'
+                    },
+                    callback: {
+                        message: 'NIF inválido.',
+                        callback: function (value, validator, $field) {
+                            const nif = value.replace(/\D/g, '');
+                            if (nif.length !== 9) {
+                                return false;
+                            }
+                            const checkDigit = parseInt(nif.charAt(8), 10);
+                            const sum = nif
+                                .substr(0, 8)
+                                .split('')
+                                .reduce((acc, digit, index) => acc + parseInt(digit, 10) * (9 - index), 0);
+                            const calculatedCheckDigit = 11 - (sum % 11);
+                            return calculatedCheckDigit === checkDigit || (calculatedCheckDigit === 10 && checkDigit === 0);
+                        }
+                    }
+                }
+            },
+            postal: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira o seu código postal.'
+                    },
+                    regexp: {
+                        regexp: /^\d{4}-\d{3}$/,
+                        message: 'Código postal deve estar no formato 1234-567.'
+                    }
+                }
+            },
+            city: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira a sua localidade.'
+                    },
+                    stringLength: {
+                        min: 3,
+                        message: 'Localidade deve ter no mínimo 3 caracteres.'
+                    }
+                }
+            },
+            street: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira sua rua.'
+                    },
+                    stringLength: {
+                        min: 3,
+                        message: 'Rua deve ter no mínimo 3 caracteres.'
+                    }
+                }
+            },
+            country: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira seu país.'
+                    },
+                    stringLength: {
+                        min: 3,
+                        message: 'País deve ter no mínimo 3 caracteres.'
+                    }
+                }
+            }
         }
-        return true
-    }
-}
 
-
-function validateMorada() {
-    morada = document.getElementById("Morada").value.trim().split(" ");
-    if (morada.length < 3) {
-        document.getElementById("MoradaError").classList.remove("d-none");
-        return false;
-    } else {
-        if (!document.getElementById("MoradaError").classList.contains("d-none")) {
-            document.getElementById("MoradaError").classList.add("d-none");
-        }
-        return true
-    }
-}
+    }).on('error.field.bv', function (e, data) {
+        data.element.closest('.form-group').removeClass('has-success').addClass('has-error');
+    })
+        .on('success.field.bv', function (e, data) {
+            const hasError = data.element.closest('.form-group').find('.help-block:visible').length > 0;
+            if (hasError) {
+                data.element.closest('.form-group').removeClass('has-success').addClass('has-error');
+            } else {
+                data.element.closest('.form-group').removeClass('has-error').addClass('has-success');
+            }
+        });
+});
