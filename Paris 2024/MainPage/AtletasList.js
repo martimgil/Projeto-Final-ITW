@@ -53,6 +53,12 @@ var vm = function () {
                 self.Athletes2(self.Athletes());
 
                 console.log("Athletes2", self.Athletes2());
+                self.totalRecords(data.length);
+                console.log("totalRecords updated to:", self.totalRecords());
+                self.totalPages(Math.ceil(self.totalRecords() / self.pagesize()));
+                console.log("totalPages recalculated to:", self.totalPages());
+
+                self.currentPage(1);
                 hideLoading();
             });
         };
@@ -130,7 +136,7 @@ var vm = function () {
             console.log("pagesize=", self.pagesize());
             self.totalPages(data.TotalPages);
             console.log("totalPages=", self.totalPages());
-            self.totalRecords(data.TotalRecords);
+            self.totalRecords(data.TotalAhletes);
             console.log("totalRecords=", self.totalRecords());
             await fetchAllAthleteDetails();
             self.Athletes2(self.Athletes());

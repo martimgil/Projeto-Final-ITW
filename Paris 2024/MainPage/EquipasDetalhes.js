@@ -1,49 +1,28 @@
 // ViewModel Knockout
 var vm = function () {
-    var self = this;
+    var self = this; // Definir `self` adequadamente
     console.log("ViewModel initiated...");
 
     //--- Variáveis locais
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Teams/');
-    self.displayName = 'Teams Details';
-    self.error = ko.observable('');
-    self.Id = ko.observable('');
-    self.Name = ko.observable('');
-    self.Sex = ko.observable('');
-    self.Num_athletes = ko.observable('');
-    self.Num_coaches = ko.observable('');
-    self.Athletes = ko.observableArray([]);
-    self.Coaches = ko.observableArray([]);
-    self.NOC = ko.observableArray([]);
-    self.Sport = ko.observableArray([]);
-    self.Medals = ko.observableArray([]);
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/api/Teams/');
+    self.displayName = 'Detalhes da Competição';
+    self.CompInfo = ko.observableArray([]);
+    self.CompInfo2 = ko.observableArray([]);
+    self.SName = ko.observable('');
+
 
     self.activate = function (id) {
         console.log('CALL: getAthlete...');
         var composedUri = self.baseUri() + id;
         ajaxHelper(composedUri, 'GET').done(function (data) {
-            console.log(data);
-            self.Id(data.Id);
-            self.Name(data.Name);
-            self.Sex(data.Sex);
-            self.Num_athletes(data.Num_athletes);
-            self.Num_coaches(data.Num_coaches);
-            self.Athletes(data.Athletes);
-            self.Coaches(data.Coaches);
-            self.NOC(data.NOC);
-            self.Sport(data.Sport);
-            self.Medals(data.Medals);
-
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            console.log("AJAX Call [" + composedUri + "] Fail...");
-            self.error(errorThrown);
-        }).always(function () {
             hideLoading();
+
+            self.CompInfo(data);
+            console.log(self.CompInfo());
         });
     };
 
     function ajaxHelper(uri, method, data) {
-        self.error(''); // Clear error message
         return $.ajax({
             type: method,
             url: uri,
@@ -52,6 +31,7 @@ var vm = function () {
             data: data ? JSON.stringify(data) : null,
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log("AJAX Call [" + uri + "] Fail...");
+                hideLoading();
                 self.error(errorThrown);
             }
         });
@@ -96,4 +76,8 @@ var vm = function () {
 $(document).ready(function () {
     console.log("document.ready!");
     ko.applyBindings(new vm());
+});
+
+$(document).ajaxComplete(function () {
+    $("#myModal").modal('hide');
 });

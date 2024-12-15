@@ -98,7 +98,7 @@
 
       <div class="row" data-aos="fade-up">
         <div class="col-6" data-aos="fade-up">
-          <p class="title" style="font-size: 2rem">ATLETAS</p>
+          <p class="title" style="font-size: 2rem" data-bind="text: 'ATLETAS [' + Athletes.length + ']'"></p>
           <hr data-aos="fade-up">
           <table>
             <div>
@@ -110,7 +110,7 @@
         </div>
 
         <div class="col-6 border-bottom" data-aos="fade-up">
-          <p class="title" style="font-size: 2rem">TREINADORES</p>
+          <p class="title" style="font-size: 2rem" data-bind="text: 'TREINADORES [' + Coaches.length + ']'"></p>
           <hr>
           <table>
             <div>
@@ -120,12 +120,32 @@
             </div>
           </table>
 
-          <p class="title" style="font-size: 2rem">COMPETIÇÕES</p>
+          <p class="title" style="font-size: 2rem" data-bind="text: 'COMPETIÇÕES [' + Competitions.length + ']'"></p>
           <hr>
           <table>
             <div>
               <ul data-bind="foreach: Competitions">
                 <li><a data-bind="text: Name, attr: { href: './CompeticoesDetalhe.html?sportId=' + encodeURIComponent(SportId) + '&name=' + encodeURIComponent(Name)}" style="text-decoration: none; color: black"></a></li>
+              </ul>
+            </div>
+          </table>
+
+          <p class="title" style="font-size: 2rem" data-bind="text: 'ESTÁDIOS [' + Venues.length + ']'"></p>
+          <hr>
+          <table>
+            <div>
+              <ul data-bind="foreach: Venues">
+                <li><a data-bind="text: Name, attr: { href:'./LocalDetalhe.html?id=' + Id }" style="text-decoration: none; color: black"></a></li>
+              </ul>
+            </div>
+          </table>
+
+          <p class="title" style="font-size: 2rem" data-bind="text: 'EQUIPAS [' + Teams.length + ']'"></p>
+          <hr>
+          <table>
+            <div>
+              <ul data-bind="foreach: Teams">
+                <li><a data-bind="text: Name, attr: { href:'./EquipasDetalhe.html?id=' + Id }" style="text-decoration: none; color: black"></a></li>
               </ul>
             </div>
           </table>

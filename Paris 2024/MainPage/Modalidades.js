@@ -9,6 +9,7 @@ var vm = function () {
 
     //--- Page Events
     self.activate = function (id) {
+        showLoading()
         console.log('CALL: getRoutes...');
         var composedUri = self.baseUri();
         ajaxHelper(composedUri, 'GET').done(function (data) {
@@ -62,6 +63,18 @@ var vm = function () {
             self.Sports(data);
         });
     }
+    
+    self.favoriteSports = function (id, event) {
+        let favSports = JSON.parse(window.localStorage.getItem('favSports')) || [];
+        if (!favSports.includes(id)) {
+            favSports.push(id);
+            window.localStorage.setItem('favSports', JSON.stringify(favSports));
+            console.log('O treinador foi adicionado aos favoritos!');
+        } else {
+            console.log('O treinador já está na lista de favoritos.');
+        }
+        console.log(JSON.parse(window.localStorage.getItem('favSports')));
+    };
 
     //--- start ....
     //showLoading()

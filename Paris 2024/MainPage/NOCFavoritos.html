@@ -84,6 +84,7 @@
             <td class="fw-bolder">Foto</td>
             <td class="fw-bolder">País</td>
             <td class="fw-bolder">N.º Atletas</td>
+            <td class="fw-bolder">N.º Treinadores</td>
             <td class="fw-bolder">N.º Medalhas</td>
             <td class="fw-bolder">N.º Equipas</td>
             <td class="text-right fw-bolder"></td>
@@ -93,13 +94,13 @@
         <tr>
             <td><img data-bind="attr: { src: Photo, alt: Name }" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right"  class="img-fluid" />
             </td>
-            <td data-bind="text: Country"></td>
-            <td data-bind="text: Athletes"></td>
-            <td data-bind="text: Coaches"></td>
-            <td data-bind="text: Medals"></td>
-            <td data-bind="text: Teams"></td>
+            <td data-bind="text: Name"></td>
+            <td data-bind="text: Athletes.length"></td>
+            <td data-bind="text: Coaches.length"></td>
+            <td data-bind="text: Medals.length"></td>
+            <td data-bind="text: Teams.length"></td>
             <td class="text-end">
-                <a class="btn btn-default btn-light btn-sm" data-bind="attr: { href:'./TreinadorDetalhe.html?id=' + Id }"><i class="fa fa-eye" title="Selecione para ver detalhes"></i></a>
+                <a class="btn btn-default btn-light btn-sm" data-bind="attr: { href:'./NOCDetalhe.html?id=' + Id }"><i class="fa fa-eye" title="Selecione para ver detalhes"></i></a>
                 <button class="btn btn-default btn-sm fav-btn bg-light" data-bind="click: function (data, event) {$root.removeFavourite(Id)}"><i class="fas fa-trash-alt" title="Selecione para adicionar aos favoritos"></i></button>
             </td>
         </tr>

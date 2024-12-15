@@ -63,6 +63,7 @@ var vm = function () {
                     console.log("totalPages recalculated to:", self.totalPages());
 
                     self.currentPage(1);
+                    hideLoading();
                 });
             }
             else{
@@ -87,15 +88,16 @@ var vm = function () {
                     console.log("totalPages recalculated to:", self.totalPages());
 
                     self.currentPage(1);
+                    hideLoading();
                 });
             }
 
         }
-        hideLoading()
     };
 
     self.Erase = function (){
         self.selectedItem(null);
+        $("#searchbar").val('');
         self.activate(1);
     }
 
@@ -208,8 +210,8 @@ var vm = function () {
         });
 
         function Dictionary() {
-            if (self.Dict().length === 0){
-                var backUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize2();
+            if (self.Dict().length < self.totalRecords()){
+                var backUri = self.baseUri() + "?page=" + 1 + "&pageSize=" + self.pagesize2();
                 ajaxHelper(backUri, 'GET').done(async function (data) {
                     for (const Athlete of data.Competitions) {
                         console.log('Processing Athlete:', Athlete);
