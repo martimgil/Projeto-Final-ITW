@@ -12,28 +12,63 @@
     <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color: #494c72" data-aos="fade-up">
+<nav class="navbar navbar-expand-lg fixed-top" style="background-color: #494c72; margin: 0 0 80px 0; ">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#"><img src="https://olympics.com/_pr/topic-assets/paris-2024/emblem-oly.svg" alt="Paris 2024 Emblem" style="height: 60px; width: 60px;"></a>
+        <a class="navbar-brand  mx-auto" href="index.html"><img src="https://olympics.com/_pr/topic-assets/paris-2024/emblem-oly.svg" alt="Paris 2024 Emblem" style="height: 60px; width: 60px;" > </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active"  aria-current="page" href="atletas.html"><i class="fa fa-person-running"></i> Atletas</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contactos</a>
+                    <a class="nav-link active"  aria-current="page" href="TreinadoresLista.html"><i class="fa-solid fa-dumbbell"></i> Treinadores</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link ms-auto" href="#" style="float: right">Iniciar sessão</a>
+                    <a class="nav-link ms-auto" href="ArbitrosLista.html" style="float: right"><i class="fa-solid fa-gavel"></i> Árbitros</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link ms-auto" href="EquipasLista.html" style="float: right"><i class="fa-solid fa-user-group"></i> Equipas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ms-auto" href="Competitions.html" style="float: right"><i class="fa-solid fa-trophy"></i> Competições</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ms-auto" href="Modalidade.html" style="float: right"><i class="fa-solid fa-football-ball"></i> Modalidades</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ms-auto" href="NOCLista.html" style="float: right"><i class="fa-solid fa-flag"></i> Comités</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ms-auto" href="Locais.html" style="float: right"><i class="fa-solid fa-location-dot"></i> Locais</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link ms-auto" href="Tocha.html" style="float: right"><i class="fa-solid fa-fire"></i> Tocha</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ms-auto" href="Medalheiro.html" style="float: right"><i class="fa-solid fa-medal"></i> Medalhas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ms-auto" href="AtletismoLista.html" style="float: right"><i class="fa-solid fa-person-running"></i> Atletismo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ms-auto" href="Favoritos.html" style="float: right"><i class="fa-solid fa-heart"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ms-auto" href="LojaMerch.html" style="float: right"><i class="fa-solid fa-cart-shopping"></i></a>
+                </li>
+
             </ul>
             <span class="navbar-text"></span>
         </div>
     </div>
+    </div>
 </nav>
+
 <div class="p-5 text-center" style="margin-top: 80px;" data-aos="fade-up">
     <h6 class="mb-3 title">Competições Favoritas</h6>
     <p class="mb-3">Aqui estão as competições que adicionaste aos favoritos.</p>
@@ -46,7 +81,6 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <td class="fw-bolder">Foto</td>
             <td class="fw-bolder">Id</td>
             <td class="fw-bolder">Nome</td>
             <td class="fw-bolder">Tag </td>
@@ -55,12 +89,12 @@
         </thead>
         <tbody data-bind="foreach: records">
         <tr>
-            <td><img class="align-content-center" data-bind="attr: {src: Photo}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right" class="img-fluid" />
             <td data-bind="text: SportId"></td>
             <td data-bind="text: Name"></td>
             <td data-bind="text: Tag"></td>
 
             <td class="text-end">
+                <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href: './CompeticoesDetalhe.html?sportId=' + encodeURIComponent(SportId) + '&name=' + encodeURIComponent(Name)}" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
                 <button class="btn btn-default btn-sm fav-btn bg-light" data-bind="click: function (data, event) {$root.removeFavourite(sportId, Name)}"><i class="fas fa-trash-alt" title="Selecione para adicionar aos favoritos"></i></button>
             </td>
         </tr>
@@ -73,6 +107,20 @@
     </div>
     <!-- /ko -->
 </div>
+
+
+<nav class="navbar fixed-bottom bg-body-tertiary border-top">
+    <div class="container">
+        <div class="small">
+            <div class="navbar-text d-block d-md-none"> &copy; 2024 - ITW</div>
+            <div class="navbar-text d-none d-md-inline-block"> &copy; 2024 - Introdução às Tecnologias Web</div>
+        </div>
+        <div class="navbar-center navbar-text small d-md-inline-block">Made with <i class="fa fa-heart red"></i> by Martim Gil/Daniel Duque </div>
+        <div class="navbar-right navbar-text small d-none d-md-inline-block"><a class="nav-link" href="https://www.ua.pt/" target="_blank" title="Universidade de Aveiro">Universidade de Aveiro</a></div>
+    </div>
+</nav>
+
+
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-aos="fade-up">
     <div class="modal-dialog modal-dialog-centered" role="document" data-aos="fade-up">

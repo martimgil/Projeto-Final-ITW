@@ -72,11 +72,7 @@
     </div>
 </nav>
 
-<iframe class="ember-responsive-item" src="https://www.youtube.com/embed/vy6FivZHRjQ?si=IvmoO_FE1cIW6SQk&autoplay=1" style="width: 100%; height: 800px; border: none;"></iframe>
-<div class="container">
-    <div class="row">
-        <h1 data-aos="fade-up" class="title">DESTAQUES</h1>
-        <hr data-aos="fade-up">
+<iframe class="ember-responsive-item" src="https://www.youtube.com/embed/vy6FivZHRjQ?autoplay=1&enablejsapi=1" style="pointer-events: none; width: 100%; height: 800px; border: none;"></iframe>        <hr data-aos="fade-up">
         <div class="col-md-4" data-aos="fade-up">
             <img src="https://img.olympics.com/images/image/private/t_16-9_640/f_auto/primary/k7avcsaskcwjkz88yzea" class="img-fluid" alt="Resumos dos jogos">
             <br>
@@ -152,6 +148,7 @@
     <script src="medalhas_home.js"></script>
     <script>
         AOS.init();
+        document.querySelector('iframe').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
     </script>
 
 </body>
