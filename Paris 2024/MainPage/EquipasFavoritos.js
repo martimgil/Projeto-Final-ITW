@@ -1,7 +1,7 @@
 var vm = function () {
     console.log('ViewModel initiated...');
     var self = this;
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Teams/');
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/api/Teams/');
     self.error = ko.observable('');
     self.records = ko.observableArray([]);
 
@@ -16,7 +16,8 @@ var vm = function () {
         }
 
         var requests = favTeamsList.map(function (id) {
-            return ajaxHelper(self.baseUri() + id, 'GET');
+            console.log(id);
+            return ajaxHelper(self.baseUri() + id.Id, 'GET');
         });
 
         Promise.all(requests).then(function (responses) {

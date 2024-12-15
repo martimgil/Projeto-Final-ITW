@@ -121,11 +121,11 @@ var vm = function () {
         }
 
     };
-    self.favoriteCompetition = function (Sport_Codes, Name, event) {
+    self.favoriteCompetition = function (Id, Name, event) {
         let favTeams = JSON.parse(window.localStorage.getItem('favTeams')) || [];
-        let competition = { Sport_Codes: Sport_Codes, name: Name };
+        let competition = { Id: Id, name: Name };
 
-        if (!favTeams.some(comp => comp.Sport_Codes === Sport_Codes && comp.name === Name)) {
+        if (!favTeams.some(comp => comp.Id === Id && comp.name === Name)) {
             favTeams.push(competition);
             window.localStorage.setItem('favTeams', JSON.stringify(favTeams));
             console.log(`A competição ${Name} foi adicionada aos favoritos!`);
