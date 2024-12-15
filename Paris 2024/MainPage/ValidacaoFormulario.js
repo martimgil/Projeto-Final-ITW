@@ -116,9 +116,41 @@ $(document).ready(function() {
                         message: 'País deve ter no mínimo 3 caracteres.'
                     }
                 }
+            },
+            card: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira o número do cartão.'
+                    },
+                    regexp: {
+                        regexp: /^\d{16}$/,
+                        message: 'Número do cartão deve conter exatamente 16 dígitos.'
+                    }
+                }
+            },
+            date: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira a data de validade.'
+                    },
+                    regexp: {
+                        regexp: /^\d{2}\/\d{2}$/,
+                        message: 'Data de validade deve estar no formato MM/AA.'
+                    }
+                }
+            },
+            cvc: {
+                validators: {
+                    notEmpty: {
+                        message: 'Por favor, insira o CVC.'
+                    },
+                    regexp: {
+                        regexp: /^\d{3}$/,
+                        message: 'CVC deve conter exatamente 3 dígitos.'
+                    }
+                }
             }
         }
-
     }).on('error.field.bv', function (e, data) {
         data.element.closest('.form-group').removeClass('has-success').addClass('has-error');
     })

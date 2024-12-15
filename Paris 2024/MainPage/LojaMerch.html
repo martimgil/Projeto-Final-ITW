@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg fixed-top" style="background-color: #494c72; margin: 0 0 80px 0; ">
+<nav class="navbar navbar-expand-lg fixed-top" style="background-color: #ab9355; margin: 0 0 80px 0; ">
     <div class="container-fluid">
         <a class="navbar-brand  mx-auto" href="index.html"><img src="https://olympics.com/_pr/topic-assets/paris-2024/emblem-oly.svg" alt="Paris 2024 Emblem" style="height: 60px; width: 60px;" > </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,149 +96,149 @@
     </a>
 </div>
 <div class="container">
-    <h3 class="title">Loja Olímpica</h3>
+    <h3 class="title" data-aos="fade-up">Loja Olímpica</h3>
 </div>
 <div class="container mt-4">
     <form >
         <div class="row">
-            <div class="col-md-1 offset-6 text-right"><i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>
+            <div class="col-md-1 offset-6 text-right" data-aos="fade-up"><i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>
             </div>
-            <div class="col-md-1 text-right"><span class="form-control" id="quantidades"
+            <div class="col-md-1 text-right" data-aos="fade-up"><span class="form-control" id="quantidades"
                                                    title="Quantidade total de produtos">0</span></div>
-            <div class="col-md-2 text-right"><span class="form-control" id="total"
-                                                   title="Preço total da compra">0.00</span></div>
-            <div class="col-md-2 text-right">
-<button type="button" onclick="window.location.href='ConfirmarCompra.html'" class="btn btn-primary" title="Enviar pedido">Avançar compra</button>                <button type="button" onclick="clean()" class="btn btn-secondary" title="Limpar pedido"><i  class="fa fa-trash"></i></button>
+            <div class="col-md-2 text-right" data-aos="fade-up"><span class="form-control" id="total" title="Preço total da compra">0.00</span></div>
+            <div class="col-md-2 text-right" data-aos="fade-up">
+                <button type="button" onclick="window.location.href='ConfirmarCompra.html'" class="btn btn-primary" title="Enviar pedido">Avançar compra</button>                <button type="button" onclick="clean()" class="btn btn-secondary" title="Limpar pedido"><i  class="fa fa-trash"></i></button>
             </div>
         </div>
         <hr />
-        <div class="row">
-            <div class="col-sm-4"><img src="identidade/item1.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4"><img src="identidade/item2.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4"><img src="identidade/item3.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty1" name="qty1" value="0" />
-                <h5>Paris 2024 Olympics City Graphic Hoodie - Grey<br /></h5>
-                <div class="text-danger text-right"><input id="price1" name="price1" value="29.50" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(1)"><i
+        <div class="row" data-aos="fade-up">
+            <div class="col-sm-4" data-aos="fade-up"><img src="identidade/item1.jpg" class="img-fluid" /></div>
+            <div class="col-sm-4" data-aos="fade-up"><img src="identidade/item2.jpg" class="img-fluid" /></div>
+            <div class="col-sm-4" data-aos="fade-up"><img src="identidade/item3.jpg" class="img-fluid" /></div>
+            <div class="col-sm-4" data-aos="fade-up">
+                <input data-aos="fade-up" type="hidden" id="qty1" name="qty1" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics City Graphic Hoodie - Grey<br /></h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price1" name="price1" value="29.50" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(1)"><i
+                        class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+            </div>
+            <div data-aos="fade-up" class="col-sm-4">
+                <input data-aos="fade-up" type="hidden" id="qty2" name="qty2" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics Tech Polo - White</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price2" name="price2" value="22.50" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(2)"><i
                         class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
             <div class="col-sm-4">
-                <input type="hidden" id="qty2" name="qty2" value="0" />
-                <h5>Paris 2024 Olympics Tech Polo - White</h5>
-                <div class="text-danger text-right"><input id="price2" name="price2" value="22.50" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(2)"><i
-                        class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
-            </div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty3" name="qty3" value="0" />
-                <h5>Paris 2024 Olympics 1/4 Zip Tech Midlayer Top</h5>
-                <div class="text-danger text-right"><input id="price3" name="price3" value="29.50" class="text-danger text-right border-0" readonly>€</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(3)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+                <input data-aos="fade-up" type="hidden" id="qty3" name="qty3" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics 1/4 Zip Tech Midlayer Top</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price3" name="price3" value="29.50" class="text-danger text-right border-0" readonly>€</div>
+                <button type="button" data-aos="fade-up" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(3)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
         </div>
 
         <p>&nbsp;</p>
         <div class="row">
-            <div class="col-sm-4"><img src="identidade/item4.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4"><img src="identidade/item5.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4"><img src="identidade/item6.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty4" name="qty4" value="0" />
-                <h5>Paris 2024 Olympics Outline Graphic Crew Sweat - Grey</h5>
-                <div class="text-danger text-right"><input id="price4" name="price4" value="24.00"
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item4.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item5.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item6.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4">
+                <input data-aos="fade-up" type="hidden" id="qty4" name="qty4" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics Outline Graphic Crew Sweat - Grey</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price4" name="price4" value="24.00"
                                                            class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(4)"><i
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(4)"><i
                         class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty5" name="qty5" value="0" />
-                <h5>Paris 2024 Olympics Le Coq Sportif Team France Podium Full Zip Sweat - Womens</h5>
-                <div class="text-danger text-right"><input id="price5" name="price5" value="87.50"
+            <div data-aos="fade-up" class="col-sm-4">
+                <input data-aos="fade-up" type="hidden" id="qty5" name="qty5" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics Le Coq Sportif Team France Podium Full Zip Sweat - Womens</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price5" name="price5" value="87.50"
                                                            class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(5)"><i
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(5)"><i
                         class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty6" name="qty6" value="0" />
-                <h5>Paris 2024 Olympics Unstructured Cap - Black</h5>
-                <div class="text-danger text-right"><input id="price6" name="price6" value="8.80" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(6)"><i
+            <div data-aos="fade-up" class="col-sm-4">
+                <input data-aos="fade-up" type="hidden" id="qty6" name="qty6" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics Unstructured Cap - Black</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price6" name="price6" value="8.80" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(6)"><i
                         class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-4"><img src="identidade/item7.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4"><img src="identidade/item8.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4"><img src="identidade/item9.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty7" name="qty7" value="0" />
-                <h5>Paris 2024 Olympics Cuff Beanie</h5>
-                <div class="text-danger text-right"><input id="price7" name="price7" value="10.00" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(7)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item7.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item8.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item9.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4">
+                <input data-aos="fade-up" type="hidden" id="qty7" name="qty7" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics Cuff Beanie</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price7" name="price7" value="10.00" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(7)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty8" name="qty8" value="0" />
-                <h5>The Olympics Team France Bobble Beanie</h5>
-                <div class="text-danger text-right"><input id="price8" name="price8" value="10.00" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(8)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+            <div data-aos="fade-up" class="col-sm-4">
+                <input data-aos="fade-up" type="hidden" id="qty8" name="qty8" value="0" />
+                <h5 data-aos="fade-up">The Olympics Team France Bobble Beanie</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price8" name="price8" value="10.00" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(8)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty9" name="qty9" value="0" />
-                <h5>Paris 2024 Olympics Essentials Crew Sweat - Navy</h5>
-                <div class="text-danger text-right"><input id="price9" name="price9" value="24.00" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(9)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+            <div data-aos="fade-up" class="col-sm-4">
+                <input data-aos="fade-up" type="hidden" id="qty9" name="qty9" value="0" />
+                <h5 data-aos="fade-up" >Paris 2024 Olympics Essentials Crew Sweat - Navy</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price9" name="price9" value="24.00" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(9)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+            </div>
+        </div>
+        <div class="row" data-aos="fade-up">
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item10.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item11.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item12.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up"  class="col-sm-4">
+                <input data-aos="fade-up" type="hidden" id="qty10" name="qty10" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics Mascot Joyful Pin Badge</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price10" name="price10" value="2.80" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(10)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+            </div>
+            <div class="col-sm-4" data-aos="fade-up">
+                <input data-aos="fade-up" type="hidden" id="qty11" name="qty11" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics Graphic Print Hoodie - White</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price11" name="price11" value="23.60" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(11)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+            </div>
+            <div data-aos="fade-up" class="col-sm-4">
+                <input data-aos="fade-up" type="hidden" id="qty12" name="qty12" value="0" />
+                <h5 data-aos="fade-up">The Olympics Team France Unstructured Cap - Black</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price12" name="price12" value="8.80" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(12)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-4"><img src="identidade/item10.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4"><img src="identidade/item11.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4"><img src="identidade/item12.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty10" name="qty10" value="0" />
-                <h5>Paris 2024 Olympics Mascot Joyful Pin Badge</h5>
-                <div class="text-danger text-right"><input id="price10" name="price10" value="2.80" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(10)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item13.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item14.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4"><img src="identidade/item15.jpg" class="img-fluid" /></div>
+            <div data-aos="fade-up" class="col-sm-4">
+                <input data-aos="fade-up" type="hidden" id="qty13" name="qty13" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics Mascot Hoodie - Navy - Kids</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price13" name="price13" value="22.50" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(13)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
             <div class="col-sm-4">
-                <input type="hidden" id="qty11" name="qty11" value="0" />
-                <h5>Paris 2024 Olympics Graphic Print Hoodie - White</h5>
-                <div class="text-danger text-right"><input id="price11" name="price11" value="23.60" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(11)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+                <input data-aos="fade-up" type="hidden" id="qty14" name="qty14" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics Graphic Logo T-Shirt - Heather Grey</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price14" name="price14" value="14.00" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(14)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
             <div class="col-sm-4">
-                <input type="hidden" id="qty12" name="qty12" value="0" />
-                <h5>The Olympics Team France Unstructured Cap - Black</h5>
-                <div class="text-danger text-right"><input id="price12" name="price12" value="8.80" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(12)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-4"><img src="identidade/item13.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4"><img src="identidade/item14.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4"><img src="identidade/item15.jpg" class="img-fluid" /></div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty13" name="qty13" value="0" />
-                <h5>Paris 2024 Olympics Mascot Hoodie - Navy - Kids</h5>
-                <div class="text-danger text-right"><input id="price13" name="price13" value="22.50" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(13)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
-            </div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty14" name="qty14" value="0" />
-                <h5>Paris 2024 Olympics Graphic Logo T-Shirt - Heather Grey</h5>
-                <div class="text-danger text-right"><input id="price14" name="price14" value="14.00" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(14)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
-            </div>
-            <div class="col-sm-4">
-                <input type="hidden" id="qty15" name="qty15" value="0" />
-                <h5>Paris 2024 Olympics Cuff Beanie – Black</h5>
-                <div class="text-danger text-right"><input id="price15" name="price15" value="11.00" class="text-danger text-right border-0" readonly> €</div>
-                <button type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(15)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
+                <input data-aos="fade-up" type="hidden" id="qty15" name="qty15" value="0" />
+                <h5 data-aos="fade-up">Paris 2024 Olympics Cuff Beanie – Black</h5>
+                <div data-aos="fade-up" class="text-danger text-right"><input id="price15" name="price15" value="11.00" class="text-danger text-right border-0" readonly> €</div>
+                <button data-aos="fade-up" type="button" class="btn btn-primary btn-block" onclick="this.blur(); addProduct(15)"><i class="fa fa-shopping-bag"></i> Adicionar ao meu cesto</button>
             </div>
         </div>
     </form>
 </div>
 
+<div data-aos="fade-up" style="background-color: #ab9355; margin:50px 0 0 0;width: 100%; height:200px"></div>
 
 
 <nav class="navbar fixed-bottom bg-body-tertiary border-top">

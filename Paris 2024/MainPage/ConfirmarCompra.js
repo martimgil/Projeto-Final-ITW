@@ -19,6 +19,15 @@ function CartViewModel() {
 
     };
 
+
+    self.cartTotal = ko.computed(function(){
+       var total = 0;
+       ko.utils.arrayForEach(self.cart(), function(item){
+           total += parseFloat(item.total);
+       });
+         return total.toFixed(2);
+    });
+
 }
 
 document.addEventListener('DOMContentLoaded', function() {
