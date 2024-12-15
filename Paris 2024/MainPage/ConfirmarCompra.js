@@ -11,6 +11,14 @@ function CartViewModel() {
     };
 
     self.loadCart();
+
+    if (self.cart().length){
+     document.getElementById("form").classList.remove("d-none");
+    } else{
+        document.getElementById("vazio").classList.remove("d-none");
+
+    };
+
 }
 
 document.addEventListener('DOMContentLoaded', function() {

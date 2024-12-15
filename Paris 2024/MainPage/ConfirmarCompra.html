@@ -78,7 +78,7 @@
     <button class="btn btn-warning" id="clearCart" href="LojaMerch.html" role="button">Limpar carrinho</button>
     <hr>
 </div>
-<div class="container d-flex justify-content-center" style="margin-bottom: 100px" data-aos="fade-up">
+<div class="container d-flex justify-content-center "  style="margin-bottom: 100px" data-aos="fade-up">
     <table class="table table-striped">
         <thead>
         <tr>
@@ -101,12 +101,16 @@
 </div>
 
 <div class="container">
+
+    <!-- ko ifnot: cart-->
+    <div class="row d-block d-none" id="vazio">
+        <p><h1>Não foram encontrados produtos no carrinho!</h1><h6>Volta e adiciona alguns!</h6></p>    </div>
+    <!-- /ko -->
+
+
+<form id="form" class="needs-validation d-none" novalidate>
     <h3 class="title">Dados Pessoais</h3>
     <p>Insira a sua informação para a encomenda.</p>
-
-
-
-<form id="form" class="needs-validation" novalidate>
     <div class="row mb-3">
         <div class="col-md-6">
             <div class="form-floating">

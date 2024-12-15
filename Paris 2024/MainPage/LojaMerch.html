@@ -99,7 +99,7 @@
     <h3 class="title">Loja Olímpica</h3>
 </div>
 <div class="container mt-4">
-    <form action="http://192.168.160.36/FormEcho.aspx">
+    <form >
         <div class="row">
             <div class="col-md-1 offset-6 text-right"><i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>
             </div>
@@ -108,9 +108,7 @@
             <div class="col-md-2 text-right"><span class="form-control" id="total"
                                                    title="Preço total da compra">0.00</span></div>
             <div class="col-md-2 text-right">
-                <button type="submit" onclick="return valid()" class="btn btn-primary"
-                        title="Enviar pedido">Avançar compra</button>
-                <button type="button" onclick="clean()" class="btn btn-secondary" title="Limpar pedido"><i  class="fa fa-trash"></i></button>
+<button type="button" onclick="window.location.href='ConfirmarCompra.html'" class="btn btn-primary" title="Enviar pedido">Avançar compra</button>                <button type="button" onclick="clean()" class="btn btn-secondary" title="Limpar pedido"><i  class="fa fa-trash"></i></button>
             </div>
         </div>
         <hr />
