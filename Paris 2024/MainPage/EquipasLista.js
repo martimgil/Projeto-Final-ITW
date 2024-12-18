@@ -50,7 +50,7 @@ var vm = function () {
                     for (const Athlete of data) {
                         await fetchAthleteDetails(Athlete); // Fetch athlete-related details
                         await fetchCompDetails(Athlete); // Fetch competition-related details
-                        await delay(1); // Optional delay between requests
+                        await delay(100); // Optional delay between requests
                     }
 
                     const filtered = data.filter(Competition => Competition.Sport === Sport);

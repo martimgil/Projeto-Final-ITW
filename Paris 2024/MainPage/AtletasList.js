@@ -277,7 +277,7 @@ $(document).ready(function () {
                 type: 'GET',
                 url: 'http://192.168.160.58/Paris2024/API/Athletes/Search?q=' + ui.item.label,
                 success: function(data){
-                    window.location = 'TreinadorDetalhe.html?id=' + data[0].Id;
+                    window.location = 'Atleta.html?id=' + data[0].Id;
                 }
             })
         },

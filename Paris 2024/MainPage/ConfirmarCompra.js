@@ -20,6 +20,7 @@ function CartViewModel() {
     };
 
 
+
     self.cartTotal = ko.computed(function(){
        var total = 0;
        ko.utils.arrayForEach(self.cart(), function(item){
@@ -35,8 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
 function clean() {
     localStorage.removeItem('Cart');
-
 }
