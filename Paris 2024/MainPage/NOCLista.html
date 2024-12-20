@@ -130,7 +130,7 @@
   <tbody data-bind="foreach: NOCs2" data-aos="fade-up">
   <tr data-aos="fade-up">
     <td><img data-bind="attr: {src: Photo}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right"  class="img-fluid" /></td>
-    <td class="align-middle" data-bind="text: Country" data-aos="fade-up"></td>
+    <td class="align-middle" data-bind="text: typeof Country !== 'undefined' ? Country : Name" data-aos="fade-up"></td>
     <td class="align-middle" data-bind="text: Athletes" data-aos="fade-up"></td>
     <td class="align-middle" data-bind="text: Coaches" data-aos="fade-up"></td>
     <td class="align-middle" data-bind="text: Medals" data-aos="fade-up"></td>

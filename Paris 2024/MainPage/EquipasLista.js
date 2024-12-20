@@ -50,7 +50,7 @@ var vm = function () {
                     for (const Athlete of data) {
                         await fetchAthleteDetails(Athlete); // Fetch athlete-related details
                         await fetchCompDetails(Athlete); // Fetch competition-related details
-                        await delay(100); // Optional delay between requests
+                        await delay(10); // Optional delay between requests
                     }
 
                     const filtered = data.filter(Competition => Competition.Sport === Sport);
@@ -77,7 +77,7 @@ var vm = function () {
                     for (const Athlete of data) {
                         await fetchCompDetails(Athlete); // Fetch competition-related details
                         await fetchAthleteDetails(Athlete); // Fetch athlete-related details
-                        await delay(1); // Optional delay between requests
+                        await delay(10); // Optional delay between requests
                     }
 
                     self.Teams2(data);
@@ -219,7 +219,7 @@ var vm = function () {
                         await Promise.all([
                             fetchAthleteDetails(Athlete),
                             fetchCompDetails(Athlete),
-                            delay(100)
+                            delay(10)
                         ]);
 
                         if(Athlete.AthleteNumber !== ""){
@@ -361,7 +361,7 @@ $(document).ready(function () {
                 type: 'GET',
                 url: 'http://192.168.160.58/Paris2024/api/Teams/Search?q=' + ui.item.label,
                 success: function(data){
-                    window.location = 'TreinadorDetalhe.html?id=' + data[0].Id;
+                    window.location = 'EquipasDetalhe.html?id=' + data[0].Id;
                 }
             })
         },

@@ -19,33 +19,38 @@ var vm = function () {
 
     self.search = function () {
         console.log('searching');
-        if ($("#searchbar").val() === ""){
+        if ($("#searchbar").val() === "") {
             showLoading();
             var pg = getUrlParameter('page');
             console.log(pg);
-            if(pg == undefined)
+            if (pg == undefined)
                 self.activate(1);
-            else{
+            else {
                 self.activate(pg);
             }
         } else {
-            var chandeUrl = 'http://192.168.160.58/Paris2024/API/NOCs/Search?q=' + $("#searchbar").val();
-            self.NOCslist = [];
-            ajaxHelper(chandeUrl, 'GET').done(function(data){
+            var searchUrl = 'http://192.168.160.58/Paris2024/API/NOCs/Search?q=' + $("#searchbar").val();
+            self.NOCs([]);
+            ajaxHelper(searchUrl, 'GET').done(async function (data) {
                 console.log(data);
-                if (data.length ==0){
-                    return alert(("Não foram encontrados resultados"))
+                if (data.length == 0) {
+                    hideLoading();
+                    return alert("Não foram encontrados resultados");
                 }
-                self.totalPages(1)
+                self.totalPages(1);
                 console.log(data);
                 showLoading();
                 self.NOCs(data);
                 self.totalRecords(data.length);
-                for(var i in data){
-                    self.NOCslist.push(data[i]);
-                }
+
+                await fetchAllNOCDetails();
+
+
+
+                self.NOCs2(self.NOCs());
+                hideLoading();
             });
-        };
+        }
     };
     self.favoriteNOC = function (id, event) {
         let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
@@ -139,11 +144,22 @@ var vm = function () {
         console.log("id", NOC.Id);
         const data = await getPhotoUrl(NOC.Id);
         console.log("detalhes", data);
+
         NOC.Photo = data.Photo || 'identidade/PersonNotFound.png';
         console.log("photo", NOC.Photo);
         NOC.Note = data.Note;
         console.log("note", NOC.Note);
+
+        NOC.Athletes = data.Athletes ? data.Athletes.length : 0;
+        console.log("athletes count", NOC.Athletes);
+        NOC.Coaches = data.Coaches? data.Coaches.length : 0;
+        console.log("coaches count", NOC.Coaches);
+        NOC.Medals = data.Medals ? data.Medals.length : 0;
+        console.log("medals count", NOC.Medals);
+        NOC.Teams = data.Teams ? data.Teams.length : 0;
+        console.log("teams count", NOC.Teams);
     }
+
 
     async function fetchAllNOCDetails() {
         for (const NOC of self.NOCs()) { //Percorre cada treinador que vem da 1.ºAPI

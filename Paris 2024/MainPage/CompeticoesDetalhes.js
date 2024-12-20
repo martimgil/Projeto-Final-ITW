@@ -1,10 +1,10 @@
 // ViewModel Knockout
 var vm = function () {
-    var self = this; // Definir `self` adequadamente
+    var self = this;
     console.log("ViewModel initiated...");
 
     //--- Variáveis locais
-    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/api/Competitions');
+    self.baseUri = ko.observable('http://192.168.160.58/Paris2024/api/Competitions/');
     self.displayName = 'Detalhes da Competição';
     self.CompInfo = ko.observableArray([]);
     self.CompInfo2 = ko.observableArray([]);
@@ -68,7 +68,7 @@ var vm = function () {
             }
         }
 
-        // If both sportId and name are found, return the formatted string
+
         if (params.sportId && params.name) {
             return `?sportId=${params.sportId}&name=${params.name}`;
         }

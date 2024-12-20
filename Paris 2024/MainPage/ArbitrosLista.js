@@ -267,7 +267,7 @@ $(document).ready(function () {
                 type: 'GET',
                 url: 'http://192.168.160.58/Paris2024/API/Technical_officials/Search?q=' + ui.item.label,
                 success: function(data){
-                    window.location = 'TreinadorDetalhe.html?id=' + data[0].Id;
+                    window.location = 'ArbitrosDetalhe.html?id=' + data[0].Id;
                 }
             })
         },
