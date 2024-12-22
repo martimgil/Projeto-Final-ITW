@@ -22,6 +22,7 @@ var vm = function () {
             if (Array.isArray(data)) {
                 // Supondo que data é uma lista de objetos
                 self.records(data);
+                createChart(data); // Adicione esta linha para criar o gráfico
             } else {
                 self.CountryCode(data.CountryCode);
                 self.CountryName(data.CountryName);
@@ -38,6 +39,51 @@ var vm = function () {
     self.activate();
     console.log("VM initialized!");
 };
+
+function createChart(data) {
+    var ctx = document.getElementById('medalChart').getContext('2d');
+    var countries = data.map(item => item.CountryName);
+    var goldMedals = data.map(item => item.GoldMedal);
+    var silverMedals = data.map(item => item.SilverMedal);
+    var bronzeMedals = data.map(item => item.BronzeMedal);
+
+    var medalChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: countries,
+            datasets: [
+                {
+                    label: 'Gold Medals',
+                    data: goldMedals,
+                    backgroundColor: 'rgba(255, 215, 0, 0.6)',
+                    borderColor: 'rgba(255, 215, 0, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Silver Medals',
+                    data: silverMedals,
+                    backgroundColor: 'rgba(192, 192, 192, 0.6)',
+                    borderColor: 'rgba(192, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Bronze Medals',
+                    data: bronzeMedals,
+                    backgroundColor: 'rgba(205, 127, 50, 0.6)',
+                    borderColor: 'rgba(205, 127, 50, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
 
 function ajaxHelper(uri, method, data) {
     return $.ajax({

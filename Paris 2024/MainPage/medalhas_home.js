@@ -1,6 +1,5 @@
 var vm = function () {
     console.log('ViewModel initiated...');
-    //--- Variáveis locais
     var self = this;
     self.baseUri = ko.observable('http://192.168.160.58/Paris2024/api/CountryMedals?Countries=5');
     self.displayName = 'Medalheiro - Top 5';
@@ -13,15 +12,14 @@ var vm = function () {
     self.BronzeMedal = ko.observable('');
     self.Total = ko.observable('');
 
-    //--- Page Events
     self.activate = function () {
         console.log('CALL: getMedals...');
         var composedUri = self.baseUri();
         ajaxHelper(composedUri, 'GET').done(function (data) {
             console.log(data);
             if (Array.isArray(data)) {
-                // Supondo que data é uma lista de objetos
                 self.records(data);
+                createChart(data);
             } else {
                 self.CountryCode(data.CountryCode);
                 self.CountryName(data.CountryName);
@@ -34,10 +32,54 @@ var vm = function () {
         });
     };
 
-    //--- start ....
     self.activate();
     console.log("VM initialized!");
 };
+
+function createChart(data) {
+    var ctx = document.getElementById('medalChart').getContext('2d');
+    var countries = data.map(item => item.CountryName);
+    var goldMedals = data.map(item => item.GoldMedal);
+    var silverMedals = data.map(item => item.SilverMedal);
+    var bronzeMedals = data.map(item => item.BronzeMedal);
+
+    var medalChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: countries,
+            datasets: [
+                {
+                    label: 'Gold Medals',
+                    data: goldMedals,
+                    backgroundColor: 'rgba(255, 215, 0, 0.6)',
+                    borderColor: 'rgba(255, 215, 0, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Silver Medals',
+                    data: silverMedals,
+                    backgroundColor: 'rgba(192, 192, 192, 0.6)',
+                    borderColor: 'rgba(192, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Bronze Medals',
+                    data: bronzeMedals,
+                    backgroundColor: 'rgba(205, 127, 50, 0.6)',
+                    borderColor: 'rgba(205, 127, 50, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
 
 function ajaxHelper(uri, method, data) {
     return $.ajax({
