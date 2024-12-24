@@ -14,7 +14,7 @@ var vm = function () {
     self.totalRecords = ko.observable(0);
     self.hasPrevious = ko.observable(false);
     self.hasNext = ko.observable(false);
-    self.CompetitionDetails = ko.observableArray([]);
+    self.TeamDetails = ko.observableArray([]);
     self.Photo = ko.observable('');
     self.Teams2 = ko.observableArray([]);
     self.Sports = ko.observableArray([]);
@@ -49,11 +49,11 @@ var vm = function () {
                     // Update Teams with search results
                     for (const Athlete of data) {
                         await fetchAthleteDetails(Athlete); // Fetch athlete-related details
-                        await fetchCompDetails(Athlete); // Fetch competition-related details
+                        await fetchCompDetails(Athlete); // Fetch Team-related details
                         await delay(10); // Optional delay between requests
                     }
 
-                    const filtered = data.filter(Competition => Competition.Sport === Sport);
+                    const filtered = data.filter(Team => Team.Sport === Sport);
 
                     self.Teams2(filtered);
 
@@ -75,7 +75,7 @@ var vm = function () {
                     }
                     // Update Teams with search results
                     for (const Athlete of data) {
-                        await fetchCompDetails(Athlete); // Fetch competition-related details
+                        await fetchCompDetails(Athlete); // Fetch Team-related details
                         await fetchAthleteDetails(Athlete); // Fetch athlete-related details
                         await delay(10); // Optional delay between requests
                     }
@@ -89,6 +89,7 @@ var vm = function () {
 
                     self.currentPage(1);
                     hideLoading();
+                    checkFavourite();
                 });
             }
 
@@ -109,7 +110,7 @@ var vm = function () {
             self.activate(1);
         }
         else{
-            const filtered = self.Dict().filter(Competition => Competition.Sport === selected);
+            const filtered = self.Dict().filter(Team => Team.Sport === selected);
             self.Teams2(filtered);
 
             self.totalRecords(filtered.length);
@@ -118,18 +119,24 @@ var vm = function () {
             console.log("totalPages recalculated to:", self.totalPages());
 
             self.currentPage(1);
+            checkFavourite();
         }
 
     };
-    self.favoriteCompetition = function (Id, Name, event) {
+    self.favoriteTeam = function (Id, Name, event) {
         let favTeams = JSON.parse(window.localStorage.getItem('favTeams')) || [];
-        let competition = { Id: Id, name: Name };
+        let Team = { Id: Id, name: Name };
+        let button = event.target.closest('button');
 
         if (!favTeams.some(comp => comp.Id === Id && comp.name === Name)) {
-            favTeams.push(competition);
+            favTeams.push(Team);
             window.localStorage.setItem('favTeams', JSON.stringify(favTeams));
+            button.classList.add('active');
             console.log(`A competição ${Name} foi adicionada aos favoritos!`);
         } else {
+            favTeams = favTeams.filter(comp => comp.Id !== Id || comp.name !== Name);
+            button.classList.remove('active');
+            window.localStorage.setItem('favTeams', JSON.stringify(favTeams));
             console.log(`A competição ${Name} já está na lista de favoritos.`);
         }
         console.log(JSON.parse(window.localStorage.getItem('favTeams')));
@@ -171,6 +178,33 @@ var vm = function () {
 
 
     //--- Page Events
+    function checkFavourite() {
+        let favTeams = JSON.parse(window.localStorage.getItem('favTeams')) || [];
+        console.log("checkFavourite called");
+        console.log("Favorite teams:", favTeams);
+        let buttons = document.getElementsByClassName('fav-btn');
+        for (let button of buttons) {
+            let Id = button.getAttribute("data-id");
+            let name = button.getAttribute("data-name");
+            console.log(`Checking button with Id=${Id}, Name=${name}`);
+            if (Id === null || name === null) {
+                console.warn(`Button has null Id or Name: Id=${Id}, Name=${name}`);
+                continue;
+            }
+            if (favTeams.some(comp => comp.Id === Id && comp.name === name)) {
+                console.log(`Team found in favorites: Id=${Id}, Name=${name}`);
+                button.classList.add('active');
+            } else {
+                console.log(`Team not found in favorites: Id=${Id}, Name=${name}`);
+                button.classList.remove('active');
+            }
+        }
+    }
+    
+    
+    
+    
+    
     self.activate = function (id) {
         showLoading()
         console.log('CALL: getTeams...');
@@ -207,6 +241,7 @@ var vm = function () {
             Dictionary(); //If Dictionary function starts before the page finishes loading may result in error 500
             self.Teams2(self.Teams());
             console.log("Teams2", self.Teams2());
+            checkFavourite();
         });
 
         async function Dictionary() {
@@ -215,7 +250,7 @@ var vm = function () {
                 await ajaxHelper(backUri, 'GET').done(async function (data) {
                     for (const Athlete of data.Teams) {
                         console.log('Processing Athlete:', Athlete);
-                        // Fetch athlete and competition details in parallel
+                        // Fetch athlete and Team details in parallel
                         await Promise.all([
                             fetchAthleteDetails(Athlete),
                             fetchCompDetails(Athlete),
@@ -332,6 +367,7 @@ var vm = function () {
         self.activate(1);
     else {
         self.activate(pg);
+        checkFavourite();
     }
     console.log("VM initialized!");
 };
