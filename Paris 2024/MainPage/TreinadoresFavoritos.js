@@ -67,8 +67,10 @@ var vm = function () {
         $('#myModal').modal('hide');
     }
 
+
     showLoading();
     self.activate();
+
 };
 
 function formatDate(dateString) {

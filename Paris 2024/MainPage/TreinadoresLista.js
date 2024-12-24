@@ -49,20 +49,27 @@ var vm = function () {
                 self.coaches2(self.coaches());
                 console.log("coaches2", self.coaches2());
                 hideLoading();
+                checkFavourite(); // Chame a função aqui após os dados serem renderizados
             });
         };
     };
     self.favoriteCoach = function (id, event) {
         let favCoaches = JSON.parse(window.localStorage.getItem('favCoaches')) || [];
+        let button = event.target.closest('button');
         if (!favCoaches.includes(id)) {
             favCoaches.push(id);
+            button.classList.add('active');
             window.localStorage.setItem('favCoaches', JSON.stringify(favCoaches));
             console.log('O treinador foi adicionado aos favoritos!');
         } else {
-            console.log('O treinador já está na lista de favoritos.');
+            favCoaches = favCoaches.filter(favId => favId !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favCoaches', JSON.stringify(favCoaches));
+            console.log('O treinador foi removido dos favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favCoaches')));
     };
+
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
         return true;
@@ -97,6 +104,23 @@ var vm = function () {
     };
 
     //--- Page Events
+
+
+    function checkFavourite() {
+        let favCoaches = JSON.parse(window.localStorage.getItem('favCoaches')) || [];
+        console.log("o checkFavourite foi chamado");
+        console.log("esses sao os favoritos: ", favCoaches);
+        let buttons = document.getElementsByClassName("fav-btn");
+        for (let button of buttons) {
+            let coachId = parseInt(button.getAttribute("data-coach-id"));
+            if (favCoaches.includes(coachId)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+    }
+
     self.activate = function (id) {
         console.log('CALL: getCoaches...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
@@ -121,10 +145,9 @@ var vm = function () {
             await fetchAllCoachDetails();
             self.coaches2(self.coaches());
             console.log("coaches2", self.coaches2());
-
-
-
+            checkFavourite();
         });
+        checkFavourite();
     };
 
     function getPhotoUrl(id){
@@ -164,6 +187,7 @@ var vm = function () {
         hideLoading();
 
     }
+
 
 
     //--- Internal functions
@@ -223,13 +247,16 @@ var vm = function () {
         self.activate(1);
     else {
         self.activate(pg);
+        checkFavourite();
     }
     console.log("VM initialized!");
+
 };
 
 $(document).ready(function () {
     console.log("ready!");
     ko.applyBindings(new vm());
+
     $("#searchbar").autocomplete({
         minLength: 3,
         autoFill: true,

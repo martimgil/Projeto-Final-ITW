@@ -60,6 +60,7 @@ var vm = function () {
 
                 self.currentPage(1);
                 hideLoading();
+                checkFavourite();
             });
         };
     };
@@ -75,11 +76,16 @@ var vm = function () {
 
     self.favoriteAthlete = function (id, event) {
         let favAthletes = JSON.parse(window.localStorage.getItem('favAthletes')) || [];
+        let button = event.target.closest('.fav-btn');
         if (!favAthletes.includes(id)) {
             favAthletes.push(id);
+            button.classList.add('active');
             window.localStorage.setItem('favAthletes', JSON.stringify(favAthletes));
             console.log('O treinador foi adicionado aos favoritos!');
         } else {
+            favAthletes = favAthletes.filter(item => item !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favAthletes', JSON.stringify(favAthletes));
             console.log('O treinador já está na lista de favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favAthletes')));
@@ -118,6 +124,22 @@ var vm = function () {
     };
 
     //--- Page Events
+    function checkFavourite() {
+        let favAthletes = JSON.parse(window.localStorage.getItem('favAthletes')) || [];
+        console.log("o checkFavourite foi chamado");
+        console.log("esses sao os favoritos: ", favAthletes);
+        let buttons = document.getElementsByClassName("fav-btn");
+        for (let button of buttons) {
+            let AthleteId = parseInt(button.getAttribute("data-Athlete-id"));
+            if (favAthletes.includes(AthleteId)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+    }
+    
+    
     self.activate = function (id) {
         console.log('CALL: getAthletes...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
@@ -141,8 +163,10 @@ var vm = function () {
             await fetchAllAthleteDetails();
             self.Athletes2(self.Athletes());
             console.log("Athletes2", self.Athletes2());
+            checkFavourite();
 
         });
+        checkFavourite();
     };
 
     function getPhotoUrl(id){
@@ -248,6 +272,7 @@ var vm = function () {
         self.activate(1);
     else {
         self.activate(pg);
+        checkFavourite();
     }
     console.log("VM initialized!");
 };
