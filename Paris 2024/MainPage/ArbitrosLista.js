@@ -51,6 +51,7 @@ var vm = function () {
                 self.Technical_officials2(self.Technical_officials());
                 console.log("Technical_officials2", self.Technical_officials2());
                 hideLoading()
+                checkFavourite();
             });
         };
     };
@@ -66,15 +67,20 @@ var vm = function () {
     
     self.favoriteTechnical_official = function (id, event) {
         let favTechnical_officials = JSON.parse(window.localStorage.getItem('favTechnical_officials')) || [];
+        let button = event.target.closest('button');
         if (!favTechnical_officials.includes(id)) {
             favTechnical_officials.push(id);
+            button.classList.add('active');
             window.localStorage.setItem('favTechnical_officials', JSON.stringify(favTechnical_officials));
             console.log('O treinador foi adicionado aos favoritos!');
         } else {
+            favTechnical_officials = favTechnical_officials.filter(favId => favId !== id);
+            window.localStorage.setItem('favTechnical_officials', JSON.stringify(favTechnical_officials));
             console.log('O treinador já está na lista de favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favTechnical_officials')));
     };
+
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
         return true;
@@ -109,6 +115,23 @@ var vm = function () {
     };
 
     //--- Page Events
+
+    function checkFavourite(){
+        let favTechnical_officials = JSON.parse(window.localStorage.getItem('favTechnical_officials')) || [];
+        console.log("o checkFavourite foi chamado");
+        console.log("esses sao os favoritos: ", favTechnical_officials);
+        let buttons = document.getElementsByClassName("fav-btn");
+        for(let button of buttons){
+            let Technical_officialId = parseInt(button.getAttribute("data-Technical_official-id"));
+            if(favTechnical_officials.includes(Technical_officialId)){
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+    }
+
+
     self.activate = function (id) {
         console.log('CALL: getTechnical_officials...');
         var composedUri = self.baseUri() + "?page=" + id + "&pageSize=" + self.pagesize();
@@ -133,9 +156,10 @@ var vm = function () {
             self.Technical_officials2(self.Technical_officials());
             console.log("Technical_officials2", self.Technical_officials2());
             self.Sex(data.Sex);
-
+            checkFavourite();
 
         });
+        checkFavourite();
     };
 
     function getPhotoUrl(id){
@@ -238,6 +262,7 @@ var vm = function () {
         self.activate(1);
     else {
         self.activate(pg);
+        checkFavourite();
     }
     console.log("VM initialized!");
 };
