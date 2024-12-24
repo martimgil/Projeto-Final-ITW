@@ -8,6 +8,26 @@ var vm = function () {
     self.Sports = ko.observableArray([]);
 
     //--- Page Events
+    function checkFavourite() {
+        let favSports = JSON.parse(window.localStorage.getItem('favSports')) || [];
+        console.log("o checkfavourite foi chamado")
+        console.log("esses sao os fav", favSports)
+        let buttons = document.getElementsByClassName('fav-btn');
+
+        for (let button of buttons) {
+            let sportId = (button.getAttribute('data-sport-id'));
+            console.log("o sportId é", sportId)
+            if (favSports.includes(sportId)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+    }
+
+
+
+
     self.activate = function (id) {
         showLoading()
         console.log('CALL: getRoutes...');
@@ -16,7 +36,9 @@ var vm = function () {
             console.log(data);
             self.Sports(data);
             hideLoading();
+            checkFavourite();
         });
+        checkFavourite();
     };
 
     self.onEnter = function (d, e){
@@ -50,6 +72,7 @@ var vm = function () {
                 for(var i in data){
                     self.Athleteslist.push(data[i]);
                 }
+                checkFavourite();
             });
         }
     };
@@ -66,12 +89,17 @@ var vm = function () {
     
     self.favoriteSports = function (id, event) {
         let favSports = JSON.parse(window.localStorage.getItem('favSports')) || [];
+        let button = event.target.closest('button');
         if (!favSports.includes(id)) {
             favSports.push(id);
+            button.classList.add('active');
             window.localStorage.setItem('favSports', JSON.stringify(favSports));
-            console.log('O treinador foi adicionado aos favoritos!');
+            console.log('A modalidade foi adicionado aos favoritos!');
         } else {
-            console.log('O treinador já está na lista de favoritos.');
+            favSports = favSports.filter(favId => favId !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favSports', JSON.stringify(favSports));
+            console.log('A modalidade foi removido da lista de favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favSports')));
     };
@@ -80,6 +108,7 @@ var vm = function () {
     //showLoading()
     self.activate(1);
     console.log("VM initialized!");
+    checkFavourite();
 }
 
 

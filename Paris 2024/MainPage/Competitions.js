@@ -198,7 +198,7 @@ var vm = function () {
                 button.classList.remove('active');
             }
         }
-}
+    }
 
 
     self.activate = function (id) {
