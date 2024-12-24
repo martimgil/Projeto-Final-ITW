@@ -50,7 +50,7 @@ var vm = function () {
                     for (const Athlete of data) {
                         await fetchAthleteDetails(Athlete); // Fetch athlete-related details
                         await fetchCompDetails(Athlete); // Fetch competition-related details
-                        await delay(1); // Optional delay between requests
+                        await delay(0.1); // Optional delay between requests
                     }
 
                     const filtered = data.filter(Competition => Competition.Sport === Sport);
@@ -77,7 +77,7 @@ var vm = function () {
                     for (const Athlete of data) {
                         await fetchAthleteDetails(Athlete); // Fetch athlete-related details
                         await fetchCompDetails(Athlete); // Fetch competition-related details
-                        await delay(1); // Optional delay between requests
+                        await delay(0.1); // Optional delay between requests
                     }
 
                     self.Competitions2(data);
@@ -89,6 +89,7 @@ var vm = function () {
 
                     self.currentPage(1);
                     hideLoading();
+                    checkFavourite();
                 });
             }
 
@@ -118,22 +119,30 @@ var vm = function () {
             console.log("totalPages recalculated to:", self.totalPages());
 
             self.currentPage(1);
+            checkFavourite();
         }
 
     };
+
+
     self.favoriteCompetition = function (SportId, Name, event) {
         let favCompetitions = JSON.parse(window.localStorage.getItem('favCompetitions')) || [];
         let competition = { SportId: SportId, name: Name };
-
+        let button = event.target.closest('button');
         if (!favCompetitions.some(comp => comp.SportId === SportId && comp.name === Name)) {
             favCompetitions.push(competition);
             window.localStorage.setItem('favCompetitions', JSON.stringify(favCompetitions));
+            button.classList.add('active');
             console.log(`A competição ${Name} foi adicionada aos favoritos!`);
         } else {
+            favCompetitions = favCompetitions.filter(comp => comp.SportId !== SportId || comp.name !== Name);
+            button.classList.remove('active');
+            window.localStorage.setItem('favCompetitions', JSON.stringify(favCompetitions));
             console.log(`A competição ${Name} já está na lista de favoritos.`);
         }
         console.log(JSON.parse(window.localStorage.getItem('favCompetitions')));
     };
+
 
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
@@ -171,6 +180,27 @@ var vm = function () {
 
 
     //--- Page Events
+
+    function checkFavourite() {
+        let favCompetitions = JSON.parse(window.localStorage.getItem('favCompetitions')) || [];
+        console.log("a f foi chamada");
+        console.log("esses sao os cujos", favCompetitions);
+        let buttons = document.getElementsByClassName('fav-btn');
+        for (let button of buttons) {
+            let sportId = button.getAttribute("data-sport-id"); // Keep sportId as a string
+            let name = button.getAttribute("data-name");
+            console.log(`Checking button with SportId=${sportId}, Name=${name}`);
+            if (favCompetitions.some(comp => comp.SportId === sportId && comp.name === name)) {
+                console.log(`Competition found in favorites: SportId=${sportId}, Name=${name}`);
+                button.classList.add('active');
+            } else {
+                console.log(`Competition not found in favorites: SportId=${sportId}, Name=${name}`);
+                button.classList.remove('active');
+            }
+        }
+}
+
+
     self.activate = function (id) {
         showLoading()
         console.log('CALL: getCompetitions...');
@@ -207,6 +237,7 @@ var vm = function () {
             Dictionary(); //If Dictionary function starts before the page finishes loading may result in error 500
             self.Competitions2(self.Competitions());
             console.log("Competitions2", self.Competitions2());
+            checkFavourite();
         });
 
         function Dictionary() {
@@ -259,7 +290,7 @@ var vm = function () {
         for (const Athlete of self.Competitions()) {
             await fetchAthleteDetails(Athlete);
             await fetchCompDetails(Athlete);
-            await delay(1);
+            await delay(0.1);
         }
 
     }
@@ -317,6 +348,7 @@ var vm = function () {
         self.activate(1);
     else {
         self.activate(pg);
+        checkFavourite();
     }
     console.log("VM initialized!");
 };
