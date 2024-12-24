@@ -17,7 +17,7 @@ var vm = function () {
     self.Photo = ko.observable('');
     self.Athletics2 = ko.observableArray([]);
     self.Sex = ko.observable('');
-
+    self.Athletics3 = ko.observableArray([]);
     self.search = function () {
         console.log('searching');
         if ($("#searchbar").val() === ""){
@@ -109,6 +109,9 @@ var vm = function () {
             console.log("Athletics2", self.Athletics2());
             populateEventSelect();
             populateStageSelect();
+            await fetchAllAthleticsDetails();
+            self.Athletics3(self.Athletics());
+            console.log("Athletics3", self.Athletics3());
         });
     };
 
@@ -213,9 +216,9 @@ var vm = function () {
         });
     }
 
-    function getPhotoUrl(id){
-        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Athletics/' + id;
-        return ajaxHelper(detailsUrl, 'GET').done(function(data){
+    function getStages(EventId, StageId) {
+        var detailsUrl = 'http://192.168.160.58/Paris2024/API/Athletics?' + 'EventId=' + EventId + '&StageId=' + StageId;
+        return ajaxHelper(detailsUrl, 'GET').then(function (data) {
             console.log(detailsUrl);
             return data;
         });
@@ -225,26 +228,26 @@ var vm = function () {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+
     async function fetchAthleticsDetails(Athletics) {
-        console.log("id", Athletics.Id);
-        const data = await getPhotoUrl(Athletics.Id);
-        console.log("detalhes", data);
-        Athletics.Photo = data.Photo || 'identidade/PersonNotFound.png';
-        console.log("photo", Athletics.Photo);
-        Athletics.Country = data.Country;
-        console.log("Country", Athletics.Country);
-        self.Photo = ko.observable(Athletics.Photo);
-        Athletics.Sports = data.Sports;
-        console.log("Sports", Athletics.Sports);
-        Athletics.Sex = data.Sex
-        self.Sex(data.Sex)
-        Athletics.Function = data.Function;
+        const data = await getStages(Athletics.EventId, Athletics.StageId);
+        data.forEach(participant => {
+            self.Athletics.push({
+                EventId: Athletics.EventId,
+                EventName: Athletics.EventName,
+                StageId: Athletics.StageId,
+                StageName: Athletics.StageName,
+                ParticipantId: participant.Id,
+                ParticipantName: participant.ParticipantName,
+                CountryName: participant.CountryName
+            });
+        });
     }
 
     async function fetchAllAthleticsDetails() {
         for (const Athletics of self.Athletics()) { //Percorre cada treinador que vem da 1.ºAPI
             await fetchAthleticsDetails(Athletics); //Chama a outra assincrona
-            await delay(100); // Intervalo de 500ms entre cada solicitação
+            await delay(0); // Intervalo de 500ms entre cada solicitação
         }
 
         hideLoading();
