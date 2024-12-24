@@ -41,6 +41,7 @@ var vm = function () {
         }
     };
 
+
     function ajaxHelper(uri, method, data) {
         self.error('');
         return $.ajax({

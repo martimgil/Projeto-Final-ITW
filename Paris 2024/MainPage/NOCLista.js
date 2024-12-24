@@ -45,28 +45,35 @@ var vm = function () {
 
                 await fetchAllNOCDetails();
 
-
-
                 self.NOCs2(self.NOCs());
                 hideLoading();
+                checkFavourite();
             });
         }
     };
-    self.favoriteNOC = function (id, event) {
+
+    self.favoriteNOCs = function (id, event) {
         let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
+        let button = event.target.closest('button');
         if (!favNOCs.includes(id)) {
             favNOCs.push(id);
+            button.classList.add('active');
             window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
-            console.log('O Comité foi adicionado aos favoritos!');
+            console.log('O treinador foi adicionado aos favoritos!');
         } else {
-            console.log('O Comité já está na lista de favoritos.');
+            favNOCs = favNOCs.filter(favId => favId !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
+            console.log('O treinador foi removido dos favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favNOCs')));
     };
+
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
         return true;
     };
+
     self.previousPage = ko.computed(function () {
         return self.currentPage() * 1 - 1;
     }, self);
@@ -96,6 +103,21 @@ var vm = function () {
         return list;
     };
 
+    function checkFavourite() {
+        let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
+        console.log("o checkFavourite foi chamado");
+        console.log("esses sao os favoritos: ", favNOCs);
+        let buttons = document.getElementsByClassName("fav-btn");
+        for (let button of buttons) {
+            let NOCId = (button.getAttribute("data-noc-id"));
+            if (favNOCs.includes(NOCId)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+    }
+
     //--- Page Events
     self.activate = function (id) {
         console.log('CALL: getNOCs...');
@@ -122,10 +144,9 @@ var vm = function () {
             await fetchAllNOCDetails();
             self.NOCs2(self.NOCs());
             console.log("NOCs2", self.NOCs2());
-
-
-
+            checkFavourite();
         });
+        checkFavourite();
     };
 
     function getPhotoUrl(id){
@@ -152,25 +173,21 @@ var vm = function () {
 
         NOC.Athletes = data.Athletes ? data.Athletes.length : 0;
         console.log("athletes count", NOC.Athletes);
-        NOC.Coaches = data.Coaches? data.Coaches.length : 0;
-        console.log("coaches count", NOC.Coaches);
+        NOC.NOCs = data.NOCs? data.NOCs.length : 0;
+        console.log("NOCs count", NOC.NOCs);
         NOC.Medals = data.Medals ? data.Medals.length : 0;
         console.log("medals count", NOC.Medals);
         NOC.Teams = data.Teams ? data.Teams.length : 0;
         console.log("teams count", NOC.Teams);
     }
 
-
     async function fetchAllNOCDetails() {
         for (const NOC of self.NOCs()) { //Percorre cada treinador que vem da 1.ºAPI
             await fetchNOCDetails(NOC); //Chama a outra assincrona
             await delay(100); // Intervalo de 100ms entre cada gajo
         }
-
         hideLoading();
-
     }
-
 
     //--- Internal functions
     function ajaxHelper(uri, method, data) {
