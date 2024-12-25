@@ -1,6 +1,6 @@
 const questions = [
     {
-        question: "Em que ano serão realizados os Jogos Olímpicos de Paris?",
+        question: "Em que ano foram realizados os Jogos Olímpicos de Paris?",
         options: ["2022", "2024", "2026", "2028"],
         correct: 1
     },
@@ -25,17 +25,17 @@ const questions = [
         correct: 1
     },
     {
-        question: "Qual é a estação do ano em que os Jogos Olímpicos de Paris 2024 acontecerão?",
+        question: "Qual é a estação do ano em que os Jogos Olímpicos de Paris 2024 decorreram?",
         options: ["Outono", "Inverno", "Primavera", "Verão"],
         correct: 3
     },
     {
-        question: "Qual esporte é conhecido por envolver corridas e saltos em pista?",
+        question: "Qual o desporto que é conhecido por envolver corridas e saltos em pista?",
         options: ["Natação", "Atletismo", "Basquete", "Esgrima"],
         correct: 1
     },
     {
-        question: "Qual é o principal idioma falado em Paris?",
+        question: "Qual é a principal lingua falada em Paris?",
         options: ["Inglês", "Espanhol", "Francês", "Alemão"],
         correct: 2
     },
@@ -45,7 +45,7 @@ const questions = [
         correct: 1
     },
     {
-        question: "Qual é o nome do mascote oficial dos Jogos Olímpicos de Paris 2024?",
+        question: "Qual é o nome da mascote oficial dos Jogos Olímpicos de Paris 2024?",
         options: ["Marianne", "Phryge", "Pierre", "Lumière"],
         correct: 1
     }

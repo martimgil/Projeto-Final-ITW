@@ -1,52 +1,52 @@
 const questions = [
     {
-        question: "Quantas vezes Paris sediou os Jogos Olímpicos antes de 2024?",
-        options: ["Nenhuma", "Uma vez", "Duas vezes", "Três vezes"],
-        correct: 2
+        question: "Qual é a distância oficial da maratona que foi realizada nesta última edição?",
+        options: ["40 km", "42,195 km", "45 km", "50 km"],
+        correct: 1
     },
     {
-        question: "Qual será o local da cerimónia de abertura dos Jogos Olímpicos de Paris 2024?",
-        options: ["Estádio de Wembley", "Rio Sena", "Torre Eiffel", "Stade de France"],
+        question: "Qual será a nova forma inovadora da cerimónia de abertura",
+        options: ["Acontecerá no Stade de France (aka estádio que o éder os estragou)", "Foi realizada ao longo do Rio Sena", "Será apenas virtual", "Acontecerá simultaneamente em dois locais"],
+        correct: 1
+    },
+    {
+        question: "Quais os desportos que sera realizados fora da França continentam durante os Jogos Olímpicos de Paris 2024?",
+        options: ["Surf", "Atletismo", "Natação", "Escalada"],
         correct: 0
     },
     {
-        question: "Qual é o lema oficial dos Jogos Olímpicos?",
-        options: ["Mais Rápido, Mais Alto, Mais Forte - Juntos", "Paz e Desporto", "Unidos pelo Desporto", "Um Mundo, Uma Chama"],
-        correct: 1
-    },
-    {
-        question: "O skate foi introduzido como modalide olímpico em qual edição dos Jogos Olímpicos? ",
-        options: ["Tóquio 2020", "Rio 2016", "Paris 2024", "Pequim 2008"],
+        question: "Qual é a meta de neutralidade das emissões de carbono para os Jogos Olímpicos de Paris 2024?",
+        options: ["Reduzir em 30% as emissões em comparação com edições anteriores", "Eliminar todas as emissões", "Compensar apenas 50% das emissões", "Não há meta"],
         correct: 0
     },
     {
-        question: "Qual é o nome do rio que atrevessa a cidade de Paris e será destaque em algumas provas e momentos importantes.",
-        options: ["Reno", "Sena", "Danúbio", "Loire"],
+        question: "Quais tecnologias serão usadas para tornar os Jogos Olímpicos de Paris mais sustentáveis?",
+        options: ["Energia nuclear", "Energia solar e transporte elétrico", "Construções temporárias com concreto", "Energia a diesel"],
         correct: 1
     },
     {
-        question: "Quais são os cinco continentes representados pelos anéis olímpicos?",
-        options: ["América do Norte, América do Sul, Europa, África e Ásia", "Europa, Ásia, América, África e Oceania", "África, América, Oceania, Ásia e Antártida", "América, Ásia, Europa, África e Ártico"],
-        correct: 1
-    },
-    {
-        question: "Quantas medalhas e ouro são geralmente distribuídas nos Jogos Olímpicos de verão?",
-        options: ["Aproximadamente 150", "Aproximadamente 300", "Aproximadamente 500", "Aproximadamente 200"],
-        correct: 1
-    },
-    {
-        question: "Qual o desporto jogado no campo (ou quadra como é conhecido) com uma bola e dois aros?",
-        options: ["Andebol", "Basquetebol", "Voleibol", "Badminton"],
-        correct: 1
-    },
-    {
-        question: "Quem pode acender a tocha olímpica na cerimónia de abertura dos Jogos Olímpicos?",
-        options: ["Qualquer atleta", "O vencedor da última edição", "Uma pessoa escolhida pelo comité", "O presidente do COI"],
+        question: "Qual é o nome do comié responsável pela organização dos Jogos Olímpicos de Paris? ",
+        options: ["COI", "COP24", "Paris 2024", "Comité Olímpico Frances"],
         correct: 2
     },
     {
-        question: "Quantos atletas, aproximadamente, participam nos Jogos Olímpicos de Paris 2024?",
-        options: ["10 000", "5 000", "15 000", "20 000"],
+        question: "Como o design das medalhas de Paris 2024 reflete a herança cultural da França?",
+        options: ["Inclui símbolos da Revolução Francesa", "É feito de ouro puro", "É decorado com imagens de atletas", "Usa apenas o logotipo olímpico"],
+        correct: 0
+    },
+    {
+        question: "Qual foi o processo de seleção para as modalidades adicionais nos Jogos Olímpicos de Paris 2024?",
+        options: ["Votação pública", "Escolha do COI com recomendação do comité organizador", "Escolha por patrocionadores", "Decisão dos atletas"],
+        correct: 1
+    },
+    {
+        question: "Quantas cidades francesas participarão como anfitriãs dos Jogos Olímpicos de Paris 2024?",
+        options: ["10", "15", "20", "5"],
+        correct: 1
+    },
+    {
+        question: "Qual será o maior local de competição dos Jogos Olímpicos de Paris 2024?",
+        options: ["Stade de France", "Torre Eiffel", "Arena de Lyon", "Palácio de Versalhes"],
         correct: 0
     }
 ];
@@ -55,7 +55,7 @@ function loadQuiz() {
     const quizContainer = document.getElementById('quiz');
     questions.forEach((q, index) => {
         const questionDiv = document.createElement('div');
-        questionDiv.id = `question-${index}`; // ID único para cada questão
+        questionDiv.id = `question-${index}`; 
         questionDiv.classList.add('mb-4');
 
         const questionText = document.createElement('h5');
