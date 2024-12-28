@@ -163,51 +163,44 @@ var vm = function () {
         var selectedEventId = document.getElementById('eventSelect').value;
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>';
-
-        if(selectedEventId == 0){
+    
+        if (selectedEventId == 0) {
             self.Basketballs(self.Basketballs2());
-        } else{
+        } else {
             var filteredBasketballs = self.Basketballs2().filter(function (Basketballs) {
                 return Basketballs.EventId == selectedEventId;
             });
+    
+            filteredBasketballs.forEach(function (Basketballs) {
+                var option = document.createElement('option');
+                option.value = Basketballs.StageId;
+                option.text = Basketballs.StageName;
+                selectBox.appendChild(option);
+            });
+    
+            self.Basketballs(filteredBasketballs);
         }
-
-        filteredBasketballs.forEach(function (Basketballs) {
-            var option = document.createElement('option');
-            option.value = Basketballs.StageId;
-            option.text = Basketballs.StageName;
-            selectBox.appendChild(option);
-        });
-        self.Basketballs(filteredBasketballs);
-        console.log("Filtered Basketballs:", filteredBasketballs);
+        console.log("Filtered Basketballs:", self.Basketballs());
     }
-
-    function filterTableByStage(){
+    
+    function filterTableByStage() {
         var selectedStageId = document.getElementById('stageSelect').value;
-        var filteredBasketballs = self.Basketballs2().filter(function (Basketballs){
+        var filteredBasketballs = self.Basketballs2().filter(function (Basketballs) {
             return Basketballs.StageId == selectedStageId;
         });
         self.Basketballs(filteredBasketballs);
-        console.log("Filtered Basketballs:", filteredBasketballs);
+        console.log("Filtered Basketballs by Stage:", filteredBasketballs);
     }
-
-    document.getElementById('eventSelect').addEventListener('change', function (){
-        filterStagesByEvent();
-        filterTableByEvent();
-    });
-    document.getElementById('stageSelect').addEventListener('change', filterTableByStage);
-
-
-
+    
     function filterStagesByEvent() {
         var selectedEventId = document.getElementById('eventSelect').value;
         var selectBox = document.getElementById('stageSelect');
-        selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
-
+        selectBox.innerHTML = '<option value="0">Todas as fases</option>';
+    
         var filteredStages = self.Basketballs2().filter(function (Basketballs) {
             return Basketballs.EventId == selectedEventId;
         });
-
+    
         filteredStages.forEach(function (Basketballs) {
             var option = document.createElement('option');
             option.value = Basketballs.StageId;
@@ -215,7 +208,6 @@ var vm = function () {
             selectBox.appendChild(option);
         });
     }
-
     function getStages(EventId, StageId) {
         var detailsUrl = 'http://192.168.160.58/Paris2024/API/Basketballs?' + 'EventId=' + EventId + '&StageId=' + StageId;
         return ajaxHelper(detailsUrl, 'GET').then(function (data) {
