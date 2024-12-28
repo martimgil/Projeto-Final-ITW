@@ -4,7 +4,7 @@ var vm = function () {
     //---Variáveis locais
     var self = this;
     self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Athletics');
-    self.displayName = 'Atletismo';
+    self.displayName = 'Basquetebol';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
     self.Athletics = ko.observableArray([]);
@@ -18,6 +18,9 @@ var vm = function () {
     self.Athletics2 = ko.observableArray([]);
     self.Sex = ko.observable('');
     self.Athletics3 = ko.observableArray([]);
+    self.Athletics4 = ko.observableArray([]);
+    var initialAthletics = [];
+
     self.search = function () {
         console.log('searching');
         if ($("#searchbar").val() === ""){
@@ -48,7 +51,6 @@ var vm = function () {
                 await fetchAllAthleticsDetails();
                 self.Athletics2(self.Athletics());
                 console.log("Athletics2", self.Athletics2());
-                hideLoading();
             });
         };
     };
@@ -112,16 +114,27 @@ var vm = function () {
             await fetchAllAthleticsDetails();
             self.Athletics3(self.Athletics());
             console.log("Athletics3", self.Athletics3());
+  
+
         });
     };
 
+
+
+
+    function loadInitialAthletics(){
+        initialAthletics = self.Athletics4().slice();
+        console.log("isso é o que ta ate ao momento", self.Athletics4());
+    }
+
+
     function flattenAthleticsData(data) {
         var flattenedData = [];
-        data.forEach(function (athletics) {
-            athletics.Stages.forEach(function (stage) {
+        data.forEach(function (Athletics) {
+            Athletics.Stages.forEach(function (stage) {
                 var entry = {
-                    EventId: athletics.EventId,
-                    EventName: athletics.EventName,
+                    EventId: Athletics.EventId,
+                    EventName: Athletics.EventName,
                     StageId: stage.StageId,
                     StageName: stage.StageName
                 };
@@ -133,61 +146,129 @@ var vm = function () {
 
     function populateEventSelect() {
         var selectBox = document.getElementById('eventSelect');
-        var eventIds = new Set();
-        self.Athletics().forEach(function (athletics) {
-            if (!eventIds.has(athletics.EventId)) {
-                eventIds.add(athletics.EventId);
+        var eventNames = new Set();
+        self.Athletics().forEach(function (Athletics) {
+            if (!eventNames.has(Athletics.EventName)) {
+                eventNames.add(Athletics.EventName);
                 var option = document.createElement('option');
-                option.value = athletics.EventId;
-                option.text = athletics.EventName;
+                option.value = Athletics.EventName;
+                option.text = Athletics.EventName;
                 selectBox.appendChild(option);
             }
         });
+        console.log("eventNames: ", eventNames)
     }
+    function filterStagesByEvent() {
+        console.log("a executar filterStagesBYEvent")
+        var selectedEventName = document.getElementById('eventSelect').value;
+        var selectBox = document.getElementById('stageSelect');
+        selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
+    
+        var filteredStages = initialAthletics.filter(function (Athletics) {
+            return Athletics.EventName == selectedEventName;
+        });
+    
+        var stageNames = new Set();
+        filteredStages.forEach(function (Athletics) {
+            stageNames.add(Athletics.StageName);
+        });
+        console.log("isso foi adicionado", stageNames)
 
+    
+        stageNames.forEach(function (stageName) {
+            var option = document.createElement('option');
+            console.log("esta a ser colocado esse: ", stageName)
+            option.value = stageName;
+            option.text = stageName;
+            selectBox.appendChild(option);
+        });
+    
+        filterTableByEventAndStage();
+    }
+    
+    function filterTableByEventAndStage() {
+        console.log("a executar filterTableByEventAndStage");
+        var selectedEventName = document.getElementById('eventSelect').value;
+        var selectedStageName = document.getElementById('stageSelect').value;
+        console.log("o evento é esse", selectedEventName);
+        console.log("o stage é esse: ", selectedStageName);
+        console.log("eu tenho isso", initialAthletics);
+    
+        var filteredAthletics = initialAthletics.filter(function (Athletics) {
+            var eventMatch = selectedEventName === "0" || Athletics.EventName == selectedEventName;
+            var stageMatch = selectedStageName === "0" || Athletics.StageName == selectedStageName || selectedStageName === "0";
+            return eventMatch && stageMatch;
+        });
+    
+        console.log("Filtered Athletics:", filteredAthletics);
+        self.Athletics4(filteredAthletics);
+    }
+    
+    document.getElementById('eventSelect').addEventListener('change', function () {
+        filterStagesByEvent();
+    });
+    
+    document.getElementById('stageSelect').addEventListener('change', function () {
+        filterTableByEventAndStage();
+    });
     function populateStageSelect() {
         var selectBox = document.getElementById('stageSelect');
-        var stageIds = new Set();
-        self.Athletics().forEach(function (athletics) {
-            if (!stageIds.has(athletics.StageId)) {
-                stageIds.add(athletics.StageId);
+        selectBox.innerHTML = ''; // Clear existing options
+        var stageNames = new Set();
+        self.Athletics().forEach(function (Athletics) {
+            if (!stageNames.has(Athletics.StageName)) {
+                stageNames.add(Athletics.StageName);
                 var option = document.createElement('option');
-                option.value = athletics.StageId;
-                option.text = athletics.StageName;
+                option.value = Athletics.StageName;
+                option.text = Athletics.StageName;
                 selectBox.appendChild(option);
             }
         });
+        console.log("stageNames", stageNames)
     }
 
     function filterTableByEvent() {
-        var selectedEventId = document.getElementById('eventSelect').value;
-        var selectBox = document.getElementById('stageSelect');
-        selectBox.innerHTML = '<option value="0">Todas as fases</option>';
-
-        if(selectedEventId == 0){
-            self.Athletics(self.Athletics2());
-        } else{
-            var filteredAthletics = self.Athletics2().filter(function (athletics) {
-                return athletics.EventId == selectedEventId;
+        console.log("a executar filterTableBYEvent");
+    
+        var selectedEventName = document.getElementById('eventSelect').value;
+        var filteredAthletics;
+    
+        if (selectedEventName == "0") {
+            filteredAthletics = initialAthletics.slice(); // Restaurar a lista completa
+        } else {
+            filteredAthletics = initialAthletics.filter(function (Athletics) {
+                return Athletics.EventName == selectedEventName;
             });
         }
-
-        filteredAthletics.forEach(function (athletics) {
+        console.log("Filtered Athletics:", filteredAthletics);
+    
+        self.Athletics4(filteredAthletics);
+    
+        // Atualizar o select de stage
+        var selectBox = document.getElementById('stageSelect');
+        selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
+    
+        var stageNames = new Set();
+        filteredAthletics.forEach(function (Athletics) {
+            stageNames.add(Athletics.StageName);
+        });
+    
+        stageNames.forEach(function (stageName) {
             var option = document.createElement('option');
-            option.value = athletics.StageId;
-            option.text = athletics.StageName;
+            option.value = stageName;
+            option.text = stageName;
             selectBox.appendChild(option);
         });
-        self.Athletics(filteredAthletics);
-        console.log("Filtered Athletics:", filteredAthletics);
+    
+        console.log("stageNames atualizados:", stageNames);
     }
 
     function filterTableByStage(){
-        var selectedStageId = document.getElementById('stageSelect').value;
-        var filteredAthletics = self.Athletics2().filter(function (athletics){
-            return athletics.StageId == selectedStageId;
+        var selectedStageName = document.getElementById('stageSelect').value;
+        var filteredAthletics = self.Athletics4().filter(function (Athletics){
+            return Athletics.StageName == selectedStageName;
         });
-        self.Athletics(filteredAthletics);
+        self.Athletics4(filteredAthletics);
         console.log("Filtered Athletics:", filteredAthletics);
     }
 
@@ -197,21 +278,19 @@ var vm = function () {
     });
     document.getElementById('stageSelect').addEventListener('change', filterTableByStage);
 
-
-
     function filterStagesByEvent() {
-        var selectedEventId = document.getElementById('eventSelect').value;
+        var selectedEventName = document.getElementById('eventSelect').value;
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
 
-        var filteredStages = self.Athletics2().filter(function (athletics) {
-            return athletics.EventId == selectedEventId;
+        var filteredStages = self.Athletics4().filter(function (Athletics) {
+            return Athletics.EventName == selectedEventName;
         });
 
-        filteredStages.forEach(function (athletics) {
+        filteredStages.forEach(function (Athletics) {
             var option = document.createElement('option');
-            option.value = athletics.StageId;
-            option.text = athletics.StageName;
+            option.value = Athletics.StageName;
+            option.text = Athletics.StageName;
             selectBox.appendChild(option);
         });
     }
@@ -232,26 +311,107 @@ var vm = function () {
     async function fetchAthleticsDetails(Athletics) {
         const data = await getStages(Athletics.EventId, Athletics.StageId);
         data.forEach(participant => {
-            self.Athletics.push({
+            console.log("esta a adicionar os detalhes para o gajo", participant);
+            self.AthleticsDetails.push({
                 EventId: Athletics.EventId,
                 EventName: Athletics.EventName,
                 StageId: Athletics.StageId,
                 StageName: Athletics.StageName,
                 ParticipantId: participant.Id,
                 ParticipantName: participant.ParticipantName,
-                CountryName: participant.CountryName
+                CountryName: participant.CountryName,
+                Sex: participant.Sex,
+                ParticipantType: participant.ParticipantType,
+        
             });
         });
     }
 
+    
     async function fetchAllAthleticsDetails() {
+        console.log("Fetching all Athletics details...");
         for (const Athletics of self.Athletics()) { //Percorre cada treinador que vem da 1.ºAPI
             await fetchAthleticsDetails(Athletics); //Chama a outra assincrona
-            await delay(0); // Intervalo de 500ms entre cada solicitação
+            await delay(0); 
         }
-
-        hideLoading();
+        console.log("a obter os detalhes do basketball...")
+        self.Athletics(self.AthleticsDetails());
+        console.log("Finished fetching all Athletics details.");
+        fetchAllParticipantsDetails(); // Chama a função para buscar detalhes dos participantes
     }
+    
+    async function fetchDetailsForParticipant(ParticipantId) {
+        if (!ParticipantId) {
+            console.error("Participant Id is undefined or null");
+            return;
+        }
+        console.log(`Fetching details for participant with Id: ${ParticipantId}`);
+        const detailsUrl = 'http://192.168.160.58/Paris2024/API/Athletics/' + ParticipantId;
+        const details = await ajaxHelper(detailsUrl, 'GET');
+        console.log(`Details for participant ${ParticipantId}:`, details);
+        updateTableWithDetails(ParticipantId, details);
+
+    }
+    
+    function updateTableWithDetails(Id, details) {
+        console.log(`Updating table with details for participant ${Id}`);
+        var participant = self.AthleticsDetails().find(p => p.ParticipantId === Id);
+        if (participant) {
+            participant.ParticipantName = details.ParticipantName;
+            participant.CountryName = details.CountryName;
+            participant.Sex = details.Sex;
+            participant.ParticipantType = details.ParticipantType;
+            participant.NOCFlag = details.NOCFlag;
+            participant.CountryFlag = details.CountryFlag;
+            participant.Rank = details.Rank;
+            participant.Result = details.Result;
+            participant.ResultType = details.ResultType;
+            participant.ResultIRM = details.ResultIRM;
+            participant.ResultDiff = details.ResultDiff;
+            participant.ResultWLT = details.ResultWLT;
+            participant.QualificationMark = details.QualificationMark;
+            participant.StartOrder = details.StartOrder;
+            participant.Bib = details.Bib;
+            // Adicione mais campos conforme necessário
+            console.log(`Participant details updated:`, participant);
+        } else {
+            console.warn(`Participant with Id ${Id} not found`);
+        }
+    }
+
+    async function fetchAllParticipantsDetails() {
+        console.log("Fetching details for all participants...");
+        const participants = self.AthleticsDetails();
+        console.log("Participants details:", participants);
+        for (const participant of participants) {
+            if (!participant.ParticipantId) {
+                console.error("Participant Id is undefined or null for participant:", participant);
+                continue;
+            }
+            console.log(`Participant:`, participant);
+            console.log(`Participant Id: ${participant.ParticipantId}`);
+            await fetchDetailsForParticipant(participant.ParticipantId);
+            await delay(0); 
+        }
+        self.Athletics4(self.Athletics3());
+        console.log("Athletics4", self.Athletics4());
+        console.log("Athletics3", self.Athletics3());
+        console.log("Finished fetching details for all participants.");
+        loadInitialAthletics();
+        hideLoading();
+
+    
+    }
+    
+    
+    async function fetchAllData() {
+        showLoading();
+        await fetchAllAthleticsDetails();
+        await fetchAllParticipantsDetails();
+    
+    }
+    
+    fetchAllData();
 
     //--- Internal functions
     function ajaxHelper(uri, method, data) {
@@ -301,6 +461,8 @@ var vm = function () {
             }
         }
     };
+
+    
 
     //--- start ....
     showLoading();
