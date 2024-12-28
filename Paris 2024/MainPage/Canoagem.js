@@ -4,7 +4,7 @@ var vm = function () {
     //---Variáveis locais
     var self = this;
     self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Canoe_Sprints');
-    self.displayName = 'Canoagem de velocidade';
+    self.displayName = 'Canoagem';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
     self.Canoe_Sprints = ko.observableArray([]);
@@ -21,39 +21,7 @@ var vm = function () {
     self.Canoe_Sprints4 = ko.observableArray([]);
     var initialCanoe_Sprints = [];
 
-    self.search = function () {
-        console.log('searching');
-        if ($("#searchbar").val() === ""){
-            showLoading();
-            var pg = getUrlParameter('page');
-            console.log(pg);
-            if(pg == undefined)
-                self.activate(1);
-            else{
-                self.activate(pg);
-            }
-        } else {
-            var chandeUrl = 'http://192.168.160.58/Paris2024/API/Canoe_Sprints/Search?q=' + $("#searchbar").val();
-            self.Canoe_Sprintslist = [];
-            ajaxHelper(chandeUrl, 'GET').done(async function(data){
-                console.log(data);
-                if (data.length ==0){
-                    return alert(("Não foram encontrados resultados"))
-                }
-                self.totalPages(1)
-                console.log(data);
-                showLoading();
-                self.Canoe_Sprints(data);
-                self.totalRecords(data.length);
-                for(var i in data){
-                    self.Canoe_Sprintslist.push(data[i]);
-                }
-                await fetchAllCanoe_SprintsDetails();
-                self.Canoe_Sprints2(self.Canoe_Sprints());
-                console.log("Canoe_Sprints2", self.Canoe_Sprints2());
-            });
-        };
-    };
+
     self.favoriteCanoe_Sprints = function (id, event) {
         let favCanoe_Sprints = JSON.parse(window.localStorage.getItem('favCanoe_Sprints')) || [];
         if (!favCanoe_Sprints.includes(id)) {
@@ -65,38 +33,81 @@ var vm = function () {
         }
         console.log(JSON.parse(window.localStorage.getItem('favCanoe_Sprints')));
     };
+
+    // Função para calcular o número total de páginas
+    self.totalPages = ko.computed(function () {
+        return Math.ceil(self.Canoe_Sprints4().length / self.pagesize());
+    });
+
+    // Função para ir para uma página específica
+    self.goToPage = function (page) {
+        if (page >= 1 && page <= self.totalPages()) {
+            self.currentPage(page);
+        }
+    };
+    self.Canoe_Sprints4.subscribe(function (newValue) {
+        self.totalRecords(newValue.length);
+    });
+
+    // Função para calcular a página anterior
+    self.previousPage = ko.computed(function () {
+        return self.currentPage() > 1 ? self.currentPage() - 1 : 1;
+    });
+
+    // Função para calcular a próxima página
+    self.nextPage = ko.computed(function () {
+        return self.currentPage() < self.totalPages() ? self.currentPage() + 1 : self.totalPages();
+    });
+
+    self.totalPages = ko.computed(function () {
+        return Math.ceil(self.totalRecords() / self.pagesize());
+    });
+
+
+
+    // Função para calcular o array de páginas para exibição
+    self.pageArray = ko.computed(function () {
+        var pages = [];
+        var totalPages = self.totalPages();
+        var currentPage = self.currentPage();
+        var startPage = Math.max(1, currentPage - 4);
+        var endPage = Math.min(totalPages, currentPage + 4);
+
+        // Ajuste para garantir que sempre mostre 9 páginas se possível
+        if (endPage - startPage < 9) {
+            if (startPage === 1) {
+                endPage = Math.min(totalPages, startPage + 8);
+            } else if (endPage === totalPages) {
+                startPage = Math.max(1, endPage - 8);
+            }
+        }
+
+        for (var i = startPage; i <= endPage; i++) {
+            pages.push(i);
+        }
+        return pages;
+    });
+
+    // Função para calcular os itens a serem exibidos com base na página atual
+    self.paginatedCanoe_Sprints = ko.computed(function () {
+        var startIndex = (self.currentPage() - 1) * self.pagesize();
+        var endIndex = startIndex + self.pagesize();
+        return self.Canoe_Sprints4().slice(startIndex, endIndex);
+    });
+    // Função para calcular os registros exibidos
+    self.fromRecord = ko.computed(function () {
+        return (self.currentPage() - 1) * self.pagesize() + 1;
+    });
+
+    self.toRecord = ko.computed(function () {
+        return Math.min(self.currentPage() * self.pagesize(), self.Canoe_Sprints4().length);
+    });
+
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
         return true;
     };
-    self.previousPage = ko.computed(function () {
-        return self.currentPage() * 1 - 1;
-    }, self);
-    self.nextPage = ko.computed(function () {
-        return self.currentPage() * 1 + 1;
-    }, self);
-    self.fromRecord = ko.computed(function () {
-        return self.previousPage() * self.pagesize() + 1;
-    }, self);
-    self.toRecord = ko.computed(function () {
-        return Math.min(self.currentPage() * self.pagesize(), self.totalRecords());
-    }, self);
-    self.totalPages = ko.observable(0);
-    self.pageArray = function () {
-        var list = [];
-        var size = Math.min(self.totalPages(), 9);
-        var step;
-        if (size < 9 || self.currentPage() === 1)
-            step = 0;
-        else if (self.currentPage() >= self.totalPages() - 4)
-            step = self.totalPages() - 9;
-        else
-            step = Math.max(self.currentPage() - 5, 0);
 
-        for (var i = 1; i <= size; i++)
-            list.push(i + step);
-        return list;
-    };
 
     //--- Page Events
     self.activate = function (id) {
@@ -188,22 +199,27 @@ var vm = function () {
 
     function filterTableByEventAndStage() {
         console.log("a executar filterTableByEventAndStage");
+
+        // Obtém os valores dos filtros
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectedStageName = document.getElementById('stageSelect').value;
-        console.log("o evento é esse", selectedEventName);
-        console.log("o stage é esse: ", selectedStageName);
-        console.log("eu tenho isso", initialCanoe_Sprints);
 
+        console.log("Evento selecionado:", selectedEventName);
+        console.log("Fase selecionada:", selectedStageName);
+        console.log("Lista inicial de basquetebol:", initialCanoe_Sprints);
+
+        // Atualiza a lista com base nos filtros
         var filteredCanoe_Sprints = initialCanoe_Sprints.filter(function (Canoe_Sprints) {
-            var eventMatch = selectedEventName === "0" || Canoe_Sprints.EventName == selectedEventName;
-            var stageMatch = selectedStageName === "0" || Canoe_Sprints.StageName == selectedStageName || selectedStageName === "0";
+            var eventMatch = selectedEventName === "0" || Canoe_Sprints.EventName === selectedEventName;
+            var stageMatch = selectedStageName === "0" || Canoe_Sprints.StageName === selectedStageName;
             return eventMatch && stageMatch;
         });
 
-        console.log("Filtered Canoe_Sprints:", filteredCanoe_Sprints);
+        console.log("Basquetebol filtrado:", filteredCanoe_Sprints);
+
+        // Atualiza a tabela observável (Knockout.js)
         self.Canoe_Sprints4(filteredCanoe_Sprints);
     }
-
     document.getElementById('eventSelect').addEventListener('change', function () {
         filterStagesByEvent();
     });

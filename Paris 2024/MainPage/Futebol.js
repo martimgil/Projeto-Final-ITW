@@ -4,7 +4,7 @@ var vm = function () {
     //---Variáveis locais
     var self = this;
     self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Footballs');
-    self.displayName = 'Basquetebol';
+    self.displayName = 'Futebol';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
     self.Footballs = ko.observableArray([]);
@@ -21,39 +21,7 @@ var vm = function () {
     self.Footballs4 = ko.observableArray([]);
     var initialFootballs = [];
 
-    self.search = function () {
-        console.log('searching');
-        if ($("#searchbar").val() === ""){
-            showLoading();
-            var pg = getUrlParameter('page');
-            console.log(pg);
-            if(pg == undefined)
-                self.activate(1);
-            else{
-                self.activate(pg);
-            }
-        } else {
-            var chandeUrl = 'http://192.168.160.58/Paris2024/API/Footballs/Search?q=' + $("#searchbar").val();
-            self.Footballslist = [];
-            ajaxHelper(chandeUrl, 'GET').done(async function(data){
-                console.log(data);
-                if (data.length ==0){
-                    return alert(("Não foram encontrados resultados"))
-                }
-                self.totalPages(1)
-                console.log(data);
-                showLoading();
-                self.Footballs(data);
-                self.totalRecords(data.length);
-                for(var i in data){
-                    self.Footballslist.push(data[i]);
-                }
-                await fetchAllFootballsDetails();
-                self.Footballs2(self.Footballs());
-                console.log("Footballs2", self.Footballs2());
-            });
-        };
-    };
+
     self.favoriteFootballs = function (id, event) {
         let favFootballs = JSON.parse(window.localStorage.getItem('favFootballs')) || [];
         if (!favFootballs.includes(id)) {
@@ -65,38 +33,81 @@ var vm = function () {
         }
         console.log(JSON.parse(window.localStorage.getItem('favFootballs')));
     };
+
+    // Função para calcular o número total de páginas
+    self.totalPages = ko.computed(function () {
+        return Math.ceil(self.Footballs4().length / self.pagesize());
+    });
+
+    // Função para ir para uma página específica
+    self.goToPage = function (page) {
+        if (page >= 1 && page <= self.totalPages()) {
+            self.currentPage(page);
+        }
+    };
+    self.Footballs4.subscribe(function (newValue) {
+        self.totalRecords(newValue.length);
+    });
+
+    // Função para calcular a página anterior
+    self.previousPage = ko.computed(function () {
+        return self.currentPage() > 1 ? self.currentPage() - 1 : 1;
+    });
+
+    // Função para calcular a próxima página
+    self.nextPage = ko.computed(function () {
+        return self.currentPage() < self.totalPages() ? self.currentPage() + 1 : self.totalPages();
+    });
+
+    self.totalPages = ko.computed(function () {
+        return Math.ceil(self.totalRecords() / self.pagesize());
+    });
+
+
+
+    // Função para calcular o array de páginas para exibição
+    self.pageArray = ko.computed(function () {
+        var pages = [];
+        var totalPages = self.totalPages();
+        var currentPage = self.currentPage();
+        var startPage = Math.max(1, currentPage - 4);
+        var endPage = Math.min(totalPages, currentPage + 4);
+
+        // Ajuste para garantir que sempre mostre 9 páginas se possível
+        if (endPage - startPage < 9) {
+            if (startPage === 1) {
+                endPage = Math.min(totalPages, startPage + 8);
+            } else if (endPage === totalPages) {
+                startPage = Math.max(1, endPage - 8);
+            }
+        }
+
+        for (var i = startPage; i <= endPage; i++) {
+            pages.push(i);
+        }
+        return pages;
+    });
+
+    // Função para calcular os itens a serem exibidos com base na página atual
+    self.paginatedFootballs = ko.computed(function () {
+        var startIndex = (self.currentPage() - 1) * self.pagesize();
+        var endIndex = startIndex + self.pagesize();
+        return self.Footballs4().slice(startIndex, endIndex);
+    });
+    // Função para calcular os registros exibidos
+    self.fromRecord = ko.computed(function () {
+        return (self.currentPage() - 1) * self.pagesize() + 1;
+    });
+
+    self.toRecord = ko.computed(function () {
+        return Math.min(self.currentPage() * self.pagesize(), self.Footballs4().length);
+    });
+
     self.onEnter = function (d, e){
         e.keyCode === 13 && self.search();
         return true;
     };
-    self.previousPage = ko.computed(function () {
-        return self.currentPage() * 1 - 1;
-    }, self);
-    self.nextPage = ko.computed(function () {
-        return self.currentPage() * 1 + 1;
-    }, self);
-    self.fromRecord = ko.computed(function () {
-        return self.previousPage() * self.pagesize() + 1;
-    }, self);
-    self.toRecord = ko.computed(function () {
-        return Math.min(self.currentPage() * self.pagesize(), self.totalRecords());
-    }, self);
-    self.totalPages = ko.observable(0);
-    self.pageArray = function () {
-        var list = [];
-        var size = Math.min(self.totalPages(), 9);
-        var step;
-        if (size < 9 || self.currentPage() === 1)
-            step = 0;
-        else if (self.currentPage() >= self.totalPages() - 4)
-            step = self.totalPages() - 9;
-        else
-            step = Math.max(self.currentPage() - 5, 0);
 
-        for (var i = 1; i <= size; i++)
-            list.push(i + step);
-        return list;
-    };
 
     //--- Page Events
     self.activate = function (id) {
@@ -188,22 +199,27 @@ var vm = function () {
 
     function filterTableByEventAndStage() {
         console.log("a executar filterTableByEventAndStage");
+
+        // Obtém os valores dos filtros
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectedStageName = document.getElementById('stageSelect').value;
-        console.log("o evento é esse", selectedEventName);
-        console.log("o stage é esse: ", selectedStageName);
-        console.log("eu tenho isso", initialFootballs);
 
+        console.log("Evento selecionado:", selectedEventName);
+        console.log("Fase selecionada:", selectedStageName);
+        console.log("Lista inicial de basquetebol:", initialFootballs);
+
+        // Atualiza a lista com base nos filtros
         var filteredFootballs = initialFootballs.filter(function (Footballs) {
-            var eventMatch = selectedEventName === "0" || Footballs.EventName == selectedEventName;
-            var stageMatch = selectedStageName === "0" || Footballs.StageName == selectedStageName || selectedStageName === "0";
+            var eventMatch = selectedEventName === "0" || Footballs.EventName === selectedEventName;
+            var stageMatch = selectedStageName === "0" || Footballs.StageName === selectedStageName;
             return eventMatch && stageMatch;
         });
 
-        console.log("Filtered Footballs:", filteredFootballs);
+        console.log("Basquetebol filtrado:", filteredFootballs);
+
+        // Atualiza a tabela observável (Knockout.js)
         self.Footballs4(filteredFootballs);
     }
-
     document.getElementById('eventSelect').addEventListener('change', function () {
         filterStagesByEvent();
     });

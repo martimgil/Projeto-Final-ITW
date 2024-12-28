@@ -82,6 +82,34 @@
   <br>
   <br>
 
+  <div class="row small" data-aos="fade-up">
+    <p class="col-4 mr-auto pt-2" data-aos="fade-up">
+      <span data-bind="html: 'Page: ' + currentPage() + ' of ' + totalPages()" data-aos="fade-up"></span><br />
+      <span data-bind="html: 'Canoe_Sprints: ' + fromRecord() + '-' + toRecord() + ' of ' + totalRecords()" data-aos="fade-up"></span>
+    </p>
+    <div class="col-8 my-0 pt-3" data-aos="fade-up">
+      <ul class="pagination float-end" data-aos="fade-up">
+        <!-- ko if: currentPage() > 5 && totalPages() > 10 -->
+        <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="First Page" href="#" data-bind="click: function() { goToPage(1) }">⇤</a></li>
+        <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="Previous Page" href="#" data-bind="click: function() { goToPage(previousPage()) }">←</a></li>
+        <!-- /ko -->
+        <!-- ko foreach: pageArray -->
+        <!-- ko if: $data == $parent.currentPage() -->
+        <li class="active page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { title: 'Current Page ' + $data }, text: $data" data-aos="fade-up"></a></li>
+        <!-- /ko -->
+        <!-- ko if: $data != $parent.currentPage() -->
+        <li class="page-item" data-aos="fade-up"><a class="page-link" href="#" data-bind="attr: { title: 'Goto Page ' + $data }, text: $data, click: function() { $parent.goToPage($data) }" data-aos="fade-up"></a></li>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- ko if: currentPage() < totalPages() - 4 && totalPages() > 9 -->
+        <li class="page-item" data-aos="fade-up"><a class="page-link" title="Next Page" href="#" data-bind="click: function() { goToPage(nextPage()) }" data-aos="fade-up">→</a></li>
+        <li class="page-item" data-aos="fade-up"><a class="page-link" title="Last Page" href="#" data-bind="click: function() { goToPage(totalPages()) }" data-aos="fade-up">⇥</a></li>
+        <!-- /ko -->
+      </ul>
+    </div>
+  </div>
+
+
   <select id="eventSelect">
     <option value="0">Todos os eventos</option>
   </select>
@@ -107,7 +135,7 @@
       <th scope="col" class="text-right" data-aos="fade-up"></th>
     </tr>
     </thead>
-    <tbody data-bind="foreach: Canoe_Sprints4" data-aos="fade-up">
+    <tbody data-bind="foreach: paginatedCanoe_Sprints" data-aos="fade-up">
     <tr data-aos="fade-up">
       <td class="align-middle" data-aos="fade-up"><img class="align-content-center" data-bind="attr: {src: CountryFlag}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right" class="img-fluid" /></td>
       <td class="align-middle" data-aos="fade-up"><img class="align-content-center" data-bind="attr: {src: NOCFlag}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right" class="img-fluid" /></td>
