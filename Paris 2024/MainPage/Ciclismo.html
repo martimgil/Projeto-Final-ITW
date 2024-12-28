@@ -85,7 +85,7 @@
   <div class="row small" data-aos="fade-up">
     <p class="col-4 mr-auto pt-2" data-aos="fade-up">
       <span data-bind="html: 'Page: ' + currentPage() + ' of ' + totalPages()" data-aos="fade-up"></span><br />
-      <span data-bind="html: 'Basketballs: ' + fromRecord() + '-' + toRecord() + ' of ' + totalRecords()" data-aos="fade-up"></span>
+      <span data-bind="html: 'Cycling_Tracks: ' + fromRecord() + '-' + toRecord() + ' of ' + totalRecords()" data-aos="fade-up"></span>
     </p>
     <div class="col-8 my-0 pt-3" data-aos="fade-up">
       <ul class="pagination float-end" data-aos="fade-up">
@@ -135,7 +135,7 @@
       <th scope="col" class="text-right" data-aos="fade-up"></th>
     </tr>
     </thead>
-    <tbody data-bind="foreach: paginatedBasketballs" data-aos="fade-up">
+    <tbody data-bind="foreach: paginatedCycling_Tracks" data-aos="fade-up">
     <tr data-aos="fade-up">
       <td class="align-middle" data-aos="fade-up"><img class="align-content-center" data-bind="attr: {src: CountryFlag}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right" class="img-fluid" /></td>
       <td class="align-middle" data-aos="fade-up"><img class="align-content-center" data-bind="attr: {src: NOCFlag}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right" class="img-fluid" /></td>
