@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Ciclismo de pista - Paris 2024</title>
+  <title>Ciclismo - Paris 2024</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/Features-Centered-Icons-icons.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
@@ -53,7 +53,7 @@
           <a class="nav-link ms-auto" href="Medalheiro.html" style="float: right"><i class="fa-solid fa-medal"></i> Medalhas</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link ms-auto" href="BasquetebolLista.html" style="float: right"><i class="fa-solid fa-person-running"></i> Basquetebol</a>
+          <a class="nav-link ms-auto" href="CiclismoLista.html" style="float: right"><i class="fa-solid fa-person-running"></i> Ciclismo</a>
         </li>
         <li class="nav-item">
           <a class="nav-link ms-auto" href="Favoritos.html" style="float: right"><i class="fa-solid fa-heart"></i></a>
@@ -77,36 +77,36 @@
   <br>
   <br>
   <div style="position: relative;">
-    <a class="btn btn-danger" style="float: right;" href="BasquetebolFavoritos.html" role="button">Visualiza aqui os teus favoritos</a>
+    <a class="btn btn-danger" style="float: right;" href="CiclismoFavoritos.html" role="button">Visualiza aqui os teus favoritos</a>
   </div>
   <br>
   <br>
 
   <div class="row small" data-aos="fade-up">
-    <p class="col-4 mr-auto pt-2" data-aos="fade-up">
-      <span data-bind="html: 'Page: ' + currentPage() + ' of ' + totalPages()" data-aos="fade-up"></span><br />
-      <span data-bind="html: 'Cycling_Tracks: ' + fromRecord() + '-' + toRecord() + ' of ' + totalRecords()" data-aos="fade-up"></span>
-    </p>
-    <div class="col-8 my-0 pt-3" data-aos="fade-up">
-      <ul class="pagination float-end" data-aos="fade-up">
-        <!-- ko if: currentPage() > 5 && totalPages() > 10 -->
-        <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="First Page" href="#" data-bind="click: function() { goToPage(1) }">⇤</a></li>
-        <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="Previous Page" href="#" data-bind="click: function() { goToPage(previousPage()) }">←</a></li>
-        <!-- /ko -->
-        <!-- ko foreach: pageArray -->
-        <!-- ko if: $data == $parent.currentPage() -->
-        <li class="active page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { title: 'Current Page ' + $data }, text: $data" data-aos="fade-up"></a></li>
-        <!-- /ko -->
-        <!-- ko if: $data != $parent.currentPage() -->
-        <li class="page-item" data-aos="fade-up"><a class="page-link" href="#" data-bind="attr: { title: 'Goto Page ' + $data }, text: $data, click: function() { $parent.goToPage($data) }" data-aos="fade-up"></a></li>
-        <!-- /ko -->
-        <!-- /ko -->
-        <!-- ko if: currentPage() < totalPages() - 4 && totalPages() > 9 -->
-        <li class="page-item" data-aos="fade-up"><a class="page-link" title="Next Page" href="#" data-bind="click: function() { goToPage(nextPage()) }" data-aos="fade-up">→</a></li>
-        <li class="page-item" data-aos="fade-up"><a class="page-link" title="Last Page" href="#" data-bind="click: function() { goToPage(totalPages()) }" data-aos="fade-up">⇥</a></li>
-        <!-- /ko -->
-      </ul>
-    </div>
+      <p class="col-4 mr-auto pt-2" data-aos="fade-up">
+          <span data-bind="html: 'Page: ' + currentPage() + ' of ' + totalPages()" data-aos="fade-up"></span><br />
+          <span data-bind="html: 'Cycling_Tracks: ' + fromRecord() + '-' + toRecord() + ' of ' + totalRecords()" data-aos="fade-up"></span>
+      </p>
+      <div class="col-8 my-0 pt-3" data-aos="fade-up">
+          <ul class="pagination float-end" data-aos="fade-up">
+              <!-- ko if: currentPage() > 5 && totalPages() > 10 -->
+              <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="First Page" href="#" data-bind="click: function() { goToPage(1) }">⇤</a></li>
+              <li class="page-item float-end" data-aos="fade-up"><a class="page-link" title="Previous Page" href="#" data-bind="click: function() { goToPage(previousPage()) }">←</a></li>
+              <!-- /ko -->
+              <!-- ko foreach: pageArray -->
+              <!-- ko if: $data == $parent.currentPage() -->
+              <li class="active page-item" data-aos="fade-up"><a class="page-link" data-bind="attr: { title: 'Current Page ' + $data }, text: $data" data-aos="fade-up"></a></li>
+              <!-- /ko -->
+              <!-- ko if: $data != $parent.currentPage() -->
+              <li class="page-item" data-aos="fade-up"><a class="page-link" href="#" data-bind="attr: { title: 'Goto Page ' + $data }, text: $data, click: function() { $parent.goToPage($data) }" data-aos="fade-up"></a></li>
+              <!-- /ko -->
+              <!-- /ko -->
+              <!-- ko if: currentPage() < totalPages() - 4 && totalPages() > 9 -->
+              <li class="page-item" data-aos="fade-up"><a class="page-link" title="Next Page" href="#" data-bind="click: function() { goToPage(nextPage()) }" data-aos="fade-up">→</a></li>
+              <li class="page-item" data-aos="fade-up"><a class="page-link" title="Last Page" href="#" data-bind="click: function() { goToPage(totalPages()) }" data-aos="fade-up">⇥</a></li>
+              <!-- /ko -->
+          </ul>
+      </div>
   </div>
 
 
@@ -117,46 +117,50 @@
     <option value="0">Todas as fases</option>
   </select>
 
-  <table class="table table-striped table-sm small" data-aos="fade-up">
-    <thead class="table-secondary" data-aos="fade-up">
-    <tr data-aos="fade-up">
-      <th scope="col" data-aos="fade-up"></th>
-      <th scope="col" data-aos="fade-up"></th>
-      <th scope="col" data-aos="fade-up">Evento</th>
-      <th scope="col" data-aos="fade-up">Fase</th>
-      <th scope="col" data-aos="fade-up">Tipo Part.</th>
-      <th scope="col" data-aos="fade-up">Participante</th>
-      <th scope="col" data-aos="fade-up">Sex</th>
-      <th scope="col" data-aos="fade-up">País</th>
-      <th scope="col" data-aos="fade-up">Pontuação</th>
-      <th scope="col" data-aos="fade-up"></th>
-      <th scope="col" data-aos="fade-up">Resultado</th>
+<table class="table table-striped table-sm small" data-aos="fade-up">
+  <thead class="table-secondary" data-aos="fade-up">
+  <tr data-aos="fade-up">
+    <th scope="col" data-aos="fade-up"></th>
+    <th scope="col" data-aos="fade-up"></th>
+    <th scope="col" data-aos="fade-up">Evento</th>
+    <th scope="col" data-aos="fade-up">Fase</th>
+    <th scope="col" data-aos="fade-up">Tipo Part.</th>
+    <th scope="col" data-aos="fade-up">Participante</th>
+    <th scope="col" data-aos="fade-up">Sex</th>
+    <th scope="col" data-aos="fade-up">País</th>
+    <th scope="col" data-aos="fade-up">Pontuação</th>
+    <th scope="col" data-aos="fade-up"></th>
+    <th scope="col" data-aos="fade-up">Resultado</th>
+    <th scope="col" data-aos="fade-up">Data</th>
+    <th scope="col" data-aos="fade-up">Local</th>
 
-      <th scope="col" class="text-right" data-aos="fade-up"></th>
-    </tr>
-    </thead>
-    <tbody data-bind="foreach: paginatedCycling_Tracks" data-aos="fade-up">
-    <tr data-aos="fade-up">
-      <td class="align-middle" data-aos="fade-up"><img class="align-content-center" data-bind="attr: {src: CountryFlag}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right" class="img-fluid" /></td>
-      <td class="align-middle" data-aos="fade-up"><img class="align-content-center" data-bind="attr: {src: NOCFlag}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right" class="img-fluid" /></td>
-      <td class="align-middle" data-bind="text: EventName" data-aos="fade-up"></td>
-      <td class="align-middle" data-bind="text: StageName" data-aos="fade-up"></td>
-      <td class="align-middle" data-bind="text: ParticipantType" data-aos="fade-up"></td>
-      <td class="align-middle" data-bind="text: ParticipantName" data-aos="fade-up"></td>
-      <td class="align-middle" data-bind="text: Sex" data-aos="fade-up"></td>
-      <td class="align-middle" data-bind="text: CountryName" data-aos="fade-up"></td>
-      <td class="align-middle" data-bind="text: Result" data-aos="fade-up"></td>
-      <td class="align-middle" data-bind="text: ResultType" data-aos="fade-up"></td>
-      <td class="align-middle" data-bind="text: ResultWLT" data-aos="fade-up"></td>
-      <td class="text-end" data-aos="fade-up">
-        <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href: './TreinadorDetalhe.html?id=' + ParticipantId }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
-        <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteCoach(ParticipantId, event) }" style="margin-left: 5px;">
-          <i class="fa fa-heart" title="Adicionar aos favoritos"></i>
-        </button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+    <th scope="col" class="text-right" data-aos="fade-up"></th>
+  </tr>
+  </thead>
+  <tbody data-bind="foreach: paginatedCycling_Tracks" data-aos="fade-up">
+      <tr data-aos="fade-up">
+          <td class="align-middle" data-aos="fade-up"><img class="align-content-center" data-bind="attr: {src: CountryFlag}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right" class="img-fluid" /></td> 
+          <td class="align-middle" data-aos="fade-up"><img class="align-content-center" data-bind="attr: {src: NOCFlag}" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto; float: right" class="img-fluid" /></td>
+          <td class="align-middle" data-bind="text: EventName" data-aos="fade-up"></td>
+          <td class="align-middle" data-bind="text: StageName" data-aos="fade-up"></td>
+          <td class="align-middle" data-bind="text: ParticipantType" data-aos="fade-up"></td>
+          <td class="align-middle" data-bind="text: ParticipantName" data-aos="fade-up"></td>
+          <td class="align-middle" data-bind="text: Sex" data-aos="fade-up"></td>
+          <td class="align-middle" data-bind="text: CountryName" data-aos="fade-up"></td>
+          <td class="align-middle" data-bind="text: Result" data-aos="fade-up"></td>
+          <td class="align-middle" data-bind="text: ResultType" data-aos="fade-up"></td>
+          <td class="align-middle" data-bind="text: ResultWLT" data-aos="fade-up"></td>
+            <td class="align-middle" data-bind="text: Date" data-aos="fade-up"></td>
+          <td class="align-middle" data-bind="text: Venue" data-aos="fade-up"></td>
+          <td class="text-end" data-aos="fade-up">
+              <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href: './CiclismoDetalhe.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
+              <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteCycling_Tracks(Id, event) }, attr: { 'data-Cycling_Tracks-id': Id }" style="margin-left: 5px;" >
+                <i class="fa fa-heart" title="Adicionar aos favoritos"></i>
+              </button>
+          </td>
+      </tr>
+  </tbody>
+</table>
 </div>
 
 

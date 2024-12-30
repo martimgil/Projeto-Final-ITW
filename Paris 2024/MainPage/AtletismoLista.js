@@ -338,6 +338,7 @@ var vm = function () {
                 CountryName: participant.CountryName,
                 Sex: participant.Sex,
                 ParticipantType: participant.ParticipantType,
+                Id: participant.Id
 
             });
         });
@@ -388,6 +389,7 @@ var vm = function () {
             participant.QualificationMark = details.QualificationMark;
             participant.StartOrder = details.StartOrder;
             participant.Bib = details.Bib;
+    
             // Adicione mais campos conforme necessário
             console.log(`Participant details updated:`, participant);
         } else {

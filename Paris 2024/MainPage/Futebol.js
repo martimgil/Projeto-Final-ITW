@@ -21,24 +21,28 @@ var vm = function () {
     self.Footballs4 = ko.observableArray([]);
     var initialFootballs = [];
 
-
     self.favoriteFootballs = function (id, event) {
         let favFootballs = JSON.parse(window.localStorage.getItem('favFootballs')) || [];
+        let button = event.target.closest('button');
         if (!favFootballs.includes(id)) {
             favFootballs.push(id);
+            button.classList.add('active');
             window.localStorage.setItem('favFootballs', JSON.stringify(favFootballs));
             console.log('O treinador foi adicionado aos favoritos!');
         } else {
-            console.log('O treinador já está na lista de favoritos.');
+            favFootballs = favFootballs.filter(favId => favId !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favFootballs', JSON.stringify(favFootballs));
+            console.log('O treinador foi removido dos favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favFootballs')));
     };
 
-    // Função para calcular o número total de páginas
+     // Função para calcular o número total de páginas
     self.totalPages = ko.computed(function () {
         return Math.ceil(self.Footballs4().length / self.pagesize());
     });
-
+    
     // Função para ir para uma página específica
     self.goToPage = function (page) {
         if (page >= 1 && page <= self.totalPages()) {
@@ -48,12 +52,12 @@ var vm = function () {
     self.Footballs4.subscribe(function (newValue) {
         self.totalRecords(newValue.length);
     });
-
+    
     // Função para calcular a página anterior
     self.previousPage = ko.computed(function () {
         return self.currentPage() > 1 ? self.currentPage() - 1 : 1;
     });
-
+    
     // Função para calcular a próxima página
     self.nextPage = ko.computed(function () {
         return self.currentPage() < self.totalPages() ? self.currentPage() + 1 : self.totalPages();
@@ -62,9 +66,9 @@ var vm = function () {
     self.totalPages = ko.computed(function () {
         return Math.ceil(self.totalRecords() / self.pagesize());
     });
+    
 
-
-
+    
     // Função para calcular o array de páginas para exibição
     self.pageArray = ko.computed(function () {
         var pages = [];
@@ -72,7 +76,7 @@ var vm = function () {
         var currentPage = self.currentPage();
         var startPage = Math.max(1, currentPage - 4);
         var endPage = Math.min(totalPages, currentPage + 4);
-
+    
         // Ajuste para garantir que sempre mostre 9 páginas se possível
         if (endPage - startPage < 9) {
             if (startPage === 1) {
@@ -81,13 +85,13 @@ var vm = function () {
                 startPage = Math.max(1, endPage - 8);
             }
         }
-
+    
         for (var i = startPage; i <= endPage; i++) {
             pages.push(i);
         }
         return pages;
     });
-
+    
     // Função para calcular os itens a serem exibidos com base na página atual
     self.paginatedFootballs = ko.computed(function () {
         var startIndex = (self.currentPage() - 1) * self.pagesize();
@@ -98,7 +102,7 @@ var vm = function () {
     self.fromRecord = ko.computed(function () {
         return (self.currentPage() - 1) * self.pagesize() + 1;
     });
-
+    
     self.toRecord = ko.computed(function () {
         return Math.min(self.currentPage() * self.pagesize(), self.Footballs4().length);
     });
@@ -107,9 +111,26 @@ var vm = function () {
         e.keyCode === 13 && self.search();
         return true;
     };
-
+    
 
     //--- Page Events
+
+    function checkFavourite() {
+        let favFootballs = JSON.parse(window.localStorage.getItem('favFootballs')) || [];
+        console.log("o checkFavourite foi chamado");
+        console.log("esses sao os favoritos: ", favFootballs);
+        let buttons = document.getElementsByClassName("fav-btn");
+        for (let button of buttons) {
+            let FootballsId = parseInt(button.getAttribute("data-Footballs-id"));
+            if (favFootballs.includes(FootballsId)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+    }
+
+
     self.activate = function (id) {
         console.log('CALL: getFootballs...');
         var composedUri = self.baseUri() + "/Events";
@@ -125,7 +146,8 @@ var vm = function () {
             await fetchAllFootballsDetails();
             self.Footballs3(self.Footballs());
             console.log("Footballs3", self.Footballs3());
-
+            checkFavourite();
+            
 
         });
     };
@@ -136,6 +158,7 @@ var vm = function () {
     function loadInitialFootballs(){
         initialFootballs = self.Footballs4().slice();
         console.log("isso é o que ta ate ao momento", self.Footballs4());
+        checkFavourite();
     }
 
 
@@ -174,18 +197,18 @@ var vm = function () {
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
-
+    
         var filteredStages = initialFootballs.filter(function (Footballs) {
             return Footballs.EventName == selectedEventName;
         });
-
+    
         var stageNames = new Set();
         filteredStages.forEach(function (Footballs) {
             stageNames.add(Footballs.StageName);
         });
         console.log("isso foi adicionado", stageNames)
 
-
+    
         stageNames.forEach(function (stageName) {
             var option = document.createElement('option');
             console.log("esta a ser colocado esse: ", stageName)
@@ -193,43 +216,44 @@ var vm = function () {
             option.text = stageName;
             selectBox.appendChild(option);
         });
-
+    
         filterTableByEventAndStage();
+        checkFavourite();
     }
-
+    
     function filterTableByEventAndStage() {
         console.log("a executar filterTableByEventAndStage");
-
+    
         // Obtém os valores dos filtros
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectedStageName = document.getElementById('stageSelect').value;
-
+    
         console.log("Evento selecionado:", selectedEventName);
         console.log("Fase selecionada:", selectedStageName);
-        console.log("Lista inicial de basquetebol:", initialFootballs);
-
+        console.log("Lista inicial de Futebol:", initialFootballs);
+    
         // Atualiza a lista com base nos filtros
         var filteredFootballs = initialFootballs.filter(function (Footballs) {
             var eventMatch = selectedEventName === "0" || Footballs.EventName === selectedEventName;
             var stageMatch = selectedStageName === "0" || Footballs.StageName === selectedStageName;
             return eventMatch && stageMatch;
         });
-
-        console.log("Basquetebol filtrado:", filteredFootballs);
-
+    
+        console.log("Futebol filtrado:", filteredFootballs);
+    
         // Atualiza a tabela observável (Knockout.js)
         self.Footballs4(filteredFootballs);
+        checkFavourite();
     }
     document.getElementById('eventSelect').addEventListener('change', function () {
         filterStagesByEvent();
     });
-
+    
     document.getElementById('stageSelect').addEventListener('change', function () {
         filterTableByEventAndStage();
     });
     function populateStageSelect() {
         var selectBox = document.getElementById('stageSelect');
-        selectBox.innerHTML = ''; // Clear existing options
         var stageNames = new Set();
         self.Footballs().forEach(function (Footballs) {
             if (!stageNames.has(Footballs.StageName)) {
@@ -245,10 +269,10 @@ var vm = function () {
 
     function filterTableByEvent() {
         console.log("a executar filterTableBYEvent");
-
+    
         var selectedEventName = document.getElementById('eventSelect').value;
         var filteredFootballs;
-
+    
         if (selectedEventName == "0") {
             filteredFootballs = initialFootballs.slice(); // Restaurar a lista completa
         } else {
@@ -257,26 +281,27 @@ var vm = function () {
             });
         }
         console.log("Filtered Footballs:", filteredFootballs);
-
+    
         self.Footballs4(filteredFootballs);
-
+    
         // Atualizar o select de stage
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
-
+    
         var stageNames = new Set();
         filteredFootballs.forEach(function (Footballs) {
             stageNames.add(Footballs.StageName);
         });
-
+    
         stageNames.forEach(function (stageName) {
             var option = document.createElement('option');
             option.value = stageName;
             option.text = stageName;
             selectBox.appendChild(option);
         });
-
+    
         console.log("stageNames atualizados:", stageNames);
+        checkFavourite();
     }
 
     function filterTableByStage(){
@@ -286,6 +311,7 @@ var vm = function () {
         });
         self.Footballs4(filteredFootballs);
         console.log("Filtered Footballs:", filteredFootballs);
+        checkFavourite();
     }
 
     document.getElementById('eventSelect').addEventListener('change', function (){
@@ -308,7 +334,9 @@ var vm = function () {
             option.value = Footballs.StageName;
             option.text = Footballs.StageName;
             selectBox.appendChild(option);
+            
         });
+        checkFavourite();
     }
 
     function getStages(EventId, StageId) {
@@ -338,24 +366,25 @@ var vm = function () {
                 CountryName: participant.CountryName,
                 Sex: participant.Sex,
                 ParticipantType: participant.ParticipantType,
-
+                Id : participant.Id
+        
             });
         });
     }
 
-
+    
     async function fetchAllFootballsDetails() {
         console.log("Fetching all Footballs details...");
         for (const Footballs of self.Footballs()) { //Percorre cada treinador que vem da 1.ºAPI
             await fetchFootballsDetails(Footballs); //Chama a outra assincrona
-            await delay(0);
+            await delay(0); 
         }
-        console.log("a obter os detalhes do Football...")
+        console.log("a obter os detalhes do basketball...")
         self.Footballs(self.FootballsDetails());
         console.log("Finished fetching all Footballs details.");
         fetchAllParticipantsDetails(); // Chama a função para buscar detalhes dos participantes
     }
-
+    
     async function fetchDetailsForParticipant(ParticipantId) {
         if (!ParticipantId) {
             console.error("Participant Id is undefined or null");
@@ -368,7 +397,7 @@ var vm = function () {
         updateTableWithDetails(ParticipantId, details);
 
     }
-
+    
     function updateTableWithDetails(Id, details) {
         console.log(`Updating table with details for participant ${Id}`);
         var participant = self.FootballsDetails().find(p => p.ParticipantId === Id);
@@ -388,6 +417,8 @@ var vm = function () {
             participant.QualificationMark = details.QualificationMark;
             participant.StartOrder = details.StartOrder;
             participant.Bib = details.Bib;
+            participant.Date = details.Date;
+            participant.Venue = details.Venue;
             // Adicione mais campos conforme necessário
             console.log(`Participant details updated:`, participant);
         } else {
@@ -407,7 +438,7 @@ var vm = function () {
             console.log(`Participant:`, participant);
             console.log(`Participant Id: ${participant.ParticipantId}`);
             await fetchDetailsForParticipant(participant.ParticipantId);
-            await delay(0);
+            await delay(0); 
         }
         self.Footballs4(self.Footballs3());
         console.log("Footballs4", self.Footballs4());
@@ -415,18 +446,19 @@ var vm = function () {
         console.log("Finished fetching details for all participants.");
         loadInitialFootballs();
         hideLoading();
+        checkFavourite();
 
-
+    
     }
-
-
+    
+    
     async function fetchAllData() {
         showLoading();
         await fetchAllFootballsDetails();
         await fetchAllParticipantsDetails();
-
+    
     }
-
+    
     fetchAllData();
 
     //--- Internal functions
@@ -478,7 +510,7 @@ var vm = function () {
         }
     };
 
-
+    
 
     //--- start ....
     showLoading();
@@ -488,6 +520,7 @@ var vm = function () {
         self.activate(1);
     else {
         self.activate(pg);
+        checkFavourite();
     }
     console.log("VM initialized!");
 };

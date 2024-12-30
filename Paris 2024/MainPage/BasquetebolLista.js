@@ -21,15 +21,19 @@ var vm = function () {
     self.Basketballs4 = ko.observableArray([]);
     var initialBasketballs = [];
 
-
     self.favoriteBasketballs = function (id, event) {
         let favBasketballs = JSON.parse(window.localStorage.getItem('favBasketballs')) || [];
+        let button = event.target.closest('button');
         if (!favBasketballs.includes(id)) {
             favBasketballs.push(id);
+            button.classList.add('active');
             window.localStorage.setItem('favBasketballs', JSON.stringify(favBasketballs));
             console.log('O treinador foi adicionado aos favoritos!');
         } else {
-            console.log('O treinador já está na lista de favoritos.');
+            favBasketballs = favBasketballs.filter(favId => favId !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favBasketballs', JSON.stringify(favBasketballs));
+            console.log('O treinador foi removido dos favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favBasketballs')));
     };
@@ -110,6 +114,23 @@ var vm = function () {
     
 
     //--- Page Events
+
+    function checkFavourite() {
+        let favBasketballs = JSON.parse(window.localStorage.getItem('favBasketballs')) || [];
+        console.log("o checkFavourite foi chamado");
+        console.log("esses sao os favoritos: ", favBasketballs);
+        let buttons = document.getElementsByClassName("fav-btn");
+        for (let button of buttons) {
+            let BasketballsId = parseInt(button.getAttribute("data-Basketballs-id"));
+            if (favBasketballs.includes(BasketballsId)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+    }
+
+
     self.activate = function (id) {
         console.log('CALL: getBasketballs...');
         var composedUri = self.baseUri() + "/Events";
@@ -125,7 +146,8 @@ var vm = function () {
             await fetchAllBasketballsDetails();
             self.Basketballs3(self.Basketballs());
             console.log("Basketballs3", self.Basketballs3());
-  
+            checkFavourite();
+            
 
         });
     };
@@ -136,6 +158,7 @@ var vm = function () {
     function loadInitialBasketballs(){
         initialBasketballs = self.Basketballs4().slice();
         console.log("isso é o que ta ate ao momento", self.Basketballs4());
+        checkFavourite();
     }
 
 
@@ -195,6 +218,7 @@ var vm = function () {
         });
     
         filterTableByEventAndStage();
+        checkFavourite();
     }
     
     function filterTableByEventAndStage() {
@@ -219,6 +243,7 @@ var vm = function () {
     
         // Atualiza a tabela observável (Knockout.js)
         self.Basketballs4(filteredBasketballs);
+        checkFavourite();
     }
     document.getElementById('eventSelect').addEventListener('change', function () {
         filterStagesByEvent();
@@ -229,7 +254,6 @@ var vm = function () {
     });
     function populateStageSelect() {
         var selectBox = document.getElementById('stageSelect');
-        selectBox.innerHTML = ''; // Clear existing options
         var stageNames = new Set();
         self.Basketballs().forEach(function (Basketballs) {
             if (!stageNames.has(Basketballs.StageName)) {
@@ -277,6 +301,7 @@ var vm = function () {
         });
     
         console.log("stageNames atualizados:", stageNames);
+        checkFavourite();
     }
 
     function filterTableByStage(){
@@ -286,6 +311,7 @@ var vm = function () {
         });
         self.Basketballs4(filteredBasketballs);
         console.log("Filtered Basketballs:", filteredBasketballs);
+        checkFavourite();
     }
 
     document.getElementById('eventSelect').addEventListener('change', function (){
@@ -308,7 +334,9 @@ var vm = function () {
             option.value = Basketballs.StageName;
             option.text = Basketballs.StageName;
             selectBox.appendChild(option);
+            
         });
+        checkFavourite();
     }
 
     function getStages(EventId, StageId) {
@@ -338,6 +366,7 @@ var vm = function () {
                 CountryName: participant.CountryName,
                 Sex: participant.Sex,
                 ParticipantType: participant.ParticipantType,
+                Id : participant.Id
         
             });
         });
@@ -388,6 +417,8 @@ var vm = function () {
             participant.QualificationMark = details.QualificationMark;
             participant.StartOrder = details.StartOrder;
             participant.Bib = details.Bib;
+            participant.Date = details.Date;
+            participant.Venue = details.Venue;
             // Adicione mais campos conforme necessário
             console.log(`Participant details updated:`, participant);
         } else {
@@ -415,6 +446,7 @@ var vm = function () {
         console.log("Finished fetching details for all participants.");
         loadInitialBasketballs();
         hideLoading();
+        checkFavourite();
 
     
     }
@@ -488,6 +520,7 @@ var vm = function () {
         self.activate(1);
     else {
         self.activate(pg);
+        checkFavourite();
     }
     console.log("VM initialized!");
 };
