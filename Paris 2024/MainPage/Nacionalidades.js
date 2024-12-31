@@ -87,7 +87,7 @@ var vm = function () {
 
     };
     self.favoriteNOCs = function (id, event) {
-        let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
+        let favNOCs = JSON.parse(window.localStorage.getItem('favNacionalidades')) || [];
         let button = event.target.closest('button');
         if (!favNOCs.includes(id)) {
             favNOCs.push(id);
@@ -140,7 +140,7 @@ var vm = function () {
 
     //--- Page Events
     function checkFavourite() {
-        let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
+        let favNOCs = JSON.parse(window.localStorage.getItem('favNacionalidades')) || [];
         console.log("o checkFavourite foi chamado");
         console.log("esses sao os favoritos: ", favNOCs);
         let buttons = document.getElementsByClassName("fav-btn");

@@ -7,7 +7,7 @@ var vm = function () {
 
     self.activate = function () {
         console.log('CALL: getFavouriteNOCs...');
-        var favNOCsList = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
+        var favNOCsList = JSON.parse(window.localStorage.getItem('favNacionalidades')) || [];
         console.log("favoritos", favNOCsList);
         if (favNOCsList.length === 0) {
             self.records(null);
