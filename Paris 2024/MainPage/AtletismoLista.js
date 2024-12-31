@@ -21,24 +21,28 @@ var vm = function () {
     self.Athletics4 = ko.observableArray([]);
     var initialAthletics = [];
 
-
     self.favoriteAthletics = function (id, event) {
         let favAthletics = JSON.parse(window.localStorage.getItem('favAthletics')) || [];
+        let button = event.target.closest('button');
         if (!favAthletics.includes(id)) {
             favAthletics.push(id);
+            button.classList.add('active');
             window.localStorage.setItem('favAthletics', JSON.stringify(favAthletics));
             console.log('O treinador foi adicionado aos favoritos!');
         } else {
-            console.log('O treinador já está na lista de favoritos.');
+            favAthletics = favAthletics.filter(favId => favId !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favAthletics', JSON.stringify(favAthletics));
+            console.log('O treinador foi removido dos favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favAthletics')));
     };
 
-    // Função para calcular o número total de páginas
+     // Função para calcular o número total de páginas
     self.totalPages = ko.computed(function () {
         return Math.ceil(self.Athletics4().length / self.pagesize());
     });
-
+    
     // Função para ir para uma página específica
     self.goToPage = function (page) {
         if (page >= 1 && page <= self.totalPages()) {
@@ -48,12 +52,12 @@ var vm = function () {
     self.Athletics4.subscribe(function (newValue) {
         self.totalRecords(newValue.length);
     });
-
+    
     // Função para calcular a página anterior
     self.previousPage = ko.computed(function () {
         return self.currentPage() > 1 ? self.currentPage() - 1 : 1;
     });
-
+    
     // Função para calcular a próxima página
     self.nextPage = ko.computed(function () {
         return self.currentPage() < self.totalPages() ? self.currentPage() + 1 : self.totalPages();
@@ -62,9 +66,9 @@ var vm = function () {
     self.totalPages = ko.computed(function () {
         return Math.ceil(self.totalRecords() / self.pagesize());
     });
+    
 
-
-
+    
     // Função para calcular o array de páginas para exibição
     self.pageArray = ko.computed(function () {
         var pages = [];
@@ -72,7 +76,7 @@ var vm = function () {
         var currentPage = self.currentPage();
         var startPage = Math.max(1, currentPage - 4);
         var endPage = Math.min(totalPages, currentPage + 4);
-
+    
         // Ajuste para garantir que sempre mostre 9 páginas se possível
         if (endPage - startPage < 9) {
             if (startPage === 1) {
@@ -81,13 +85,13 @@ var vm = function () {
                 startPage = Math.max(1, endPage - 8);
             }
         }
-
+    
         for (var i = startPage; i <= endPage; i++) {
             pages.push(i);
         }
         return pages;
     });
-
+    
     // Função para calcular os itens a serem exibidos com base na página atual
     self.paginatedAthletics = ko.computed(function () {
         var startIndex = (self.currentPage() - 1) * self.pagesize();
@@ -98,7 +102,7 @@ var vm = function () {
     self.fromRecord = ko.computed(function () {
         return (self.currentPage() - 1) * self.pagesize() + 1;
     });
-
+    
     self.toRecord = ko.computed(function () {
         return Math.min(self.currentPage() * self.pagesize(), self.Athletics4().length);
     });
@@ -107,9 +111,26 @@ var vm = function () {
         e.keyCode === 13 && self.search();
         return true;
     };
-
+    
 
     //--- Page Events
+
+    function checkFavourite() {
+        let favAthletics = JSON.parse(window.localStorage.getItem('favAthletics')) || [];
+        console.log("o checkFavourite foi chamado");
+        console.log("esses sao os favoritos: ", favAthletics);
+        let buttons = document.getElementsByClassName("fav-btn");
+        for (let button of buttons) {
+            let AthleticsId = parseInt(button.getAttribute("data-Athletics-id"));
+            if (favAthletics.includes(AthleticsId)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+    }
+
+
     self.activate = function (id) {
         console.log('CALL: getAthletics...');
         var composedUri = self.baseUri() + "/Events";
@@ -125,7 +146,8 @@ var vm = function () {
             await fetchAllAthleticsDetails();
             self.Athletics3(self.Athletics());
             console.log("Athletics3", self.Athletics3());
-
+            checkFavourite();
+            
 
         });
     };
@@ -136,6 +158,7 @@ var vm = function () {
     function loadInitialAthletics(){
         initialAthletics = self.Athletics4().slice();
         console.log("isso é o que ta ate ao momento", self.Athletics4());
+        checkFavourite();
     }
 
 
@@ -174,18 +197,18 @@ var vm = function () {
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
-
+    
         var filteredStages = initialAthletics.filter(function (Athletics) {
             return Athletics.EventName == selectedEventName;
         });
-
+    
         var stageNames = new Set();
         filteredStages.forEach(function (Athletics) {
             stageNames.add(Athletics.StageName);
         });
         console.log("isso foi adicionado", stageNames)
 
-
+    
         stageNames.forEach(function (stageName) {
             var option = document.createElement('option');
             console.log("esta a ser colocado esse: ", stageName)
@@ -193,43 +216,44 @@ var vm = function () {
             option.text = stageName;
             selectBox.appendChild(option);
         });
-
+    
         filterTableByEventAndStage();
+        checkFavourite();
     }
-
+    
     function filterTableByEventAndStage() {
         console.log("a executar filterTableByEventAndStage");
-
+    
         // Obtém os valores dos filtros
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectedStageName = document.getElementById('stageSelect').value;
-
+    
         console.log("Evento selecionado:", selectedEventName);
         console.log("Fase selecionada:", selectedStageName);
-        console.log("Lista inicial de basquetebol:", initialAthletics);
-
+        console.log("Lista inicial de Atletismo:", initialAthletics);
+    
         // Atualiza a lista com base nos filtros
         var filteredAthletics = initialAthletics.filter(function (Athletics) {
             var eventMatch = selectedEventName === "0" || Athletics.EventName === selectedEventName;
             var stageMatch = selectedStageName === "0" || Athletics.StageName === selectedStageName;
             return eventMatch && stageMatch;
         });
-
-        console.log("Basquetebol filtrado:", filteredAthletics);
-
+    
+        console.log("Atletismo filtrado:", filteredAthletics);
+    
         // Atualiza a tabela observável (Knockout.js)
         self.Athletics4(filteredAthletics);
+        checkFavourite();
     }
     document.getElementById('eventSelect').addEventListener('change', function () {
         filterStagesByEvent();
     });
-
+    
     document.getElementById('stageSelect').addEventListener('change', function () {
         filterTableByEventAndStage();
     });
     function populateStageSelect() {
         var selectBox = document.getElementById('stageSelect');
-        selectBox.innerHTML = ''; // Clear existing options
         var stageNames = new Set();
         self.Athletics().forEach(function (Athletics) {
             if (!stageNames.has(Athletics.StageName)) {
@@ -245,10 +269,10 @@ var vm = function () {
 
     function filterTableByEvent() {
         console.log("a executar filterTableBYEvent");
-
+    
         var selectedEventName = document.getElementById('eventSelect').value;
         var filteredAthletics;
-
+    
         if (selectedEventName == "0") {
             filteredAthletics = initialAthletics.slice(); // Restaurar a lista completa
         } else {
@@ -257,26 +281,27 @@ var vm = function () {
             });
         }
         console.log("Filtered Athletics:", filteredAthletics);
-
+    
         self.Athletics4(filteredAthletics);
-
+    
         // Atualizar o select de stage
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
-
+    
         var stageNames = new Set();
         filteredAthletics.forEach(function (Athletics) {
             stageNames.add(Athletics.StageName);
         });
-
+    
         stageNames.forEach(function (stageName) {
             var option = document.createElement('option');
             option.value = stageName;
             option.text = stageName;
             selectBox.appendChild(option);
         });
-
+    
         console.log("stageNames atualizados:", stageNames);
+        checkFavourite();
     }
 
     function filterTableByStage(){
@@ -286,6 +311,7 @@ var vm = function () {
         });
         self.Athletics4(filteredAthletics);
         console.log("Filtered Athletics:", filteredAthletics);
+        checkFavourite();
     }
 
     document.getElementById('eventSelect').addEventListener('change', function (){
@@ -308,7 +334,9 @@ var vm = function () {
             option.value = Athletics.StageName;
             option.text = Athletics.StageName;
             selectBox.appendChild(option);
+            
         });
+        checkFavourite();
     }
 
     function getStages(EventId, StageId) {
@@ -338,25 +366,25 @@ var vm = function () {
                 CountryName: participant.CountryName,
                 Sex: participant.Sex,
                 ParticipantType: participant.ParticipantType,
-                Id: participant.Id
-
+                Id : participant.Id
+        
             });
         });
     }
 
-
+    
     async function fetchAllAthleticsDetails() {
         console.log("Fetching all Athletics details...");
         for (const Athletics of self.Athletics()) { //Percorre cada treinador que vem da 1.ºAPI
             await fetchAthleticsDetails(Athletics); //Chama a outra assincrona
-            await delay(0);
+            await delay(0); 
         }
-        console.log("a obter os detalhes do Athletic...")
+        console.log("a obter os detalhes do basketball...")
         self.Athletics(self.AthleticsDetails());
         console.log("Finished fetching all Athletics details.");
         fetchAllParticipantsDetails(); // Chama a função para buscar detalhes dos participantes
     }
-
+    
     async function fetchDetailsForParticipant(ParticipantId) {
         if (!ParticipantId) {
             console.error("Participant Id is undefined or null");
@@ -369,7 +397,7 @@ var vm = function () {
         updateTableWithDetails(ParticipantId, details);
 
     }
-
+    
     function updateTableWithDetails(Id, details) {
         console.log(`Updating table with details for participant ${Id}`);
         var participant = self.AthleticsDetails().find(p => p.ParticipantId === Id);
@@ -389,7 +417,8 @@ var vm = function () {
             participant.QualificationMark = details.QualificationMark;
             participant.StartOrder = details.StartOrder;
             participant.Bib = details.Bib;
-    
+            participant.Date = details.Date;
+            participant.Venue = details.Venue;
             // Adicione mais campos conforme necessário
             console.log(`Participant details updated:`, participant);
         } else {
@@ -409,7 +438,7 @@ var vm = function () {
             console.log(`Participant:`, participant);
             console.log(`Participant Id: ${participant.ParticipantId}`);
             await fetchDetailsForParticipant(participant.ParticipantId);
-            await delay(0);
+            await delay(0); 
         }
         self.Athletics4(self.Athletics3());
         console.log("Athletics4", self.Athletics4());
@@ -417,18 +446,19 @@ var vm = function () {
         console.log("Finished fetching details for all participants.");
         loadInitialAthletics();
         hideLoading();
+        checkFavourite();
 
-
+    
     }
-
-
+    
+    
     async function fetchAllData() {
         showLoading();
         await fetchAllAthleticsDetails();
         await fetchAllParticipantsDetails();
-
+    
     }
-
+    
     fetchAllData();
 
     //--- Internal functions
@@ -480,7 +510,7 @@ var vm = function () {
         }
     };
 
-
+    
 
     //--- start ....
     showLoading();
@@ -490,6 +520,7 @@ var vm = function () {
         self.activate(1);
     else {
         self.activate(pg);
+        checkFavourite();
     }
     console.log("VM initialized!");
 };
