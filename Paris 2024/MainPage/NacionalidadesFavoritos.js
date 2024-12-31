@@ -7,15 +7,15 @@ var vm = function () {
 
     self.activate = function () {
         console.log('CALL: getFavouriteNOCs...');
-        var favNOCsList = JSON.parse(window.localStorage.getItem('favNacionalidades')) || [];
-        console.log("favoritos", favNOCsList);
-        if (favNOCsList.length === 0) {
+        var favNacionalidadesList = JSON.parse(window.localStorage.getItem('favNacionalidades')) || [];
+        console.log("favoritos", favNacionalidadesList);
+        if (favNacionalidadesList.length === 0) {
             self.records(null);
             hideLoading();
             return;
         }
 
-        var requests = favNOCsList.map(function (id) {
+        var requests = favNacionalidadesList.map(function (id) {
             return ajaxHelper(self.baseUri() + id, 'GET');
         });
 
@@ -32,11 +32,11 @@ var vm = function () {
 
     self.removeFavourite = function (id) {
         console.log(id);
-        var favNOCsList = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
-        var index = favNOCsList.indexOf(id);
+        var favNacionalidadesList = JSON.parse(window.localStorage.getItem('favNacionalidades')) || [];
+        var index = favNacionalidadesList.indexOf(id);
         if (index > -1) {
-            favNOCsList.splice(index, 1);
-            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCsList));
+            favNacionalidadesList.splice(index, 1);
+            window.localStorage.setItem('favNacionalidades', JSON.stringify(favNacionalidadesList));
             self.activate();
         }
     };
@@ -76,7 +76,7 @@ $(document).ready(function () {
     console.log("ready!");
     ko.applyBindings(new vm());
     $("#clearFavourites").click(function() {
-        if (JSON.parse(window.localStorage.getItem('favNOCs'))) {
+        if (JSON.parse(window.localStorage.getItem('favNacionalidades'))) {
             window.localStorage.clear();
             window.location.reload();
         } else {

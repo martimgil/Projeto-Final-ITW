@@ -87,20 +87,20 @@ var vm = function () {
 
     };
     self.favoriteNOCs = function (id, event) {
-        let favNOCs = JSON.parse(window.localStorage.getItem('favNacionalidades')) || [];
+        let favNacionalidades = JSON.parse(window.localStorage.getItem('favNacionalidades')) || [];
         let button = event.target.closest('button');
-        if (!favNOCs.includes(id)) {
-            favNOCs.push(id);
+        if (!favNacionalidades.includes(id)) {
+            favNacionalidades.push(id);
             button.classList.add('active');
-            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
+            window.localStorage.setItem('favNacionalidades', JSON.stringify(favNacionalidades));
             console.log('O treinador foi adicionado aos favoritos!');
         } else {
-            favNOCs = favNOCs.filter(favId => favId !== id);
+            favNacionalidades = favNacionalidades.filter(favId => favId !== id);
             button.classList.remove('active');
-            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
+            window.localStorage.setItem('favNacionalidades', JSON.stringify(favNacionalidades));
             console.log('O treinador foi removido dos favoritos.');
         }
-        console.log(JSON.parse(window.localStorage.getItem('favNOCs')));
+        console.log(JSON.parse(window.localStorage.getItem('favNacionalidades')));
     };
 
     self.onEnter = function (d, e){
@@ -140,13 +140,13 @@ var vm = function () {
 
     //--- Page Events
     function checkFavourite() {
-        let favNOCs = JSON.parse(window.localStorage.getItem('favNacionalidades')) || [];
+        let favNacionalidades = JSON.parse(window.localStorage.getItem('favNacionalidades')) || [];
         console.log("o checkFavourite foi chamado");
-        console.log("esses sao os favoritos: ", favNOCs);
+        console.log("esses sao os favoritos: ", favNacionalidades);
         let buttons = document.getElementsByClassName("fav-btn");
         for (let button of buttons) {
             let NOCId = (button.getAttribute("data-noc-id"));
-            if (favNOCs.includes(NOCId)) {
+            if (favNacionalidades.includes(NOCId)) {
                 button.classList.add('active');
             } else {
                 button.classList.remove('active');
