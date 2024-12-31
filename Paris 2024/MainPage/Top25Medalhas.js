@@ -92,14 +92,46 @@ function createChart(data) {
             ]
         },
         options: {
+            indexAxis: 'y', // Configura o gráfico para ser horizontal
             scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return Number.isInteger(value) ? value : null;
+                        },
+                        stepSize: 1
+                    }
+                },
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    ticks: {
+                        autoSkip: false
+                    }
                 }
             }
         }
     });
 }
+
+function updateChart() {
+    var goldCheckbox = document.getElementById('goldCheckbox').checked;
+    var silverCheckbox = document.getElementById('silverCheckbox').checked;
+    var bronzeCheckbox = document.getElementById('bronzeCheckbox').checked;
+    var totalCheckbox = document.getElementById('totalCheckbox').checked;
+
+    medalChart.data.datasets[0].hidden = !goldCheckbox;
+    medalChart.data.datasets[1].hidden = !silverCheckbox;
+    medalChart.data.datasets[2].hidden = !bronzeCheckbox;
+    medalChart.data.datasets[3].hidden = !totalCheckbox;
+
+    medalChart.update();
+}
+
+document.getElementById('goldCheckbox').addEventListener('change', updateChart);
+document.getElementById('silverCheckbox').addEventListener('change', updateChart);
+document.getElementById('bronzeCheckbox').addEventListener('change', updateChart);
+document.getElementById('totalCheckbox').addEventListener('change', updateChart);
 function ajaxHelper(uri, method, data) {
     return $.ajax({
         type: method,

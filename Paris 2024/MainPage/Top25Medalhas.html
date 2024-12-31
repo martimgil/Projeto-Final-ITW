@@ -73,6 +73,18 @@
 <div class="container" data-bind="with: vm">
   <div class="row">
     <h6 data-aos="fade-up" class="title">MEDALHAS</h6>
+    <div class="container" data-bind="with: vm">
+      <div class="row">
+        <h6 data-aos="fade-up" class="title">MEDALHAS</h6>
+        <div>
+          <input type="checkbox" id="goldCheckbox" checked> Gold Medals
+          <input type="checkbox" id="silverCheckbox" checked> Silver Medals
+          <input type="checkbox" id="bronzeCheckbox" checked> Bronze Medals
+          <input type="checkbox" id="totalCheckbox" checked> Total Medals
+        </div>
+        <canvas id="medalChart" width="400" height="200"></canvas>
+      </div>
+    </div>
     <canvas id="medalChart" width="400" height="200"></canvas>
 
 
