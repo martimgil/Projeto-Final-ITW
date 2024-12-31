@@ -24,41 +24,38 @@ var vm = function () {
     self.Dict = ko.observableArray([]);
 
 
-    self.search = async function () {
-        showLoading()
+    self.search = function () {
         console.log('searching');
-        var search = $("#searchbar").val();
-        const formattedSearch = search.charAt(0).toUpperCase() + search.slice(1).toLowerCase();
-        if (search === "") {
+        if ($("#searchbar").val() === "") {
+            showLoading();
             var pg = getUrlParameter('page');
+            console.log(pg);
             if (pg == undefined)
                 self.activate(1);
             else {
                 self.activate(pg);
             }
         } else {
-            var searchUrl = self.baseUri() + '?page=' + self.currentPage() + '&pagesize=' + 224;
+            var searchUrl = 'http://192.168.160.58/Paris2024/API/NOCs/Search?q=' + $("#searchbar").val();
+            self.NOCs([]);
             ajaxHelper(searchUrl, 'GET').done(async function (data) {
                 console.log(data);
                 if (data.length == 0) {
-                    alert("Não foram encontrados resultados");
-                    return;
+                    hideLoading();
+                    return alert("Não foram encontrados resultados");
                 }
+                self.totalPages(1);
+                console.log(data);
+                showLoading();
+                self.NOCs(data);
+                self.totalRecords(data.length);
 
-                const filtered = data.NOCs.filter(NOC => NOC.Sport === formattedSearch);
+                await fetchAllNOCDetails();
 
-                self.NOCs2(filtered);
-
-                self.totalRecords(filtered.length);
-                console.log("totalRecords updated to:", self.totalRecords());
-                self.totalPages(Math.ceil(self.totalRecords() / self.pagesize()));
-                console.log("totalPages recalculated to:", self.totalPages());
-
-                self.currentPage(1);
+                self.NOCs2(self.NOCs());
                 hideLoading();
+                checkFavourite();
             });
-
-
         }
     };
 
@@ -199,6 +196,47 @@ var vm = function () {
         });
 
     };
+
+    function getPhotoUrl(id){
+        var detailsUrl = 'http://192.168.160.58/Paris2024/API/NOCs/' + id;
+        return ajaxHelper(detailsUrl, 'GET').done(function(data){
+            console.log(detailsUrl);
+            return data;
+        });
+    }
+
+    function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function fetchNOCDetails(NOC) {
+        console.log("id", NOC.Id);
+        const data = await getPhotoUrl(NOC.Id);
+        console.log("detalhes", data);
+
+        NOC.Country = data.Name;
+        NOC.Photo = data.Photo || 'identidade/PersonNotFound.png';
+        console.log("photo", NOC.Photo);
+        NOC.Note = data.Note;
+        console.log("note", NOC.Note);
+
+        NOC.Athletes = data.Athletes ? data.Athletes.length : 0;
+        console.log("athletes count", NOC.Athletes);
+        NOC.NOCs = data.NOCs? data.NOCs.length : 0;
+        console.log("NOCs count", NOC.NOCs);
+        NOC.Medals = data.Medals ? data.Medals.length : 0;
+        console.log("medals count", NOC.Medals);
+        NOC.Teams = data.Teams ? data.Teams.length : 0;
+        console.log("teams count", NOC.Teams);
+    }
+
+    async function fetchAllNOCDetails() {
+        for (const NOC of self.NOCs()) { //Percorre cada treinador que vem da 1.ºAPI
+            await fetchNOCDetails(NOC); //Chama a outra assincrona
+            await delay(100); // Intervalo de 100ms entre cada gajo
+        }
+        hideLoading();
+    }
 
 
     //--- Internal functions

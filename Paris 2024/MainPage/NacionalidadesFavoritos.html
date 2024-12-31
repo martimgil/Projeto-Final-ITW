@@ -84,9 +84,6 @@
             <td class="fw-bolder">Foto</td>
             <td class="fw-bolder">País</td>
             <td class="fw-bolder">N.º Atletas</td>
-            <td class="fw-bolder">N.º Treinadores</td>
-            <td class="fw-bolder">N.º Medalhas</td>
-            <td class="fw-bolder">N.º Equipas</td>
             <td class="text-right fw-bolder"></td>
         </tr>
         </thead>
@@ -94,8 +91,8 @@
             <tr data-aos="fade-up">
                 <td class="align-middle" data-aos="fade-up"><img class="align-content-center" data-bind="attr: {src: Photo }" onerror="this.onerror=null; this.src='identidade/PersonNotFound.png';" style="height: 50px; width: auto;" class="img-fluid" /></td>
                 <td class="align-middle" data-bind="text:Id" data-aos="fade-up"></td>
-                <td class="align-middle" data-bind="text: Country" data-aos="fade-up"></td>
-                <td class="align-middle" data-bind="text:Athletes" data-aos="fade-up"></td>
+                <td class="align-middle" data-bind="text: Name" data-aos="fade-up"></td>
+                <td class="align-middle" data-bind="text:Athletes.length" data-aos="fade-up"></td>
                 <td class="text-end" data-aos="fade-up">
                     <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href: './NacionalidadesDetalhe.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
                     <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteNacionalidades(Id, event) }, attr: { 'data-noc-id': Id }" style="margin-left: 5px;">
