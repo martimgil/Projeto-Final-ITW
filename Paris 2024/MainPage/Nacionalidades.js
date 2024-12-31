@@ -89,21 +89,19 @@ var vm = function () {
         }
 
     };
-    self.favoriteNOC = function (Id, Name, event) {
+    self.favoriteNOCs = function (id, event) {
         let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
-        let NOC = { Id: Id, name: Name };
         let button = event.target.closest('button');
-
-        if (!favNOCs.some(comp => comp.Id === Id && comp.name === Name)) {
-            favNOCs.push(NOC);
-            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
+        if (!favNOCs.includes(id)) {
+            favNOCs.push(id);
             button.classList.add('active');
-            console.log(`A competição ${Name} foi adicionada aos favoritos!`);
+            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
+            console.log('O treinador foi adicionado aos favoritos!');
         } else {
-            favNOCs = favNOCs.filter(comp => comp.Id !== Id || comp.name !== Name);
+            favNOCs = favNOCs.filter(favId => favId !== id);
             button.classList.remove('active');
             window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
-            console.log(`A competição ${Name} já está na lista de favoritos.`);
+            console.log('O treinador foi removido dos favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favNOCs')));
     };
@@ -146,22 +144,14 @@ var vm = function () {
     //--- Page Events
     function checkFavourite() {
         let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
-        console.log("checkFavourite called");
-        console.log("Favorite NOCs:", favNOCs);
-        let buttons = document.getElementsByClassName('fav-btn');
+        console.log("o checkFavourite foi chamado");
+        console.log("esses sao os favoritos: ", favNOCs);
+        let buttons = document.getElementsByClassName("fav-btn");
         for (let button of buttons) {
-            let Id = button.getAttribute("data-id");
-            let name = button.getAttribute("data-name");
-            console.log(`Checking button with Id=${Id}, Name=${name}`);
-            if (Id === null || name === null) {
-                console.warn(`Button has null Id or Name: Id=${Id}, Name=${name}`);
-                continue;
-            }
-            if (favNOCs.some(comp => comp.Id === Id && comp.name === name)) {
-                console.log(`NOC found in favorites: Id=${Id}, Name=${name}`);
+            let NOCId = (button.getAttribute("data-noc-id"));
+            if (favNOCs.includes(NOCId)) {
                 button.classList.add('active');
             } else {
-                console.log(`NOC not found in favorites: Id=${Id}, Name=${name}`);
                 button.classList.remove('active');
             }
         }
@@ -205,6 +195,7 @@ var vm = function () {
             self.NOCs2(self.NOCs());
             console.log("NOCs2", self.NOCs2());
             checkFavourite();
+            hideLoading();
         });
 
     };
@@ -259,6 +250,7 @@ var vm = function () {
     else {
         self.activate(pg);
         checkFavourite();
+        hideLoading();
     }
     console.log("VM initialized!");
 };

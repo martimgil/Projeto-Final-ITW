@@ -1,6 +1,6 @@
 // ViewModel Knockout
 var vm = function () {
-    var self = this; // Definir `self` adequadamente
+    var self = this; 
     console.log("ViewModel initiated...");
 
     //--- Variáveis locais
