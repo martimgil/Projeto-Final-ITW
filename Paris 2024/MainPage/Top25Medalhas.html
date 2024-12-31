@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="stylesheet.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
+<div>
 <nav class="navbar navbar-expand-lg fixed-top" style="background-color: #4093ca; margin: 0 0 80px 0; ">
   <div class="container-fluid">
     <a class="navbar-brand  mx-auto" href="index.html"><img src="https://olympics.com/_pr/topic-assets/paris-2024/emblem-oly.svg" alt="Paris 2024 Emblem" style="height: 60px; width: 60px;" > </a>
@@ -69,10 +69,6 @@
   </div>
 
 </nav>
-
-<div class="container" data-bind="with: vm">
-  <div class="row">
-    <h6 data-aos="fade-up" class="title">MEDALHAS</h6>
     <div class="container" data-bind="with: vm">
       <div class="row">
         <h6 data-aos="fade-up" class="title">MEDALHAS</h6>
@@ -84,11 +80,36 @@
         </div>
         <canvas id="medalChart" width="400" height="200"></canvas>
       </div>
-    </div>
     <canvas id="medalChart" width="400" height="200"></canvas>
+    <table class="table table-striped" data-aos="fade-up">
+      <thead>
+      <tr>
+        <th data-aos="fade-up">País</th>
+        <th data-aos="fade-up">O</th>
+        <th data-aos="fade-up">P</th>
+        <th data-aos="fade-up">B</th>
+        <th data-aos="fade-up">Total</th>
+      </thead>
+      <tbody data-bind="foreach: records" data-aos="fade-up">
+      <tr>
+        <td data-aos="fade-up" data-bind="text: Name"></td>
+        <td data-aos="fade-up" data-bind="text: Gold"></td>
+        <td data-aos="fade-up" data-bind="text: Silver"></td>
+        <td data-aos="fade-up" data-bind="text: Bronze"></td>
+        <td data-aos="fade-up" data-bind="text: Medals"></td>
+        <td class="text-end" data-aos="fade-up">
+          <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href:'./atleta.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
+          <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteAthlete(Id, event) }, attr: {'data-Athlete-id': Id}" style="margin-left: 5px;">
+            <i class="fa fa-heart" title="Adicionar aos favoritos"></i>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
 
 
   </div>
+</div>
 </div>
 
 <img src="identidade/banner3.png" width="100%" style="margin: 0 0 50px 0" height="auto">

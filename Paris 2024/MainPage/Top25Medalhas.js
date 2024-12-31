@@ -13,6 +13,39 @@ var vm = function () {
     self.Silver = ko.observable('');
     self.Bronze = ko.observable('');
 
+
+    self.favoriteAthlete = function (id, event) {
+        let favAthletes = JSON.parse(window.localStorage.getItem('favAthletes')) || [];
+        let button = event.target.closest('.fav-btn');
+        if (!favAthletes.includes(id)) {
+            favAthletes.push(id);
+            button.classList.add('active');
+            window.localStorage.setItem('favAthletes', JSON.stringify(favAthletes));
+            console.log('O treinador foi adicionado aos favoritos!');
+        } else {
+            favAthletes = favAthletes.filter(item => item !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favAthletes', JSON.stringify(favAthletes));
+            console.log('O treinador já está na lista de favoritos.');
+        }
+        console.log(JSON.parse(window.localStorage.getItem('favAthletes')));
+    };
+
+    function checkFavourite() {
+        let favAthletes = JSON.parse(window.localStorage.getItem('favAthletes')) || [];
+        console.log("o checkFavourite foi chamado");
+        console.log("esses sao os favoritos: ", favAthletes);
+        let buttons = document.getElementsByClassName("fav-btn");
+        for (let button of buttons) {
+            let AthleteId = parseInt(button.getAttribute("data-Athlete-id"));
+            if (favAthletes.includes(AthleteId)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+    }
+
     //--- Page Events
     self.activate = function () {
         console.log('CALL: getMedals...');
@@ -31,6 +64,7 @@ var vm = function () {
                 self.Silver(data.Silver);
                 self.Bronze(data.Bronze);
             }
+        checkFavourite();
         }).fail(function (jqXHR, textStatus, errorThrown) {
             self.error("AJAX Call[" + composedUri + "] Fail...");
         });
@@ -38,6 +72,8 @@ var vm = function () {
 
     //--- start ....
     self.activate();
+    checkFavourite();
+
     console.log("VM initialized!");
 };
 
