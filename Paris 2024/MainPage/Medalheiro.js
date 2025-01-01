@@ -1,53 +1,41 @@
-var vm = function () {
-    console.log('ViewModel initiated...');
-    //--- Variáveis locais
+var chartInstance; 
+
+var ChartViewModel = function () {
+    console.log('ChartViewModel initiated...');
     var self = this;
     self.baseUri = ko.observable('http://192.168.160.58/Paris2024/api/CountryMedals?Countries=200&Order=4');
-    self.displayName = 'Medalheiro';
     self.records = ko.observableArray([]);
     self.error = ko.observable('');
-    self.CountryCode = ko.observable('');
-    self.CountryName = ko.observable('');
-    self.GoldMedal = ko.observable('');
-    self.SilverMedal = ko.observable('');
-    self.BronzeMedal = ko.observable('');
-    self.Total = ko.observable('');
 
-    //--- Page Events
     self.activate = function () {
         console.log('CALL: getMedals...');
         var composedUri = self.baseUri();
         ajaxHelper(composedUri, 'GET').done(function (data) {
             console.log(data);
             if (Array.isArray(data)) {
-                // Supondo que data é uma lista de objetos
                 self.records(data);
-                createChart(data); // Adicione esta linha para criar o gráfico
-            } else {
-                self.CountryCode(data.CountryCode);
-                self.CountryName(data.CountryName);
-                self.GoldMedal(data.GoldMedal);
-                self.SilverMedal(data.SilverMedal);
-                self.BronzeMedal(data.BronzeMedal);
+                createChart(data); 
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
             self.error("AJAX Call[" + composedUri + "] Fail...");
         });
     };
 
-    //--- start ....
     self.activate();
-    console.log("VM initialized!");
+    console.log("ChartViewModel initialized!");
 };
 
 function createChart(data) {
     var ctx = document.getElementById('medalChart').getContext('2d');
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
     var countries = data.map(item => item.CountryName);
     var goldMedals = data.map(item => item.GoldMedal);
     var silverMedals = data.map(item => item.SilverMedal);
     var bronzeMedals = data.map(item => item.BronzeMedal);
 
-    var medalChart = new Chart(ctx, {
+    chartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: countries,
@@ -101,7 +89,7 @@ function ajaxHelper(uri, method, data) {
 $(document).ready(function () {
     console.log("ready!");
     if (!ko.dataFor(document.body)) {
-        ko.applyBindings(new vm());
+        ko.applyBindings(new ChartViewModel(), document.getElementById('medalChart'));
     }
 });
 
