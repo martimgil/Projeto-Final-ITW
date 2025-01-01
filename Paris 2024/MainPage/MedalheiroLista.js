@@ -7,6 +7,7 @@ var TableViewModel = function () {
     self.currentPage = ko.observable(1);
     self.pagesize = ko.observable(20);
     self.totalPages = ko.observable(0);
+    self.result= ko.observableArray([]);
 
     self.activate = function (id) {
         console.log('CALL: getCountryMedals...');
@@ -18,11 +19,29 @@ var TableViewModel = function () {
             self.totalPages(data.TotalPages);
             console.log("info da tabela", data)
             checkFavourite();
+            self.result(data);
         }).fail(function (jqXHR, textStatus, errorThrown) {
             self.error("AJAX Call[" + composedUri + "] Fail...");
         });
     };
-
+    
+    self.favoriteNOCs = function (id, event) {
+        console.log("o favoriteNOCs foi chamado");
+        let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
+        let button = event.target.closest('button');
+        if (!favNOCs.includes(id)) {
+            favNOCs.push(id);
+            button.classList.add('active');
+            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
+            console.log('O treinador foi adicionado aos favoritos!');
+        } else {
+            favNOCs = favNOCs.filter(favId => favId !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
+            console.log('O treinador foi removido dos favoritos.');
+        }
+        console.log(JSON.parse(window.localStorage.getItem('favNOCs')));
+    };
     self.updateOrder = function () {
         self.activate(self.currentPage());
     };
@@ -79,8 +98,9 @@ function ajaxHelper(uri, method, data) {
 
 $(document).ready(function () {
     console.log("ready!");
+    var tableViewModel = new TableViewModel();
     if (!ko.dataFor(document.body)) {
-        ko.applyBindings(new TableViewModel(), document.querySelector('.container[data-bind="with: tableVm"]'));
+        ko.applyBindings({ tableVm: tableViewModel }, document.body);
     }
 });
 
