@@ -51,8 +51,16 @@ var vm = function () {
                 hideLoading();
                 checkFavourite(); // Chame a função aqui após os dados serem renderizados
             });
-        };
+        }
     };
+
+    self.Erase = function (){
+        showLoading();
+        $("#searchbar").val("");
+        self.activate(1);
+    };
+
+
     self.favoriteCoach = function (id, event) {
         let favCoaches = JSON.parse(window.localStorage.getItem('favCoaches')) || [];
         let button = event.target.closest('button');

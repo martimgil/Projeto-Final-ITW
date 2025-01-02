@@ -52,6 +52,13 @@ var vm = function () {
         }
     };
 
+    self.Erase = function (){
+        showLoading();
+        $("#searchbar").val("");
+        self.activate(1);
+    };
+
+
     self.favoriteNOCs = function (id, event) {
         let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
         let button = event.target.closest('button');
@@ -166,6 +173,7 @@ var vm = function () {
         const data = await getPhotoUrl(NOC.Id);
         console.log("detalhes", data);
 
+        NOC.Country = data.Name;
         NOC.Photo = data.Photo || 'identidade/PersonNotFound.png';
         console.log("photo", NOC.Photo);
         NOC.Note = data.Note;
@@ -173,6 +181,8 @@ var vm = function () {
 
         NOC.Athletes = data.Athletes ? data.Athletes.length : 0;
         console.log("athletes count", NOC.Athletes);
+        NOC.Coaches = data.Coaches ? data.Coaches.length : 0;
+        console.log("coaches count", NOC.Coaches);
         NOC.NOCs = data.NOCs? data.NOCs.length : 0;
         console.log("NOCs count", NOC.NOCs);
         NOC.Medals = data.Medals ? data.Medals.length : 0;

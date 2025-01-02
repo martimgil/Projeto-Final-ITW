@@ -66,7 +66,6 @@
       <span class="navbar-text"></span>
     </div>
   </div>
-  </div>
 </nav>
 
 
@@ -80,6 +79,7 @@
   <div style="position: relative;">
     <input type="text" placeholder="Pesquise por um treinador" id="searchbar" data-bind="event: {keypress: onEnter}">
     <button style="margin-left: 1px;" class="fa fa-search btn btn-outline-danger" id="CoachesSearchBar" type="submit" data-bind="click: search"></button>
+    <button style="margin-left: 5px;" class="fa fa-times btn btn-outline-danger" id="ResetSearchBar" type="submit" data-bind="click: Erase"></button>
     <a class="btn btn-danger" style="float: right;" href="TreinadoresFavoritos.html" role="button">Visualiza aqui os teus favoritos</a>
   </div>
   <br>
