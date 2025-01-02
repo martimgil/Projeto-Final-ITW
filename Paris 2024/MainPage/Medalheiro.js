@@ -1,4 +1,4 @@
-var chartInstance; 
+var chartInstance;
 
 var ChartViewModel = function () {
     console.log('ChartViewModel initiated...');
@@ -14,16 +14,35 @@ var ChartViewModel = function () {
             console.log(data);
             if (Array.isArray(data)) {
                 self.records(data);
-                createChart(data); 
+                createChart(data);
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
             self.error("AJAX Call[" + composedUri + "] Fail...");
         });
     };
 
+    self.favoriteNOCs = function (id, event) {
+        let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
+        let button = event.target.closest('button');
+        if (!favNOCs.includes(id)) {
+            favNOCs.push(id);
+            button.classList.add('active');
+            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
+            console.log('O treinador foi adicionado aos favoritos!');
+        } else {
+            favNOCs = favNOCs.filter(favId => favId !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favNOCs', JSON.stringify(favNOCs));
+            console.log('O treinador foi removido dos favoritos.');
+        }
+        console.log(JSON.parse(window.localStorage.getItem('favNOCs')));
+    };
+
     self.activate();
     console.log("ChartViewModel initialized!");
 };
+
+
 
 function createChart(data) {
     var ctx = document.getElementById('medalChart').getContext('2d');

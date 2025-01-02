@@ -7,7 +7,24 @@ var TableViewModel = function () {
     self.currentPage = ko.observable(1);
     self.pagesize = ko.observable(20);
     self.totalPages = ko.observable(0);
-    self.result= ko.observableArray([]);
+    self.result = ko.observableArray([]);
+    self.totalRecords = ko.observable(0);
+    self.fromRecord = ko.computed(function () {
+        return (self.currentPage() - 1) * self.pagesize() + 1;
+    });
+    self.toRecord = ko.computed(function () {
+        return Math.min(self.currentPage() * self.pagesize(), self.totalRecords());
+    });
+
+    self.pageArray = ko.computed(function () {
+        var pages = [];
+        var start = Math.max(1, self.currentPage() - 4);
+        var end = Math.min(self.totalPages(), self.currentPage() + 4);
+        for (var i = start; i <= end; i++) {
+            pages.push(i);
+        }
+        return pages;
+    });
 
     self.activate = function (id) {
         console.log('CALL: getCountryMedals...');
@@ -16,15 +33,16 @@ var TableViewModel = function () {
         ajaxHelper(composedUri, 'GET').done(function (data) {
             console.log(data);
             self.records(data.CountryMedals);
-            self.totalPages(data.TotalPages);
-            console.log("info da tabela", data)
+            self.totalPages(data.TotalPages); // Ensure this is set correctly
+            self.totalRecords(data.TotalRecords); // Ensure this is set correctly
+            console.log("info da tabela", data);
             checkFavourite();
             self.result(data);
         }).fail(function (jqXHR, textStatus, errorThrown) {
             self.error("AJAX Call[" + composedUri + "] Fail...");
         });
     };
-    
+
     self.favoriteNOCs = function (id, event) {
         console.log("o favoriteNOCs foi chamado");
         let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
@@ -42,6 +60,7 @@ var TableViewModel = function () {
         }
         console.log(JSON.parse(window.localStorage.getItem('favNOCs')));
     };
+
     self.updateOrder = function () {
         self.activate(self.currentPage());
     };
@@ -52,16 +71,6 @@ var TableViewModel = function () {
             self.activate(page);
         }
     };
-
-    self.paginationPages = ko.computed(function () {
-        var pages = [];
-        var start = Math.max(1, self.currentPage() - 4);
-        var end = Math.min(self.totalPages(), self.currentPage() + 4);
-        for (var i = start; i <= end; i++) {
-            pages.push(i);
-        }
-        return pages;
-    });
 
     function checkFavourite() {
         let favNOCs = JSON.parse(window.localStorage.getItem('favNOCs')) || [];
@@ -83,27 +92,4 @@ var TableViewModel = function () {
     });
 };
 
-function ajaxHelper(uri, method, data) {
-    return $.ajax({
-        type: method,
-        url: uri,
-        dataType: 'json',
-        contentType: 'application/json',
-        data: data ? JSON.stringify(data) : null,
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert("AJAX Call[" + uri + "] Fail...");
-        }
-    });
-}
-
-$(document).ready(function () {
-    console.log("ready!");
-    var tableViewModel = new TableViewModel();
-    if (!ko.dataFor(document.body)) {
-        ko.applyBindings({ tableVm: tableViewModel }, document.body);
-    }
-});
-
-$(document).ajaxComplete(function (event, xhr, options) {
-    $("#myModal").modal('hide');
-});
+ko.applyBindings({ chartVm: new ChartViewModel(), tableVm: new TableViewModel() });
