@@ -64,7 +64,7 @@ var vm = function () {
     });
 
     self.totalPages = ko.computed(function () {
-        return Math.ceil(self.totalRecords() / self.pagesize());
+        return self.Basketballs4() ? Math.ceil(self.Basketballs4().length / self.pagesize()) : 0;
     });
     
 
@@ -192,6 +192,7 @@ var vm = function () {
         });
         console.log("eventNames: ", eventNames)
     }
+
     function filterStagesByEvent() {
         console.log("a executar filterStagesBYEvent")
         var selectedEventName = document.getElementById('eventSelect').value;
@@ -220,35 +221,38 @@ var vm = function () {
         filterTableByEventAndStage();
         checkFavourite();
     }
-    
+
     function filterTableByEventAndStage() {
         console.log("a executar filterTableByEventAndStage");
-    
-        // Obtém os valores dos filtros
+
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectedStageName = document.getElementById('stageSelect').value;
-    
+
         console.log("Evento selecionado:", selectedEventName);
         console.log("Fase selecionada:", selectedStageName);
         console.log("Lista inicial de basquetebol:", initialBasketballs);
-    
-        // Atualiza a lista com base nos filtros
-        var filteredBasketballs = initialBasketballs.filter(function (Basketballs) {
-            var eventMatch = selectedEventName === "0" || Basketballs.EventName === selectedEventName;
-            var stageMatch = selectedStageName === "0" || Basketballs.StageName === selectedStageName;
-            return eventMatch && stageMatch;
-        });
-    
+
+        if (selectedStageName == "0") {
+            filterTableByEvent();
+        } else {
+            var filteredBasketballs = initialBasketballs.filter(function (Basketballs) {
+                var eventMatch = selectedEventName === 0 || Basketballs.EventName === selectedEventName;
+                var stageMatch = selectedStageName === 0 || Basketballs.StageName === selectedStageName;
+                return eventMatch && stageMatch;
+            });
+        }
         console.log("Basquetebol filtrado:", filteredBasketballs);
-    
-        // Atualiza a tabela observável (Knockout.js)
-        self.Basketballs4(filteredBasketballs);
+
+        if (self.Basketballs4) {
+            self.Basketballs4(filteredBasketballs);
+        }
         checkFavourite();
     }
     document.getElementById('eventSelect').addEventListener('change', function () {
         filterStagesByEvent();
     });
-    
+
+
     document.getElementById('stageSelect').addEventListener('change', function () {
         filterTableByEventAndStage();
     });
@@ -269,10 +273,10 @@ var vm = function () {
 
     function filterTableByEvent() {
         console.log("a executar filterTableBYEvent");
-    
+
         var selectedEventName = document.getElementById('eventSelect').value;
-        var filteredBasketballs;
-    
+        var filteredBasketballs = [];
+
         if (selectedEventName == "0") {
             filteredBasketballs = initialBasketballs.slice(); // Restaurar a lista completa
         } else {
@@ -281,37 +285,42 @@ var vm = function () {
             });
         }
         console.log("Filtered Basketballs:", filteredBasketballs);
-    
+
         self.Basketballs4(filteredBasketballs);
-    
+
         // Atualizar o select de stage
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
-    
+
         var stageNames = new Set();
         filteredBasketballs.forEach(function (Basketballs) {
             stageNames.add(Basketballs.StageName);
         });
-    
+
         stageNames.forEach(function (stageName) {
             var option = document.createElement('option');
             option.value = stageName;
             option.text = stageName;
             selectBox.appendChild(option);
         });
-    
+
         console.log("stageNames atualizados:", stageNames);
         checkFavourite();
     }
 
-    function filterTableByStage(){
+    function filterTableByStage() {
+        console.log("a executar filterTableByStage");
         var selectedStageName = document.getElementById('stageSelect').value;
-        var filteredBasketballs = self.Basketballs4().filter(function (Basketballs){
-            return Basketballs.StageName == selectedStageName;
-        });
-        self.Basketballs4(filteredBasketballs);
-        console.log("Filtered Basketballs:", filteredBasketballs);
-        checkFavourite();
+        if (selectedStageName == "0") {
+            console.log("Selected stage is 0. Restoring initial list...");
+        } else {
+            var filteredBasketballs = self.Basketballs4().filter(function (Basketballs) {
+                return Basketballs.StageName == selectedStageName;
+            });
+            self.Basketballs4(filteredBasketballs);
+            console.log("Filtered Basketballs:", filteredBasketballs);
+            checkFavourite();
+        }
     }
 
     document.getElementById('eventSelect').addEventListener('change', function (){
@@ -320,24 +329,7 @@ var vm = function () {
     });
     document.getElementById('stageSelect').addEventListener('change', filterTableByStage);
 
-    function filterStagesByEvent() {
-        var selectedEventName = document.getElementById('eventSelect').value;
-        var selectBox = document.getElementById('stageSelect');
-        selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
 
-        var filteredStages = self.Basketballs4().filter(function (Basketballs) {
-            return Basketballs.EventName == selectedEventName;
-        });
-
-        filteredStages.forEach(function (Basketballs) {
-            var option = document.createElement('option');
-            option.value = Basketballs.StageName;
-            option.text = Basketballs.StageName;
-            selectBox.appendChild(option);
-            
-        });
-        checkFavourite();
-    }
 
     function getStages(EventId, StageId) {
         var detailsUrl = 'http://192.168.160.58/Paris2024/API/Basketballs?' + 'EventId=' + EventId + '&StageId=' + StageId;
