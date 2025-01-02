@@ -56,13 +56,9 @@ var vm = function () {
         };
     };
     self.Erase = function (){
-        //showLoading();
+        showLoading();
         $("#searchbar").val("");
-        var composedUri = self.baseUri();
-        ajaxHelper(composedUri, 'GET').done(function (data) {
-            console.log(data);
-            self.Technical_officials(data);
-        });
+        self.activate(1);
     };
     
     self.favoriteTechnical_official = function (id, event) {

@@ -65,13 +65,9 @@ var vm = function () {
         };
     };
     self.Erase = function (){
-        //showLoading();
+        showLoading();
         $("#searchbar").val("");
-        var composedUri = self.baseUri();
-        ajaxHelper(composedUri, 'GET').done(function (data) {
-            console.log(data);
-            self.Sports(data);
-        });
+        self.activate(1);
     };
 
     self.favoriteAthlete = function (id, event) {
