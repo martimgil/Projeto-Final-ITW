@@ -104,7 +104,7 @@ function submitQuiz() {
             }
         } else {
             feedbackDiv.classList.add('incorrect');
-            feedbackDiv.innerText = `Você não respondeu esta pergunta. A resposta correta é: ${q.options[q.correct]}`;
+            feedbackDiv.innerText = `Não respondeu esta pergunta. A resposta correta é: ${q.options[q.correct]}`;
         }
 
         questionDiv.appendChild(feedbackDiv); // Adiciona feedback dentro da questão correspondente
