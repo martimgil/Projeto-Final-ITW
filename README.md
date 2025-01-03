@@ -4,6 +4,7 @@ Elaborado por: Martim Gil e Daniel Duque
 
 -------------------------------------------------
 
+Lista de alterações realizadas desde a apresentação:
 
 index.html - Foi adicionado uma timeline que mostra os últimos eventos dos jogos olímpicos. Ao Medalheiro ja existente foi adicionado um gráfico usando ChartJS que representa a informação presente na tabela
 
