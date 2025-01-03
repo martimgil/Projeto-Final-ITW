@@ -2,7 +2,7 @@ index.html  - Foi adicionado uma timeline que mostra os últimos eventos dos jog
 
 quiz.html - Foram criados 3 Quizes com perguntas sobre os jogos olímpicos.
 
-medalheiro.html - Medalheiro Por Pais - Foi adicionado um gráfico usando ChartJS que representa a informação presente na tabela. A tabela que ja tinhamos anteriormente foi atualizada e conta com um sistema de ordenação.
+medalheiro.html - Medalheiro Por Pais - Foi adicionado um gráfico usando ChartJS que representa a informação presente na tabela. 
 
 Todas as páginas que tem a opção de adicionar um item aos favoritos (modalidades, atletas, treinadores etc) é possível fazer a gestão diretamente na tabela (e não apenas na páginas dos favoritos como tinhamos na apresentação). O icon ficara vermelho se encontrar-se nos favoritos, e ao clicar novamente no botão o item fica preto e é removido dos favoritos.
 
