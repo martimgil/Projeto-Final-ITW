@@ -16,7 +16,7 @@ $(document).ready(function() {
                         message: 'Nome deve ter no mínimo 3 caracteres.'
                     },
                     regexp: {
-                        regexp: /^[a-zA-Z]+ [a-zA-Z]+$/,
+                        regexp: /^[a-zA-ZÀ-ÿ]+(?: [a-zA-ZÀ-ÿ]+)+$/,
                         message: 'Nome deve ter no mínimo duas palavras.'
                     }
                 }
@@ -153,13 +153,18 @@ $(document).ready(function() {
         }
     }).on('error.field.bv', function (e, data) {
         data.element.closest('.form-group').removeClass('has-success').addClass('has-error');
-    })
-        .on('success.field.bv', function (e, data) {
-            const hasError = data.element.closest('.form-group').find('.help-block:visible').length > 0;
-            if (hasError) {
-                data.element.closest('.form-group').removeClass('has-success').addClass('has-error');
-            } else {
-                data.element.closest('.form-group').removeClass('has-error').addClass('has-success');
-            }
-        });
+    }).on('success.field.bv', function (e, data) {
+        const hasError = data.element.closest('.form-group').find('.help-block:visible').length > 0;
+        if (hasError) {
+            data.element.closest('.form-group').removeClass('has-success').addClass('has-error');
+        } else {
+            data.element.closest('.form-group').removeClass('has-error').addClass('has-success');
+        }
+    }).on('success.form.bv', function(e) {
+        // Prevent form submission
+        e.preventDefault();
+
+        // Show success alert
+        alert('Sucesso! Obrigado pela sua compra!');
+    });
 });
