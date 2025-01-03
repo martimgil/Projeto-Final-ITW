@@ -115,10 +115,10 @@
                 <td class="align-middle" data-bind="text: Name" data-aos="fade-up"></td>
                 <td class="align-middle" data-bind="text:Athletes.length" data-aos="fade-up"></td>
                 <td class="text-end" data-aos="fade-up">
-                    <a class="btn btn-default btn-light btn-xs" data-bind="attr: { href: './NacionalidadesDetalhe.html?id=' + Id }" data-aos="fade-up"><i class="fa fa-eye" title="Show details" data-aos="fade-up"></i></a>
-                    <button class="btn btn-default btn-light btn-sm fav-btn" data-bind="click: function(data, event) { $root.favoriteNacionalidades(Id, event) }, attr: { 'data-noc-id': Id }" style="margin-left: 5px;">
-                      <i class="fa fa-heart" title="Adicionar aos favoritos"></i>
-                    </button>
+                <td class="text-end">
+                    <a class="btn btn-default btn-light btn-sm" data-bind="attr: { href:'./NOCDetalhe.html?id=' + Id }"><i class="fa fa-eye" title="Selecione para ver detalhes"></i></a>
+                    <button class="btn btn-default btn-sm fav-btn bg-light" data-bind="click: function (data, event) {$root.removeFavourite(Id)}"><i class="fas fa-trash-alt" title="Selecione para adicionar aos favoritos"></i></button>
+                </td>
                 </td>
             </tr>
         </tbody>
