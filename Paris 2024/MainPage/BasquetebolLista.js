@@ -234,6 +234,10 @@ var vm = function () {
 
         if (selectedStageName == "0") {
             filterTableByEvent();
+        } else if (selectedEventName == "0") {
+            var filteredBasketballs = initialBasketballs.filter(function (Basketballs) {
+                return Basketballs.StageName === selectedStageName;
+            });
         } else {
             var filteredBasketballs = initialBasketballs.filter(function (Basketballs) {
                 var eventMatch = selectedEventName === 0 || Basketballs.EventName === selectedEventName;
@@ -409,7 +413,7 @@ var vm = function () {
             participant.QualificationMark = details.QualificationMark;
             participant.StartOrder = details.StartOrder;
             participant.Bib = details.Bib;
-            participant.Date = details.Date;
+            participant.Date = new Date(details.Date).toLocaleString('pt-PT', { timeZone: 'UTC' });
             participant.Venue = details.Venue;
             // Adicione mais campos conforme necessário
             console.log(`Participant details updated:`, participant);

@@ -4,7 +4,7 @@ var vm = function () {
     //---Variáveis locais
     var self = this;
     self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Cycling_Tracks');
-    self.displayName = 'Ciclismo';
+    self.displayName = 'Ciclismo de Pista';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
     self.Cycling_Tracks = ko.observableArray([]);
@@ -38,11 +38,11 @@ var vm = function () {
         console.log(JSON.parse(window.localStorage.getItem('favCycling_Tracks')));
     };
 
-     // Função para calcular o número total de páginas
+    // Função para calcular o número total de páginas
     self.totalPages = ko.computed(function () {
         return Math.ceil(self.Cycling_Tracks4().length / self.pagesize());
     });
-    
+
     // Função para ir para uma página específica
     self.goToPage = function (page) {
         if (page >= 1 && page <= self.totalPages()) {
@@ -52,23 +52,23 @@ var vm = function () {
     self.Cycling_Tracks4.subscribe(function (newValue) {
         self.totalRecords(newValue.length);
     });
-    
+
     // Função para calcular a página anterior
     self.previousPage = ko.computed(function () {
         return self.currentPage() > 1 ? self.currentPage() - 1 : 1;
     });
-    
+
     // Função para calcular a próxima página
     self.nextPage = ko.computed(function () {
         return self.currentPage() < self.totalPages() ? self.currentPage() + 1 : self.totalPages();
     });
 
     self.totalPages = ko.computed(function () {
-        return Math.ceil(self.totalRecords() / self.pagesize());
+        return self.Cycling_Tracks4() ? Math.ceil(self.Cycling_Tracks4().length / self.pagesize()) : 0;
     });
-    
 
-    
+
+
     // Função para calcular o array de páginas para exibição
     self.pageArray = ko.computed(function () {
         var pages = [];
@@ -76,7 +76,7 @@ var vm = function () {
         var currentPage = self.currentPage();
         var startPage = Math.max(1, currentPage - 4);
         var endPage = Math.min(totalPages, currentPage + 4);
-    
+
         // Ajuste para garantir que sempre mostre 9 páginas se possível
         if (endPage - startPage < 9) {
             if (startPage === 1) {
@@ -85,13 +85,13 @@ var vm = function () {
                 startPage = Math.max(1, endPage - 8);
             }
         }
-    
+
         for (var i = startPage; i <= endPage; i++) {
             pages.push(i);
         }
         return pages;
     });
-    
+
     // Função para calcular os itens a serem exibidos com base na página atual
     self.paginatedCycling_Tracks = ko.computed(function () {
         var startIndex = (self.currentPage() - 1) * self.pagesize();
@@ -102,7 +102,7 @@ var vm = function () {
     self.fromRecord = ko.computed(function () {
         return (self.currentPage() - 1) * self.pagesize() + 1;
     });
-    
+
     self.toRecord = ko.computed(function () {
         return Math.min(self.currentPage() * self.pagesize(), self.Cycling_Tracks4().length);
     });
@@ -111,7 +111,7 @@ var vm = function () {
         e.keyCode === 13 && self.search();
         return true;
     };
-    
+
 
     //--- Page Events
 
@@ -147,7 +147,7 @@ var vm = function () {
             self.Cycling_Tracks3(self.Cycling_Tracks());
             console.log("Cycling_Tracks3", self.Cycling_Tracks3());
             checkFavourite();
-            
+
 
         });
     };
@@ -192,23 +192,24 @@ var vm = function () {
         });
         console.log("eventNames: ", eventNames)
     }
+
     function filterStagesByEvent() {
         console.log("a executar filterStagesBYEvent")
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
-    
+
         var filteredStages = initialCycling_Tracks.filter(function (Cycling_Tracks) {
             return Cycling_Tracks.EventName == selectedEventName;
         });
-    
+
         var stageNames = new Set();
         filteredStages.forEach(function (Cycling_Tracks) {
             stageNames.add(Cycling_Tracks.StageName);
         });
         console.log("isso foi adicionado", stageNames)
 
-    
+
         stageNames.forEach(function (stageName) {
             var option = document.createElement('option');
             console.log("esta a ser colocado esse: ", stageName)
@@ -216,39 +217,46 @@ var vm = function () {
             option.text = stageName;
             selectBox.appendChild(option);
         });
-    
+
         filterTableByEventAndStage();
         checkFavourite();
     }
-    
+
     function filterTableByEventAndStage() {
         console.log("a executar filterTableByEventAndStage");
-    
-        // Obtém os valores dos filtros
+
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectedStageName = document.getElementById('stageSelect').value;
-    
+
         console.log("Evento selecionado:", selectedEventName);
         console.log("Fase selecionada:", selectedStageName);
-        console.log("Lista inicial de Ciclismo:", initialCycling_Tracks);
-    
-        // Atualiza a lista com base nos filtros
-        var filteredCycling_Tracks = initialCycling_Tracks.filter(function (Cycling_Tracks) {
-            var eventMatch = selectedEventName === "0" || Cycling_Tracks.EventName === selectedEventName;
-            var stageMatch = selectedStageName === "0" || Cycling_Tracks.StageName === selectedStageName;
-            return eventMatch && stageMatch;
-        });
-    
-        console.log("Ciclismo filtrado:", filteredCycling_Tracks);
-    
-        // Atualiza a tabela observável (Knockout.js)
-        self.Cycling_Tracks4(filteredCycling_Tracks);
+        console.log("Lista inicial de Ciclismo de Pista:", initialCycling_Tracks);
+
+        if (selectedStageName == "0") {
+            filterTableByEvent();
+        } else if (selectedEventName == "0") {
+            var filteredCycling_Tracks = initialCycling_Tracks.filter(function (Cycling_Tracks) {
+                return Cycling_Tracks.StageName === selectedStageName;
+            });
+        } else {
+            var filteredCycling_Tracks = initialCycling_Tracks.filter(function (Cycling_Tracks) {
+                var eventMatch = selectedEventName === 0 || Cycling_Tracks.EventName === selectedEventName;
+                var stageMatch = selectedStageName === 0 || Cycling_Tracks.StageName === selectedStageName;
+                return eventMatch && stageMatch;
+            });
+        }
+        console.log("Ciclismo de Pista filtrado:", filteredCycling_Tracks);
+
+        if (self.Cycling_Tracks4) {
+            self.Cycling_Tracks4(filteredCycling_Tracks);
+        }
         checkFavourite();
     }
     document.getElementById('eventSelect').addEventListener('change', function () {
         filterStagesByEvent();
     });
-    
+
+
     document.getElementById('stageSelect').addEventListener('change', function () {
         filterTableByEventAndStage();
     });
@@ -269,10 +277,10 @@ var vm = function () {
 
     function filterTableByEvent() {
         console.log("a executar filterTableBYEvent");
-    
+
         var selectedEventName = document.getElementById('eventSelect').value;
-        var filteredCycling_Tracks;
-    
+        var filteredCycling_Tracks = [];
+
         if (selectedEventName == "0") {
             filteredCycling_Tracks = initialCycling_Tracks.slice(); // Restaurar a lista completa
         } else {
@@ -281,37 +289,42 @@ var vm = function () {
             });
         }
         console.log("Filtered Cycling_Tracks:", filteredCycling_Tracks);
-    
+
         self.Cycling_Tracks4(filteredCycling_Tracks);
-    
+
         // Atualizar o select de stage
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
-    
+
         var stageNames = new Set();
         filteredCycling_Tracks.forEach(function (Cycling_Tracks) {
             stageNames.add(Cycling_Tracks.StageName);
         });
-    
+
         stageNames.forEach(function (stageName) {
             var option = document.createElement('option');
             option.value = stageName;
             option.text = stageName;
             selectBox.appendChild(option);
         });
-    
+
         console.log("stageNames atualizados:", stageNames);
         checkFavourite();
     }
 
-    function filterTableByStage(){
+    function filterTableByStage() {
+        console.log("a executar filterTableByStage");
         var selectedStageName = document.getElementById('stageSelect').value;
-        var filteredCycling_Tracks = self.Cycling_Tracks4().filter(function (Cycling_Tracks){
-            return Cycling_Tracks.StageName == selectedStageName;
-        });
-        self.Cycling_Tracks4(filteredCycling_Tracks);
-        console.log("Filtered Cycling_Tracks:", filteredCycling_Tracks);
-        checkFavourite();
+        if (selectedStageName == "0") {
+            console.log("Selected stage is 0. Restoring initial list...");
+        } else {
+            var filteredCycling_Tracks = self.Cycling_Tracks4().filter(function (Cycling_Tracks) {
+                return Cycling_Tracks.StageName == selectedStageName;
+            });
+            self.Cycling_Tracks4(filteredCycling_Tracks);
+            console.log("Filtered Cycling_Tracks:", filteredCycling_Tracks);
+            checkFavourite();
+        }
     }
 
     document.getElementById('eventSelect').addEventListener('change', function (){
@@ -320,24 +333,7 @@ var vm = function () {
     });
     document.getElementById('stageSelect').addEventListener('change', filterTableByStage);
 
-    function filterStagesByEvent() {
-        var selectedEventName = document.getElementById('eventSelect').value;
-        var selectBox = document.getElementById('stageSelect');
-        selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
 
-        var filteredStages = self.Cycling_Tracks4().filter(function (Cycling_Tracks) {
-            return Cycling_Tracks.EventName == selectedEventName;
-        });
-
-        filteredStages.forEach(function (Cycling_Tracks) {
-            var option = document.createElement('option');
-            option.value = Cycling_Tracks.StageName;
-            option.text = Cycling_Tracks.StageName;
-            selectBox.appendChild(option);
-            
-        });
-        checkFavourite();
-    }
 
     function getStages(EventId, StageId) {
         var detailsUrl = 'http://192.168.160.58/Paris2024/API/Cycling_Tracks?' + 'EventId=' + EventId + '&StageId=' + StageId;
@@ -367,24 +363,24 @@ var vm = function () {
                 Sex: participant.Sex,
                 ParticipantType: participant.ParticipantType,
                 Id : participant.Id
-        
+
             });
         });
     }
 
-    
+
     async function fetchAllCycling_TracksDetails() {
         console.log("Fetching all Cycling_Tracks details...");
         for (const Cycling_Tracks of self.Cycling_Tracks()) { //Percorre cada treinador que vem da 1.ºAPI
             await fetchCycling_TracksDetails(Cycling_Tracks); //Chama a outra assincrona
-            await delay(0); 
+            await delay(0);
         }
         console.log("a obter os detalhes do basketball...")
         self.Cycling_Tracks(self.Cycling_TracksDetails());
         console.log("Finished fetching all Cycling_Tracks details.");
         fetchAllParticipantsDetails(); // Chama a função para buscar detalhes dos participantes
     }
-    
+
     async function fetchDetailsForParticipant(ParticipantId) {
         if (!ParticipantId) {
             console.error("Participant Id is undefined or null");
@@ -397,7 +393,7 @@ var vm = function () {
         updateTableWithDetails(ParticipantId, details);
 
     }
-    
+
     function updateTableWithDetails(Id, details) {
         console.log(`Updating table with details for participant ${Id}`);
         var participant = self.Cycling_TracksDetails().find(p => p.ParticipantId === Id);
@@ -417,7 +413,7 @@ var vm = function () {
             participant.QualificationMark = details.QualificationMark;
             participant.StartOrder = details.StartOrder;
             participant.Bib = details.Bib;
-            participant.Date = details.Date;
+            participant.Date = new Date(details.Date).toLocaleString('pt-PT', { timeZone: 'UTC' });
             participant.Venue = details.Venue;
             // Adicione mais campos conforme necessário
             console.log(`Participant details updated:`, participant);
@@ -438,7 +434,7 @@ var vm = function () {
             console.log(`Participant:`, participant);
             console.log(`Participant Id: ${participant.ParticipantId}`);
             await fetchDetailsForParticipant(participant.ParticipantId);
-            await delay(0); 
+            await delay(0);
         }
         self.Cycling_Tracks4(self.Cycling_Tracks3());
         console.log("Cycling_Tracks4", self.Cycling_Tracks4());
@@ -448,17 +444,17 @@ var vm = function () {
         hideLoading();
         checkFavourite();
 
-    
+
     }
-    
-    
+
+
     async function fetchAllData() {
         showLoading();
         await fetchAllCycling_TracksDetails();
         await fetchAllParticipantsDetails();
-    
+
     }
-    
+
     fetchAllData();
 
     //--- Internal functions
@@ -510,7 +506,7 @@ var vm = function () {
         }
     };
 
-    
+
 
     //--- start ....
     showLoading();

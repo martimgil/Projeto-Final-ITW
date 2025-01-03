@@ -21,15 +21,19 @@ var vm = function () {
     self.Swimmings4 = ko.observableArray([]);
     var initialSwimmings = [];
 
-
     self.favoriteSwimmings = function (id, event) {
         let favSwimmings = JSON.parse(window.localStorage.getItem('favSwimmings')) || [];
+        let button = event.target.closest('button');
         if (!favSwimmings.includes(id)) {
             favSwimmings.push(id);
+            button.classList.add('active');
             window.localStorage.setItem('favSwimmings', JSON.stringify(favSwimmings));
             console.log('O treinador foi adicionado aos favoritos!');
         } else {
-            console.log('O treinador já está na lista de favoritos.');
+            favSwimmings = favSwimmings.filter(favId => favId !== id);
+            button.classList.remove('active');
+            window.localStorage.setItem('favSwimmings', JSON.stringify(favSwimmings));
+            console.log('O treinador foi removido dos favoritos.');
         }
         console.log(JSON.parse(window.localStorage.getItem('favSwimmings')));
     };
@@ -60,7 +64,7 @@ var vm = function () {
     });
 
     self.totalPages = ko.computed(function () {
-        return Math.ceil(self.totalRecords() / self.pagesize());
+        return self.Swimmings4() ? Math.ceil(self.Swimmings4().length / self.pagesize()) : 0;
     });
 
 
@@ -110,6 +114,23 @@ var vm = function () {
 
 
     //--- Page Events
+
+    function checkFavourite() {
+        let favSwimmings = JSON.parse(window.localStorage.getItem('favSwimmings')) || [];
+        console.log("o checkFavourite foi chamado");
+        console.log("esses sao os favoritos: ", favSwimmings);
+        let buttons = document.getElementsByClassName("fav-btn");
+        for (let button of buttons) {
+            let SwimmingsId = parseInt(button.getAttribute("data-Swimmings-id"));
+            if (favSwimmings.includes(SwimmingsId)) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+    }
+
+
     self.activate = function (id) {
         console.log('CALL: getSwimmings...');
         var composedUri = self.baseUri() + "/Events";
@@ -125,6 +146,7 @@ var vm = function () {
             await fetchAllSwimmingsDetails();
             self.Swimmings3(self.Swimmings());
             console.log("Swimmings3", self.Swimmings3());
+            checkFavourite();
 
 
         });
@@ -136,6 +158,7 @@ var vm = function () {
     function loadInitialSwimmings(){
         initialSwimmings = self.Swimmings4().slice();
         console.log("isso é o que ta ate ao momento", self.Swimmings4());
+        checkFavourite();
     }
 
 
@@ -169,6 +192,7 @@ var vm = function () {
         });
         console.log("eventNames: ", eventNames)
     }
+
     function filterStagesByEvent() {
         console.log("a executar filterStagesBYEvent")
         var selectedEventName = document.getElementById('eventSelect').value;
@@ -195,41 +219,49 @@ var vm = function () {
         });
 
         filterTableByEventAndStage();
+        checkFavourite();
     }
 
     function filterTableByEventAndStage() {
         console.log("a executar filterTableByEventAndStage");
 
-        // Obtém os valores dos filtros
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectedStageName = document.getElementById('stageSelect').value;
 
         console.log("Evento selecionado:", selectedEventName);
         console.log("Fase selecionada:", selectedStageName);
-        console.log("Lista inicial de basquetebol:", initialSwimmings);
+        console.log("Lista inicial de Natação:", initialSwimmings);
 
-        // Atualiza a lista com base nos filtros
-        var filteredSwimmings = initialSwimmings.filter(function (Swimmings) {
-            var eventMatch = selectedEventName === "0" || Swimmings.EventName === selectedEventName;
-            var stageMatch = selectedStageName === "0" || Swimmings.StageName === selectedStageName;
-            return eventMatch && stageMatch;
-        });
+        if (selectedStageName == "0") {
+            filterTableByEvent();
+        } else if (selectedEventName == "0") {
+            var filteredSwimmings = initialSwimmings.filter(function (Swimmings) {
+                return Swimmings.StageName === selectedStageName;
+            });
+        } else {
+            var filteredSwimmings = initialSwimmings.filter(function (Swimmings) {
+                var eventMatch = selectedEventName === 0 || Swimmings.EventName === selectedEventName;
+                var stageMatch = selectedStageName === 0 || Swimmings.StageName === selectedStageName;
+                return eventMatch && stageMatch;
+            });
+        }
+        console.log("Natação filtrado:", filteredSwimmings);
 
-        console.log("Basquetebol filtrado:", filteredSwimmings);
-
-        // Atualiza a tabela observável (Knockout.js)
-        self.Swimmings4(filteredSwimmings);
+        if (self.Swimmings4) {
+            self.Swimmings4(filteredSwimmings);
+        }
+        checkFavourite();
     }
     document.getElementById('eventSelect').addEventListener('change', function () {
         filterStagesByEvent();
     });
+
 
     document.getElementById('stageSelect').addEventListener('change', function () {
         filterTableByEventAndStage();
     });
     function populateStageSelect() {
         var selectBox = document.getElementById('stageSelect');
-        selectBox.innerHTML = ''; // Clear existing options
         var stageNames = new Set();
         self.Swimmings().forEach(function (Swimmings) {
             if (!stageNames.has(Swimmings.StageName)) {
@@ -247,7 +279,7 @@ var vm = function () {
         console.log("a executar filterTableBYEvent");
 
         var selectedEventName = document.getElementById('eventSelect').value;
-        var filteredSwimmings;
+        var filteredSwimmings = [];
 
         if (selectedEventName == "0") {
             filteredSwimmings = initialSwimmings.slice(); // Restaurar a lista completa
@@ -277,15 +309,22 @@ var vm = function () {
         });
 
         console.log("stageNames atualizados:", stageNames);
+        checkFavourite();
     }
 
-    function filterTableByStage(){
+    function filterTableByStage() {
+        console.log("a executar filterTableByStage");
         var selectedStageName = document.getElementById('stageSelect').value;
-        var filteredSwimmings = self.Swimmings4().filter(function (Swimmings){
-            return Swimmings.StageName == selectedStageName;
-        });
-        self.Swimmings4(filteredSwimmings);
-        console.log("Filtered Swimmings:", filteredSwimmings);
+        if (selectedStageName == "0") {
+            console.log("Selected stage is 0. Restoring initial list...");
+        } else {
+            var filteredSwimmings = self.Swimmings4().filter(function (Swimmings) {
+                return Swimmings.StageName == selectedStageName;
+            });
+            self.Swimmings4(filteredSwimmings);
+            console.log("Filtered Swimmings:", filteredSwimmings);
+            checkFavourite();
+        }
     }
 
     document.getElementById('eventSelect').addEventListener('change', function (){
@@ -294,22 +333,7 @@ var vm = function () {
     });
     document.getElementById('stageSelect').addEventListener('change', filterTableByStage);
 
-    function filterStagesByEvent() {
-        var selectedEventName = document.getElementById('eventSelect').value;
-        var selectBox = document.getElementById('stageSelect');
-        selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
 
-        var filteredStages = self.Swimmings4().filter(function (Swimmings) {
-            return Swimmings.EventName == selectedEventName;
-        });
-
-        filteredStages.forEach(function (Swimmings) {
-            var option = document.createElement('option');
-            option.value = Swimmings.StageName;
-            option.text = Swimmings.StageName;
-            selectBox.appendChild(option);
-        });
-    }
 
     function getStages(EventId, StageId) {
         var detailsUrl = 'http://192.168.160.58/Paris2024/API/Swimmings?' + 'EventId=' + EventId + '&StageId=' + StageId;
@@ -338,6 +362,7 @@ var vm = function () {
                 CountryName: participant.CountryName,
                 Sex: participant.Sex,
                 ParticipantType: participant.ParticipantType,
+                Id : participant.Id
 
             });
         });
@@ -350,7 +375,7 @@ var vm = function () {
             await fetchSwimmingsDetails(Swimmings); //Chama a outra assincrona
             await delay(0);
         }
-        console.log("a obter os detalhes do Swimming...")
+        console.log("a obter os detalhes do basketball...")
         self.Swimmings(self.SwimmingsDetails());
         console.log("Finished fetching all Swimmings details.");
         fetchAllParticipantsDetails(); // Chama a função para buscar detalhes dos participantes
@@ -388,6 +413,8 @@ var vm = function () {
             participant.QualificationMark = details.QualificationMark;
             participant.StartOrder = details.StartOrder;
             participant.Bib = details.Bib;
+            participant.Date = new Date(details.Date).toLocaleString('pt-PT', { timeZone: 'UTC' });
+            participant.Venue = details.Venue;
             // Adicione mais campos conforme necessário
             console.log(`Participant details updated:`, participant);
         } else {
@@ -415,6 +442,7 @@ var vm = function () {
         console.log("Finished fetching details for all participants.");
         loadInitialSwimmings();
         hideLoading();
+        checkFavourite();
 
 
     }
@@ -488,6 +516,7 @@ var vm = function () {
         self.activate(1);
     else {
         self.activate(pg);
+        checkFavourite();
     }
     console.log("VM initialized!");
 };

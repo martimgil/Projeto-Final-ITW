@@ -4,7 +4,7 @@ var vm = function () {
     //---Variáveis locais
     var self = this;
     self.baseUri = ko.observable('http://192.168.160.58/Paris2024/API/Canoe_Sprints');
-    self.displayName = 'Canoagem';
+    self.displayName = 'Canoagem de Velocidade';
     self.error = ko.observable('');
     self.passingMessage = ko.observable('');
     self.Canoe_Sprints = ko.observableArray([]);
@@ -38,11 +38,11 @@ var vm = function () {
         console.log(JSON.parse(window.localStorage.getItem('favCanoe_Sprints')));
     };
 
-     // Função para calcular o número total de páginas
+    // Função para calcular o número total de páginas
     self.totalPages = ko.computed(function () {
         return Math.ceil(self.Canoe_Sprints4().length / self.pagesize());
     });
-    
+
     // Função para ir para uma página específica
     self.goToPage = function (page) {
         if (page >= 1 && page <= self.totalPages()) {
@@ -52,23 +52,23 @@ var vm = function () {
     self.Canoe_Sprints4.subscribe(function (newValue) {
         self.totalRecords(newValue.length);
     });
-    
+
     // Função para calcular a página anterior
     self.previousPage = ko.computed(function () {
         return self.currentPage() > 1 ? self.currentPage() - 1 : 1;
     });
-    
+
     // Função para calcular a próxima página
     self.nextPage = ko.computed(function () {
         return self.currentPage() < self.totalPages() ? self.currentPage() + 1 : self.totalPages();
     });
 
     self.totalPages = ko.computed(function () {
-        return Math.ceil(self.totalRecords() / self.pagesize());
+        return self.Canoe_Sprints4() ? Math.ceil(self.Canoe_Sprints4().length / self.pagesize()) : 0;
     });
-    
 
-    
+
+
     // Função para calcular o array de páginas para exibição
     self.pageArray = ko.computed(function () {
         var pages = [];
@@ -76,7 +76,7 @@ var vm = function () {
         var currentPage = self.currentPage();
         var startPage = Math.max(1, currentPage - 4);
         var endPage = Math.min(totalPages, currentPage + 4);
-    
+
         // Ajuste para garantir que sempre mostre 9 páginas se possível
         if (endPage - startPage < 9) {
             if (startPage === 1) {
@@ -85,13 +85,13 @@ var vm = function () {
                 startPage = Math.max(1, endPage - 8);
             }
         }
-    
+
         for (var i = startPage; i <= endPage; i++) {
             pages.push(i);
         }
         return pages;
     });
-    
+
     // Função para calcular os itens a serem exibidos com base na página atual
     self.paginatedCanoe_Sprints = ko.computed(function () {
         var startIndex = (self.currentPage() - 1) * self.pagesize();
@@ -102,7 +102,7 @@ var vm = function () {
     self.fromRecord = ko.computed(function () {
         return (self.currentPage() - 1) * self.pagesize() + 1;
     });
-    
+
     self.toRecord = ko.computed(function () {
         return Math.min(self.currentPage() * self.pagesize(), self.Canoe_Sprints4().length);
     });
@@ -111,7 +111,7 @@ var vm = function () {
         e.keyCode === 13 && self.search();
         return true;
     };
-    
+
 
     //--- Page Events
 
@@ -147,7 +147,7 @@ var vm = function () {
             self.Canoe_Sprints3(self.Canoe_Sprints());
             console.log("Canoe_Sprints3", self.Canoe_Sprints3());
             checkFavourite();
-            
+
 
         });
     };
@@ -192,23 +192,24 @@ var vm = function () {
         });
         console.log("eventNames: ", eventNames)
     }
+
     function filterStagesByEvent() {
         console.log("a executar filterStagesBYEvent")
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
-    
+
         var filteredStages = initialCanoe_Sprints.filter(function (Canoe_Sprints) {
             return Canoe_Sprints.EventName == selectedEventName;
         });
-    
+
         var stageNames = new Set();
         filteredStages.forEach(function (Canoe_Sprints) {
             stageNames.add(Canoe_Sprints.StageName);
         });
         console.log("isso foi adicionado", stageNames)
 
-    
+
         stageNames.forEach(function (stageName) {
             var option = document.createElement('option');
             console.log("esta a ser colocado esse: ", stageName)
@@ -216,39 +217,46 @@ var vm = function () {
             option.text = stageName;
             selectBox.appendChild(option);
         });
-    
+
         filterTableByEventAndStage();
         checkFavourite();
     }
-    
+
     function filterTableByEventAndStage() {
         console.log("a executar filterTableByEventAndStage");
-    
-        // Obtém os valores dos filtros
+
         var selectedEventName = document.getElementById('eventSelect').value;
         var selectedStageName = document.getElementById('stageSelect').value;
-    
+
         console.log("Evento selecionado:", selectedEventName);
         console.log("Fase selecionada:", selectedStageName);
-        console.log("Lista inicial de Canoagem:", initialCanoe_Sprints);
-    
-        // Atualiza a lista com base nos filtros
-        var filteredCanoe_Sprints = initialCanoe_Sprints.filter(function (Canoe_Sprints) {
-            var eventMatch = selectedEventName === "0" || Canoe_Sprints.EventName === selectedEventName;
-            var stageMatch = selectedStageName === "0" || Canoe_Sprints.StageName === selectedStageName;
-            return eventMatch && stageMatch;
-        });
-    
-        console.log("Canoagem filtrado:", filteredCanoe_Sprints);
-    
-        // Atualiza a tabela observável (Knockout.js)
-        self.Canoe_Sprints4(filteredCanoe_Sprints);
+        console.log("Lista inicial de Canoagem de Velocidade:", initialCanoe_Sprints);
+
+        if (selectedStageName == "0") {
+            filterTableByEvent();
+        } else if (selectedEventName == "0") {
+            var filteredCanoe_Sprints = initialCanoe_Sprints.filter(function (Canoe_Sprints) {
+                return Canoe_Sprints.StageName === selectedStageName;
+            });
+        } else {
+            var filteredCanoe_Sprints = initialCanoe_Sprints.filter(function (Canoe_Sprints) {
+                var eventMatch = selectedEventName === 0 || Canoe_Sprints.EventName === selectedEventName;
+                var stageMatch = selectedStageName === 0 || Canoe_Sprints.StageName === selectedStageName;
+                return eventMatch && stageMatch;
+            });
+        }
+        console.log("Canoagem de Velocidade filtrado:", filteredCanoe_Sprints);
+
+        if (self.Canoe_Sprints4) {
+            self.Canoe_Sprints4(filteredCanoe_Sprints);
+        }
         checkFavourite();
     }
     document.getElementById('eventSelect').addEventListener('change', function () {
         filterStagesByEvent();
     });
-    
+
+
     document.getElementById('stageSelect').addEventListener('change', function () {
         filterTableByEventAndStage();
     });
@@ -269,10 +277,10 @@ var vm = function () {
 
     function filterTableByEvent() {
         console.log("a executar filterTableBYEvent");
-    
+
         var selectedEventName = document.getElementById('eventSelect').value;
-        var filteredCanoe_Sprints;
-    
+        var filteredCanoe_Sprints = [];
+
         if (selectedEventName == "0") {
             filteredCanoe_Sprints = initialCanoe_Sprints.slice(); // Restaurar a lista completa
         } else {
@@ -281,37 +289,42 @@ var vm = function () {
             });
         }
         console.log("Filtered Canoe_Sprints:", filteredCanoe_Sprints);
-    
+
         self.Canoe_Sprints4(filteredCanoe_Sprints);
-    
+
         // Atualizar o select de stage
         var selectBox = document.getElementById('stageSelect');
         selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
-    
+
         var stageNames = new Set();
         filteredCanoe_Sprints.forEach(function (Canoe_Sprints) {
             stageNames.add(Canoe_Sprints.StageName);
         });
-    
+
         stageNames.forEach(function (stageName) {
             var option = document.createElement('option');
             option.value = stageName;
             option.text = stageName;
             selectBox.appendChild(option);
         });
-    
+
         console.log("stageNames atualizados:", stageNames);
         checkFavourite();
     }
 
-    function filterTableByStage(){
+    function filterTableByStage() {
+        console.log("a executar filterTableByStage");
         var selectedStageName = document.getElementById('stageSelect').value;
-        var filteredCanoe_Sprints = self.Canoe_Sprints4().filter(function (Canoe_Sprints){
-            return Canoe_Sprints.StageName == selectedStageName;
-        });
-        self.Canoe_Sprints4(filteredCanoe_Sprints);
-        console.log("Filtered Canoe_Sprints:", filteredCanoe_Sprints);
-        checkFavourite();
+        if (selectedStageName == "0") {
+            console.log("Selected stage is 0. Restoring initial list...");
+        } else {
+            var filteredCanoe_Sprints = self.Canoe_Sprints4().filter(function (Canoe_Sprints) {
+                return Canoe_Sprints.StageName == selectedStageName;
+            });
+            self.Canoe_Sprints4(filteredCanoe_Sprints);
+            console.log("Filtered Canoe_Sprints:", filteredCanoe_Sprints);
+            checkFavourite();
+        }
     }
 
     document.getElementById('eventSelect').addEventListener('change', function (){
@@ -320,24 +333,7 @@ var vm = function () {
     });
     document.getElementById('stageSelect').addEventListener('change', filterTableByStage);
 
-    function filterStagesByEvent() {
-        var selectedEventName = document.getElementById('eventSelect').value;
-        var selectBox = document.getElementById('stageSelect');
-        selectBox.innerHTML = '<option value="0">Todas as fases</option>'; // Reset stage select box
 
-        var filteredStages = self.Canoe_Sprints4().filter(function (Canoe_Sprints) {
-            return Canoe_Sprints.EventName == selectedEventName;
-        });
-
-        filteredStages.forEach(function (Canoe_Sprints) {
-            var option = document.createElement('option');
-            option.value = Canoe_Sprints.StageName;
-            option.text = Canoe_Sprints.StageName;
-            selectBox.appendChild(option);
-            
-        });
-        checkFavourite();
-    }
 
     function getStages(EventId, StageId) {
         var detailsUrl = 'http://192.168.160.58/Paris2024/API/Canoe_Sprints?' + 'EventId=' + EventId + '&StageId=' + StageId;
@@ -367,24 +363,24 @@ var vm = function () {
                 Sex: participant.Sex,
                 ParticipantType: participant.ParticipantType,
                 Id : participant.Id
-        
+
             });
         });
     }
 
-    
+
     async function fetchAllCanoe_SprintsDetails() {
         console.log("Fetching all Canoe_Sprints details...");
         for (const Canoe_Sprints of self.Canoe_Sprints()) { //Percorre cada treinador que vem da 1.ºAPI
             await fetchCanoe_SprintsDetails(Canoe_Sprints); //Chama a outra assincrona
-            await delay(0); 
+            await delay(0);
         }
-        console.log("a obter os detalhes do Canoe_Sprints...")
+        console.log("a obter os detalhes do basketball...")
         self.Canoe_Sprints(self.Canoe_SprintsDetails());
         console.log("Finished fetching all Canoe_Sprints details.");
         fetchAllParticipantsDetails(); // Chama a função para buscar detalhes dos participantes
     }
-    
+
     async function fetchDetailsForParticipant(ParticipantId) {
         if (!ParticipantId) {
             console.error("Participant Id is undefined or null");
@@ -397,7 +393,7 @@ var vm = function () {
         updateTableWithDetails(ParticipantId, details);
 
     }
-    
+
     function updateTableWithDetails(Id, details) {
         console.log(`Updating table with details for participant ${Id}`);
         var participant = self.Canoe_SprintsDetails().find(p => p.ParticipantId === Id);
@@ -417,7 +413,7 @@ var vm = function () {
             participant.QualificationMark = details.QualificationMark;
             participant.StartOrder = details.StartOrder;
             participant.Bib = details.Bib;
-            participant.Date = details.Date;
+            participant.Date = new Date(details.Date).toLocaleString('pt-PT', { timeZone: 'UTC' });
             participant.Venue = details.Venue;
             // Adicione mais campos conforme necessário
             console.log(`Participant details updated:`, participant);
@@ -438,7 +434,7 @@ var vm = function () {
             console.log(`Participant:`, participant);
             console.log(`Participant Id: ${participant.ParticipantId}`);
             await fetchDetailsForParticipant(participant.ParticipantId);
-            await delay(0); 
+            await delay(0);
         }
         self.Canoe_Sprints4(self.Canoe_Sprints3());
         console.log("Canoe_Sprints4", self.Canoe_Sprints4());
@@ -448,17 +444,17 @@ var vm = function () {
         hideLoading();
         checkFavourite();
 
-    
+
     }
-    
-    
+
+
     async function fetchAllData() {
         showLoading();
         await fetchAllCanoe_SprintsDetails();
         await fetchAllParticipantsDetails();
-    
+
     }
-    
+
     fetchAllData();
 
     //--- Internal functions
@@ -510,7 +506,7 @@ var vm = function () {
         }
     };
 
-    
+
 
     //--- start ....
     showLoading();
